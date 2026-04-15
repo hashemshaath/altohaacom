@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -23,7 +24,7 @@ const COLORS = ["hsl(var(--chart-2))", "hsl(var(--chart-4))", "hsl(var(--chart-5
 
 export const RevenueAnalytics = memo(function RevenueAnalytics() {
   const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const { data, isLoading } = useQuery({
     queryKey: ["admin-revenue-analytics-v2"],

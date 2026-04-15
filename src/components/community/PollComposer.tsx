@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Button } from "@/components/ui/button";
@@ -10,8 +11,7 @@ interface PollComposerProps {
 }
 
 export const PollComposer = memo(function PollComposer({ onPollChange }: PollComposerProps) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const [active, setActive] = useState(false);
   const [options, setOptions] = useState(["", ""]);
 

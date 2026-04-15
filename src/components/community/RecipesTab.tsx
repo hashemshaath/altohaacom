@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useEffect, memo } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -40,9 +41,8 @@ const difficultyColor = (d: string) => {
 
 export const RecipesTab = memo(function RecipesTab() {
   const { user } = useAuth();
-  const { language } = useLanguage();
+  const isAr = useIsAr();
   const { toast } = useToast();
-  const isAr = language === "ar";
   const [allRecipes, setAllRecipes] = useState<Recipe[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);

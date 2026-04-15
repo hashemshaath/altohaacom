@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useMemo, useCallback, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useSearchParams } from "react-router-dom";
@@ -60,8 +61,7 @@ const SORT_OPTIONS = [
 ];
 
 export default function News() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const [searchParams, setSearchParams] = useSearchParams();
   useAdTracking();
 

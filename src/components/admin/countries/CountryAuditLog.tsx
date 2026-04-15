@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
@@ -34,8 +35,7 @@ const actionColors: Record<string, string> = {
 };
 
 export const CountryAuditLog = memo(function CountryAuditLog({ countryCode }: { countryCode?: string }) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const [search, setSearch] = useState("");
 
   const { data: logs, isLoading } = useQuery({

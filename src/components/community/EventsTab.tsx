@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useEffect, useCallback, memo } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -49,9 +50,8 @@ interface Poll {
 
 export const EventsTab = memo(function EventsTab() {
   const { user } = useAuth();
-  const { language } = useLanguage();
+  const isAr = useIsAr();
   const { toast } = useToast();
-  const isAr = language === "ar";
   const [events, setEvents] = useState<CommunityEvent[]>([]);
   const [polls, setPolls] = useState<Poll[]>([]);
   const [loading, setLoading] = useState(true);

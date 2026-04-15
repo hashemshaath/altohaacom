@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -33,8 +34,7 @@ const COMP_STATUS_CONFIG: Record<string, { color: string; bg: string; label: str
 };
 
 export const CompetitionHistory = memo(function CompetitionHistory({ userId }: CompetitionHistoryProps) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
 

@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, memo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -64,10 +65,9 @@ interface Props {
 }
 
 export const EventSeriesManager = memo(function EventSeriesManager({ onCreateEdition }: Props) {
-  const { language } = useLanguage();
   const { user } = useAuth();
+  const isAr = useIsAr();
   const queryClient = useQueryClient();
-  const isAr = language === "ar";
   const t = (en: string, ar: string) => isAr ? ar : en;
 
   const [showForm, setShowForm] = useState(false);

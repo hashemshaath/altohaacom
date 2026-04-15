@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useLocation, Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -19,10 +20,9 @@ const hiddenPaths = ["/auth", "/admin", "/onboarding", "/install"];
 
 export const MobileBottomNav = memo(function MobileBottomNav() {
   const { user } = useAuth();
-  const { language } = useLanguage();
+  const isAr = useIsAr();
   const { unreadCount } = useNotifications();
   const location = useLocation();
-  const isAr = language === "ar";
   const [visible, setVisible] = useState(true);
   const prevY = useRef(0);
   const visRef = useRef(true);

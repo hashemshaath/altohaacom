@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, lazy, Suspense, memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -40,8 +41,7 @@ const TabSkeleton = () => (
 
 // ── KPI Strip ────────────────────────────────────────────
 const ExhibitionKPIStrip = memo(function ExhibitionKPIStrip() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const { data, isLoading } = useQuery({
     queryKey: ["exhibition-stats-kpi"],
@@ -99,8 +99,7 @@ const ExhibitionKPIStrip = memo(function ExhibitionKPIStrip() {
 
 // ── Overview Tab ─────────────────────────────────────────
 const OverviewTab = memo(function OverviewTab() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const { data, isLoading } = useQuery({
     queryKey: ["exhibition-stats-overview"],
@@ -301,8 +300,7 @@ const OverviewTab = memo(function OverviewTab() {
 
 // ── Tickets Tab ──────────────────────────────────────────
 const TicketsTab = memo(function TicketsTab() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const { data, isLoading } = useQuery({
     queryKey: ["exhibition-stats-tickets"],
@@ -440,8 +438,7 @@ const TicketsTab = memo(function TicketsTab() {
 
 // ── Analytics Tab ────────────────────────────────────────
 const AnalyticsTab = memo(function AnalyticsTab() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const { data, isLoading } = useQuery({
     queryKey: ["exhibition-stats-analytics"],
@@ -604,8 +601,7 @@ const AnalyticsTab = memo(function AnalyticsTab() {
 
 // ── Activity Tab ─────────────────────────────────────────
 const ActivityTab = memo(function ActivityTab() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const { data: actions = [] } = useQuery({
     queryKey: ["exhibition-stats-activity"],
@@ -696,8 +692,7 @@ const ActivityTab = memo(function ActivityTab() {
 
 // ── Main Page ────────────────────────────────────────────
 export default function ExhibitionStatsAdmin() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const [activeTab, setActiveTab] = useState("overview");
 
   return (

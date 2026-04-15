@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -22,10 +23,9 @@ const EXPERTISE_OPTIONS = [
 ];
 
 export default function MentorApply() {
-  const { language } = useLanguage();
   const navigate = useNavigate();
+  const isAr = useIsAr();
   const { toast } = useToast();
-  const isAr = language === "ar";
   const { data: existingApp, isLoading: appLoading } = useMyMentorApplication();
   const { data: programs = [] } = useMentorshipPrograms("active");
   const applyMutation = useApplyAsMentor();

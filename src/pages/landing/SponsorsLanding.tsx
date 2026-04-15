@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState } from "react";
 import { Trophy, Users, Globe, TrendingUp, CheckCircle, ArrowRight, Sparkles } from "lucide-react";
 import { Header } from "@/components/Header";
@@ -70,7 +71,7 @@ const sponsorshipTiers = [
 ];
 
 export default function SponsorsLanding() {
-  const { language } = useLanguage();
+  const isAr = useIsAr();
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -80,8 +81,6 @@ export default function SponsorsLanding() {
     phone: "",
     message: "",
   });
-
-  const isAr = language === "ar";
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

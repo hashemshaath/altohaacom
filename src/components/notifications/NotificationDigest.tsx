@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 /**
  * Smart notification digest summary widget for the dashboard.
  * Provides an AI-style overview of recent notification activity.
@@ -15,9 +16,8 @@ import { inferPriority } from "./NotificationPriorityBadge";
 import { MS_PER_DAY } from "@/lib/constants";
 
 export const NotificationDigest = memo(function NotificationDigest() {
+  const isAr = useIsAr();
   const { notifications, unreadCount } = useNotifications();
-  const { language } = useLanguage();
-  const isAr = language === "ar";
   const navigate = useNavigate();
 
   const digest = useMemo(() => {

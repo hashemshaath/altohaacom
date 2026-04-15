@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo, useState, useCallback } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -15,8 +16,7 @@ import { Link } from "react-router-dom";
 import { StaggeredList } from "@/components/ui/staggered-list";
 
 export const ProfileReferralsTab = memo(function ProfileReferralsTab({ userId }: { userId: string }) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const { toast } = useToast();
   const { data: referralCode } = useReferralCode();
   const { data: stats } = useReferralStats();

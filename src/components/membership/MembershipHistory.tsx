@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -34,9 +35,8 @@ function getActionInfo(reason: string | null, prevTier: string | null, newTier: 
 }
 
 export const MembershipHistory = memo(function MembershipHistory() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
   const { user } = useAuth();
+  const isAr = useIsAr();
 
   const { data: history, isLoading } = useQuery({
     queryKey: ["membership-history", user?.id],

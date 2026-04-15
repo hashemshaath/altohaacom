@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
@@ -20,9 +21,8 @@ import { countryFlag } from "@/lib/countryFlag";
 import { QUERY_LIMIT_LARGE } from "@/lib/constants";
 
 export default function OrganizerPortal() {
-  const { language } = useLanguage();
   const { user } = useAuth();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const t = (en: string, ar: string) => isAr ? ar : en;
   const [tab, setTab] = useState("all");
 

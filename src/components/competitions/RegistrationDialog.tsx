@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useRef, memo } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -73,14 +74,13 @@ export const RegistrationForm = memo(function RegistrationForm({
   onCancel,
   onSuccess,
 }: RegistrationFormProps) {
-  const { language } = useLanguage();
   const { user } = useAuth();
+  const isAr = useIsAr();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const awardPoints = useAwardPoints();
   const { trackCompetitionRegistration } = useEcommerceTracking();
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const isAr = language === "ar";
 
   // Fetch competition settings
   const { data: competition } = useQuery({

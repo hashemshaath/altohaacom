@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState } from "react";
 import { useCompanyAccess } from "@/hooks/useCompanyAccess";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -38,10 +39,9 @@ import { format, subMonths, startOfMonth, endOfMonth } from "date-fns";
 import { useToast } from "@/hooks/use-toast";
 
 export default function CompanyStatements() {
-  const { language } = useLanguage();
   const { companyId, isLoading: accessLoading } = useCompanyAccess();
+  const isAr = useIsAr();
   const { toast } = useToast();
-  const isAr = language === "ar";
   const [period, setPeriod] = useState("3");
 
   const startDate = startOfMonth(subMonths(new Date(), parseInt(period)));

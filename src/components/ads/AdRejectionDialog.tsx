@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
@@ -27,8 +28,7 @@ const REJECTION_REASONS = [
 ];
 
 export const AdRejectionDialog = memo(function AdRejectionDialog({ open, onOpenChange, onConfirm, title, isPending }: AdRejectionDialogProps) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const [selectedReason, setSelectedReason] = useState("");
   const [customReason, setCustomReason] = useState("");
 

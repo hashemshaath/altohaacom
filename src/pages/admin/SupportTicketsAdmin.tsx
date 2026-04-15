@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState } from "react";
 import { AdminFilterBar } from "@/components/admin/AdminFilterBar";
 import { AdminTableCard } from "@/components/admin/AdminTableCard";
@@ -126,10 +127,9 @@ function getSlaIndicator(priority: string, createdAt: string, status: string, is
 
 export default function SupportTicketsAdmin() {
   const { user } = useAuth();
-  const { language } = useLanguage();
+  const isAr = useIsAr();
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const isAr = language === "ar";
 
   const [selectedTicketId, setSelectedTicketId] = useState<string | null>(null);
   const [statusFilter, setStatusFilter] = useState("all");

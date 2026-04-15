@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useRef, useCallback, useEffect, memo } from "react";
 import { Mic, Square, Send, Trash2, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -10,8 +11,7 @@ interface VoiceMessageRecorderProps {
 }
 
 export const VoiceMessageRecorder = memo(function VoiceMessageRecorder({ onSend, disabled }: VoiceMessageRecorderProps) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const [recording, setRecording] = useState(false);
   const [duration, setDuration] = useState(0);
   const [audioBlob, setAudioBlob] = useState<Blob | null>(null);

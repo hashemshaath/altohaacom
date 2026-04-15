@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
@@ -11,8 +12,7 @@ import { ar, enUS } from "date-fns/locale";
 import { CACHE } from "@/lib/queryConfig";
 
 export const UpcomingEventsWidget = memo(function UpcomingEventsWidget() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const { data: events = [] } = useQuery({
     queryKey: ["community-upcoming-events"],

@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState } from "react";
 import { Calendar, Users, BarChart3, Shield, CheckCircle, ArrowRight, Star, Sparkles } from "lucide-react";
 import { Header } from "@/components/Header";
@@ -67,7 +68,7 @@ const testimonials = [
 ];
 
 export default function OrganizersLanding() {
-  const { language } = useLanguage();
+  const isAr = useIsAr();
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -77,8 +78,6 @@ export default function OrganizersLanding() {
     phone: "",
     message: "",
   });
-
-  const isAr = language === "ar";
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

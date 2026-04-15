@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useEffect, memo } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -26,8 +27,7 @@ function generateCandidates(base: string): string[] {
 }
 
 export const UsernameSuggestions = memo(function UsernameSuggestions({ baseUsername, onSelect }: UsernameSuggestionsProps) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
 

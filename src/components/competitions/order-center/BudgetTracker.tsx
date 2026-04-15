@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useMemo, memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -32,8 +33,7 @@ interface CategoryBudget {
 }
 
 export const BudgetTracker = memo(function BudgetTracker({ competitionId, isOrganizer }: Props) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   useRealtimeOrderUpdates(competitionId, true);
 
   const { data: lists } = useQuery({

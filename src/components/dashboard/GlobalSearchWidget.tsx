@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { CACHE } from "@/lib/queryConfig";
 import { useState, useCallback, useRef, useEffect, memo } from "react";
 import { ROUTES } from "@/config/routes";
@@ -26,8 +27,7 @@ const typeConfig = {
 };
 
 export const GlobalSearchWidget = memo(function GlobalSearchWidget() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const [query, setQuery] = useState("");
   const [focused, setFocused] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -177,6 +177,7 @@ export const GlobalSearchWidget = memo(function GlobalSearchWidget() {
 });
 
 function useDebounce(value: string, delay: number) {
+  const isAr = useIsAr();
   const [debounced, setDebounced] = useState(value);
   useEffect(() => {
     const timer = setTimeout(() => setDebounced(value), delay);

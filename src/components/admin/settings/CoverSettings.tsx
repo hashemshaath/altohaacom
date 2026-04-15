@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useEffect, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -64,8 +65,7 @@ const PRESET_COLORS = [
 ];
 
 export const CoverSettings = memo(function CoverSettings({ settings, onSave, isPending }: Props) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const coverCfg = settings.cover || {};
 
   const [cover, setCover] = useState({

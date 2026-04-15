@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useCallback, memo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -26,8 +27,7 @@ interface OrganizerExhibitionsPanelProps {
 export const OrganizerExhibitionsPanel = memo(function OrganizerExhibitionsPanel({
   open, onOpenChange, organizerId, organizerName, organizerLogo,
 }: OrganizerExhibitionsPanelProps) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const qc = useQueryClient();
   const [searchQ, setSearchQ] = useState("");
   const [roleFilter, setRoleFilter] = useState("all");

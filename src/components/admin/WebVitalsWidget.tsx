@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { CACHE } from "@/lib/queryConfig";
 import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -47,8 +48,7 @@ const deviceIcons: Record<string, React.ElementType> = {
 };
 
 export const WebVitalsWidget = memo(function WebVitalsWidget() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const { data, isLoading } = useQuery({
     queryKey: ["admin-web-vitals-summary"],

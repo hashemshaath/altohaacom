@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
@@ -21,8 +22,7 @@ const STATUS_COLORS: Record<string, string> = {
 };
 
 export const InvoiceTrackerWidget = memo(function InvoiceTrackerWidget() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const { data } = useQuery({
     queryKey: ["invoiceTracker"],

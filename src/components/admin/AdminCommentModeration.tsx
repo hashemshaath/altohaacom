@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, memo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -17,8 +18,7 @@ import { formatDistanceToNow } from "date-fns";
 import { ar, enUS } from "date-fns/locale";
 
 export const AdminCommentModeration = memo(function AdminCommentModeration() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const queryClient = useQueryClient();
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState<"all" | "flagged" | "hidden">("all");

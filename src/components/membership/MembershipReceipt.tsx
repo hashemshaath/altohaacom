@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useRef, useState, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent } from "@/components/ui/card";
@@ -30,8 +31,7 @@ const TIER_LABELS: Record<string, { en: string; ar: string }> = {
 };
 
 export const MembershipReceipt = memo(function MembershipReceipt({ receiptData }: MembershipReceiptProps) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const receiptRef = useRef<HTMLDivElement>(null);
   const [downloading, setDownloading] = useState(false);
 

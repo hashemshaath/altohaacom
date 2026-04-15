@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -22,8 +23,7 @@ interface ActivityItem {
 }
 
 export const CompanyActivityFeed = memo(function CompanyActivityFeed({ companyId }: { companyId: string | null }) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const { data: activities = [], isLoading } = useQuery({
     queryKey: ["company-activity-feed", companyId],

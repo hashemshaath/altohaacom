@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -63,8 +64,7 @@ const rows: ComparisonRow[] = [
 ];
 
 export const CountryComparisonTool = memo(function CountryComparisonTool({ countries }: { countries: Country[] }) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const [selected, setSelected] = useState<string[]>(["", "", ""]);
 

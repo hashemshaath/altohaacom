@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, lazy, Suspense, useCallback, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
@@ -81,8 +82,7 @@ const difficultyColors: Record<string, string> = {
 };
 
 export default memo(function LoyaltyAdmin() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const { toast } = useToast();
   const qc = useQueryClient();
   const [activeTab, setActiveTab] = useState("dashboard");

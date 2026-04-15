@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useMemo } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -20,9 +21,8 @@ import {
 const MAX_COMPARE = 4;
 
 export default function SupplierCompare() {
-  const { language } = useLanguage();
+  const isAr = useIsAr();
   const navigate = useNavigate();
-  const isAr = language === "ar";
   const [searchParams, setSearchParams] = useSearchParams();
   const initialIds = searchParams.get("ids")?.split(",").filter(Boolean) || [];
   const [selectedIds, setSelectedIds] = useState<string[]>(initialIds);

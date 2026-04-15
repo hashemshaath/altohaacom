@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo, useState, useEffect } from "react";
 import { Palette, Check, RotateCcw } from "lucide-react";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -24,8 +25,7 @@ const COLOR_LABELS_AR = [
 ];
 
 export const AdminColorStyleSelector = memo(function AdminColorStyleSelector() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const [activeId, setActiveId] = useState<string | null>(() => {
     try { return localStorage.getItem(ADMIN_COLOR_STORAGE_KEY); } catch { return null; }
   });

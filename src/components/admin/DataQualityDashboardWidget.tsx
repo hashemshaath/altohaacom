@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { CACHE } from "@/lib/queryConfig";
 import { memo } from "react";
 import { Link } from "react-router-dom";
@@ -31,8 +32,7 @@ function computeCompleteness(records: Record<string, unknown>[], requiredFields:
 }
 
 export const DataQualityDashboardWidget = memo(function DataQualityDashboardWidget() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const { data: scores } = useQuery({
     queryKey: ["data-quality-widget"],

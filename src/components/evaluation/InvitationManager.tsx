@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useMemo, memo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -56,6 +57,7 @@ interface ChefCandidate {
 }
 
 function useEvaluationInvitations() {
+  const isAr = useIsAr();
   return useQuery({
     queryKey: ["evaluation-invitations"],
     queryFn: async () => {
@@ -70,6 +72,7 @@ function useEvaluationInvitations() {
 }
 
 function useChefCandidates() {
+  const isAr = useIsAr();
   return useQuery({
     queryKey: ["chef-candidates-for-evaluation"],
     queryFn: async () => {
@@ -106,8 +109,7 @@ function useChefCandidates() {
 }
 
 export const InvitationManager = memo(function InvitationManager() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const queryClient = useQueryClient();
   const { data: invitations, isLoading } = useEvaluationInvitations();
   const { data: candidates } = useChefCandidates();

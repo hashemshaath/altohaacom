@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo, useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -41,8 +42,7 @@ export const CompetitionLeaderboard = memo(function CompetitionLeaderboard({
   competitionId,
   showTopOnly = false,
 }: CompetitionLeaderboardProps) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const [categoryFilter, setCategoryFilter] = useState("all");
 
   const { data: leaderboard, isLoading } = useQuery({

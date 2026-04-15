@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { CACHE } from "@/lib/queryConfig";
 import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -10,8 +11,7 @@ import { Award, FileCheck, Send, Clock, ShieldCheck, Download, PenTool } from "l
 import { QUERY_LIMIT_MEDIUM } from "@/lib/constants";
 
 export const CertificateIssuanceWidget = memo(function CertificateIssuanceWidget() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const { data } = useQuery({
     queryKey: ["certificate-issuance-widget"],

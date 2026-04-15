@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -16,10 +17,9 @@ interface SupplierContactFormProps {
 }
 
 export const SupplierContactForm = memo(function SupplierContactForm({ companyId, companyName }: SupplierContactFormProps) {
-  const { language } = useLanguage();
   const { user } = useAuth();
+  const isAr = useIsAr();
   const { toast } = useToast();
-  const isAr = language === "ar";
   const [name, setName] = useState("");
   const [email, setEmail] = useState(user?.email || "");
   const [subject, setSubject] = useState("");

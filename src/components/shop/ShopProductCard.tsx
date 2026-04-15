@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -24,8 +25,7 @@ interface ShopProductCardProps {
 }
 
 export const ShopProductCard = memo(function ShopProductCard({ product, onAddToCart }: ShopProductCardProps) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const title = isAr && product.title_ar ? product.title_ar : product.title;
   const TypeIcon = typeIcons[product.product_type] || Package;
   const isOutOfStock = product.product_type === "physical" && product.stock_quantity <= 0;

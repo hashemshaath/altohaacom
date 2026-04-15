@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useMemo, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { TastingEntry, TastingCriterion, TastingScore, EvalMethod } from "@/hooks/useTasting";
@@ -14,8 +15,7 @@ interface Props {
 }
 
 export const TastingResultsPanel = memo(function TastingResultsPanel({ entries, criteria, scores, evalMethod }: Props) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const rankings = useMemo(() => {
     return entries.map(entry => {

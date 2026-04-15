@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import React, { useState, useCallback, useEffect, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -65,8 +66,7 @@ interface DataDiffItem {
 }
 
 export const CompetitionSmartImport = memo(function CompetitionSmartImport({ onImport, onClose }: CompetitionSmartImportProps) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const [mode, setMode] = useState<ImportMode>("search");
   const [query, setQuery] = useState("");
@@ -837,6 +837,7 @@ export const CompetitionSmartImport = memo(function CompetitionSmartImport({ onI
 });
 
 function DetailSection({ icon: Icon, title, children }: { icon: React.ComponentType<{ className?: string }>; title: string; children: React.ReactNode }) {
+  const isAr = useIsAr();
   return (
     <div className="rounded-xl border p-3 space-y-2">
       <h4 className="text-xs font-semibold flex items-center gap-1.5 text-muted-foreground uppercase tracking-wide">

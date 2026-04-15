@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useMemo, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useNotifications } from "@/hooks/useNotifications";
@@ -54,9 +55,8 @@ function categorize(n: { link?: string | null; title?: string; title_ar?: string
 }
 
 export const NotificationGroupWidget = memo(function NotificationGroupWidget() {
+  const isAr = useIsAr();
   const { notifications, unreadCount, markAsRead } = useNotifications();
-  const { language } = useLanguage();
-  const isAr = language === "ar";
   const navigate = useNavigate();
 
   const groups = useMemo(() => {

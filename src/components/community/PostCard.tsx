@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -61,10 +62,9 @@ export const PostCard = memo(function PostCard({
   formatDate,
 }: PostCardProps) {
   const { user } = useAuth();
-  const { language } = useLanguage();
+  const isAr = useIsAr();
   const { toast } = useToast();
   const navigate = useNavigate();
-  const isAr = language === "ar";
 
   const totalEngagement = post.likes_count + post.comments_count + post.reposts_count;
   const isHotPost = totalEngagement >= 10;

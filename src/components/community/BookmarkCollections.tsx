@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, memo } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -21,8 +22,7 @@ interface BookmarkCollectionsProps {
 
 export const BookmarkCollections = memo(function BookmarkCollections({ postId }: BookmarkCollectionsProps) {
   const { user } = useAuth();
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [creating, setCreating] = useState(false);

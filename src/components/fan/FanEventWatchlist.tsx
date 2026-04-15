@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
@@ -14,9 +15,8 @@ import { ar, enUS } from "date-fns/locale";
 import { useToast } from "@/hooks/use-toast";
 
 export const FanEventWatchlist = memo(function FanEventWatchlist() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
   const { user } = useAuth();
+  const isAr = useIsAr();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [tab, setTab] = useState("all");
@@ -136,10 +136,9 @@ export const FanEventWatchlist = memo(function FanEventWatchlist() {
 /** Reusable hook to add/remove from watchlist */
 export function useEventWatchlist(eventType: "competition" | "exhibition", eventId?: string) {
   const { user } = useAuth();
+  const isAr = useIsAr();
   const queryClient = useQueryClient();
   const { toast } = useToast();
-  const { language } = useLanguage();
-  const isAr = language === "ar";
 
   const { data: isWatched = false } = useQuery({
     queryKey: ["event-watched", eventType, eventId, user?.id],

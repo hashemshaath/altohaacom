@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { CACHE } from "@/lib/queryConfig";
 import { useState, useEffect, useCallback, useRef, memo } from "react";
 import { useNavigate } from "react-router-dom";
@@ -71,11 +72,10 @@ export const CommandPalette = memo(function CommandPalette() {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [selectedIdx, setSelectedIdx] = useState(0);
-  const { language } = useLanguage();
   const { user } = useAuth();
+  const isAr = useIsAr();
   const navigate = useNavigate();
   const inputRef = useRef<HTMLInputElement>(null);
-  const isAr = language === "ar";
 
   const debouncedQuery = useDebounce(query, 250);
 

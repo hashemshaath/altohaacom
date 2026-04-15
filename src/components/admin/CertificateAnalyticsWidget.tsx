@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -15,8 +16,7 @@ import { QUERY_LIMIT_LARGE, QUERY_LIMIT_MEDIUM, REFETCH_INTERVAL_DEFAULT } from 
 const COLORS = ["hsl(var(--primary))", "hsl(var(--chart-3))", "hsl(var(--chart-4))", "hsl(var(--chart-5))", "hsl(var(--destructive))"];
 
 export const CertificateAnalyticsWidget = memo(function CertificateAnalyticsWidget() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const { data, isLoading } = useQuery({
     queryKey: ["admin-certificate-analytics-widget"],

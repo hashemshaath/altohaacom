@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useEffect, useMemo, memo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -49,9 +50,8 @@ const CATEGORIES: Record<string, { en: string; ar: string }> = {
 };
 
 export const PreparationChecklistPanel = memo(function PreparationChecklistPanel({ competitionId }: Props) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
   const { user } = useAuth();
+  const isAr = useIsAr();
   const queryClient = useQueryClient();
   const [newItem, setNewItem] = useState("");
   const [items, setItems] = useState<ChecklistItem[]>([]);

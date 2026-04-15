@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo, useState, useMemo, useCallback } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
@@ -33,6 +34,7 @@ interface TimelineEvent {
 const TIER_ORDER: Record<string, number> = { basic: 0, professional: 1, enterprise: 2 };
 
 function getEventType(prev: string | null, next: string, reason?: string | null) {
+  const isAr = useIsAr();
   const p = TIER_ORDER[prev || "basic"] ?? 0;
   const n = TIER_ORDER[next] ?? 0;
   if (reason?.toLowerCase().includes("trial")) return "trial";
@@ -67,8 +69,7 @@ const tierLabels: Record<string, { en: string; ar: string }> = {
 const PAGE_SIZE = 50;
 
 const MembershipLifecycleTimeline = memo(function MembershipLifecycleTimeline() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const [search, setSearch] = useState("");
   const [typeFilter, setTypeFilter] = useState("all");
   const [limit, setLimit] = useState(PAGE_SIZE);

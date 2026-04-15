@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
@@ -58,11 +59,11 @@ const STEP_LABELS_AR = ["الأنواع والفئات", "الربط", "المع
 export default function CreateCompetition() {
   const { language, t } = useLanguage();
   const { user } = useAuth();
+  const isAr = useIsAr();
   const navigate = useNavigate();
   const { toast } = useToast();
   const [step, setStep] = useState(1);
   const [data, setData] = useState<CompetitionFormData>(initialData);
-  const isAr = language === "ar";
 
   const updateData = useCallback((updates: Partial<CompetitionFormData>) => {
     setData((prev) => ({ ...prev, ...updates }));

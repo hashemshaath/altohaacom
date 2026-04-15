@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useEffect, useMemo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
@@ -23,9 +24,8 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, LineChart, L
 import { MS_PER_DAY } from "@/lib/constants";
 
 export default function Referrals() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
   const { user } = useAuth();
+  const isAr = useIsAr();
 
   const { toast } = useToast();
   const { data: referralCode } = useReferralCode();

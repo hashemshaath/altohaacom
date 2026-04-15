@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -12,8 +13,7 @@ import { CACHE } from "@/lib/queryConfig";
 
 export const FanSuggestedFollowsWidget = memo(function FanSuggestedFollowsWidget() {
   const { user } = useAuth();
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const [followingIds, setFollowingIds] = useState<Set<string>>(new Set());
 
   const { data: suggestions = [] } = useQuery({

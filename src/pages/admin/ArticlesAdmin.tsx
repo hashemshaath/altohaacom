@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useMemo } from "react";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -37,7 +38,7 @@ import {
 type ViewMode = "list" | "create" | "edit";
 
 export default function ArticlesAdmin() {
-  const { language } = useLanguage();
+  const isAr = useIsAr();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [search, setSearch] = useState("");
@@ -46,7 +47,6 @@ export default function ArticlesAdmin() {
   const [viewMode, setViewMode] = useState<ViewMode>("list");
   const [editingArticleId, setEditingArticleId] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<string>("all");
-  const isAr = language === "ar";
   const t = (ar: string, en: string) => isAr ? ar : en;
 
   const [formData, setFormData] = useState({

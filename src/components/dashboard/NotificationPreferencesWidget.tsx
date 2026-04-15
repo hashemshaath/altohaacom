@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useNotificationPrefs } from "@/hooks/useNotifications";
@@ -23,8 +24,7 @@ const CATEGORIES = [
 ];
 
 export const NotificationPreferencesWidget = memo(function NotificationPreferencesWidget() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const { soundEnabled, setSoundEnabled, dndMode, setDndMode } = useNotificationPrefs();
 
   const [mutedCats, setMutedCats] = useState<string[]>(() => {

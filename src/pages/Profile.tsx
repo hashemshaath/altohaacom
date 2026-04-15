@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useEffect, lazy, Suspense } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -45,7 +46,7 @@ const TAB_FEATURE_MAP: Record<string, string> = {
 
 export default function Profile() {
   const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const [searchParams] = useSearchParams();
   const initialTab = searchParams.get("tab") || "overview";
   const [activeTab, setActiveTab] = useState(initialTab);

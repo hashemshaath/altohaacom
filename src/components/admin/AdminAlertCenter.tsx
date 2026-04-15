@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useVisibleRefetchInterval } from "@/hooks/useVisibleRefetchInterval";
 import { useQuery } from "@tanstack/react-query";
@@ -30,8 +31,7 @@ interface Alert {
 }
 
 export const AdminAlertCenter = memo(function AdminAlertCenter() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const { data: alerts = [], isLoading } = useQuery({
     queryKey: ["admin-smart-alerts"],

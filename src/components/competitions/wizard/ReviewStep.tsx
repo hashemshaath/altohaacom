@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
@@ -14,6 +15,7 @@ interface ReviewStepProps {
 }
 
 function formatDate(dateStr: string) {
+  const isAr = useIsAr();
   if (!dateStr) return "—";
   try {
     return format(new Date(dateStr), "PPp");
@@ -23,8 +25,7 @@ function formatDate(dateStr: string) {
 }
 
 export const ReviewStep = memo(function ReviewStep({ data }: ReviewStepProps) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const totalWeight = data.criteria.reduce((sum, c) => sum + Number(c.weight), 0);
   const isBalanced = Math.abs(totalWeight - 1) < 0.01;
   const validCategories = data.categories.filter((c) => c.name.trim());

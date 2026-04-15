@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useEffect } from "react";
 import { useCompanyAccess } from "@/hooks/useCompanyAccess";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -62,11 +63,10 @@ const PRESETS = [
 ];
 
 export default function CompanyWorkingHours() {
-  const { language } = useLanguage();
   const { companyId } = useCompanyAccess();
+  const isAr = useIsAr();
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const isAr = language === "ar";
   const [schedule, setSchedule] = useState<WeekSchedule>(defaultSchedule);
   const [copySource, setCopySource] = useState<string | null>(null);
 

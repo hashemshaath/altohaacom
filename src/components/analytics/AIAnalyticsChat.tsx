@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useRef, useEffect, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -35,7 +36,7 @@ const SUGGESTIONS_AR = [
 
 export const AIAnalyticsChat = memo(function AIAnalyticsChat() {
   const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);

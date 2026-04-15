@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -10,8 +11,7 @@ interface TermsAgreementProps {
 }
 
 export const TermsAgreement = memo(function TermsAgreement({ checked, onCheckedChange, error }: TermsAgreementProps) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   return (
     <div className="space-y-1">

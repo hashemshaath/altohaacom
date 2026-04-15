@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { CACHE } from "@/lib/queryConfig";
 import { useState, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -25,9 +26,8 @@ interface RecipeActionBarProps {
 }
 
 export const RecipeActionBar = memo(function RecipeActionBar({ recipeId, saveCount = 0, shareCount = 0 }: RecipeActionBarProps) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
   const { user } = useAuth();
+  const isAr = useIsAr();
   const { isSaved, toggle, loading, trackShare } = useRecipeSave(recipeId);
   const queryClient = useQueryClient();
 

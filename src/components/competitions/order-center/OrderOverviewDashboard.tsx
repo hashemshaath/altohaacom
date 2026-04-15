@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useMemo, memo } from "react";
 import { CACHE } from "@/lib/queryConfig";
 import { useQuery } from "@tanstack/react-query";
@@ -25,7 +26,7 @@ interface Props {
 
 export const OrderOverviewDashboard = memo(function OrderOverviewDashboard({ competitionId, isOrganizer }: Props) {
   const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const { data: lists } = useQuery({
     queryKey: ["order-overview-lists", competitionId],

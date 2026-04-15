@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { CACHE } from "@/lib/queryConfig";
 import { useState } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -68,9 +69,8 @@ const STATS = [
 ];
 
 export default function AdvertiseWithUs() {
-  const { language } = useLanguage();
   const { user } = useAuth();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const qc = useQueryClient();
 
   const [form, setForm] = useState({

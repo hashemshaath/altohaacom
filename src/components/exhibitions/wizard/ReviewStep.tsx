@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -18,8 +19,7 @@ const typeLabels: Record<string, { en: string; ar: string; emoji: string }> = {
 };
 
 export const ExhibitionReviewStep = memo(function ExhibitionReviewStep({ data }: { data: ExhibitionFormData }) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const typeLabel = typeLabels[data.type] || { en: data.type, ar: data.type, emoji: "📋" };
 
   const Section = ({ icon: Icon, title, children }: { icon: LucideIcon; title: string; children: React.ReactNode }) => (

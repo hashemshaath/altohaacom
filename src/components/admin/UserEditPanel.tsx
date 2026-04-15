@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo, useState, useRef } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
@@ -77,9 +78,9 @@ interface UserEditPanelProps {
 export const UserEditPanel = memo(function UserEditPanel({ user: editingUser, onClose, onResetPassword, onInvite }: UserEditPanelProps) {
   const { t, language } = useLanguage();
   const { user } = useAuth();
+  const isAr = useIsAr();
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const isAr = language === "ar";
 
   const [editTab, setEditTab] = useState("profile");
   const [editRoles, setEditRoles] = useState<AppRole[]>(editingUser.roles?.map((r) => r.role) || []);

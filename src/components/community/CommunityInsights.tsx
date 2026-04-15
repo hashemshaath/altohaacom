@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
@@ -9,8 +10,7 @@ import { MS_PER_DAY, MS_PER_WEEK } from "@/lib/constants";
 import { CACHE } from "@/lib/queryConfig";
 
 export const CommunityInsights = memo(function CommunityInsights() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const { data: insights } = useQuery({
     queryKey: ["community-insights-unified"],

@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useMemo, lazy, Suspense } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -61,8 +62,7 @@ const sessionStatusConfig: Record<string, { variant: "secondary" | "default" | "
 };
 
 export default function ChefsTableAdmin() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const navigate = useNavigate();
   const { data: sessions = [], isLoading: sessionsLoading } = useChefsTableSessions();
   const { data: requests = [], isLoading: requestsLoading } = useChefsTableRequests();

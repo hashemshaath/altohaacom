@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useEffect, memo } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -20,8 +21,7 @@ interface PollDisplayProps {
 
 export const PollDisplay = memo(function PollDisplay({ postId }: PollDisplayProps) {
   const { user } = useAuth();
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const [poll, setPoll] = useState<{ id: string; question: string | null; ends_at: string | null } | null>(null);
   const [options, setOptions] = useState<PollOption[]>([]);
   const [userVoteOptionId, setUserVoteOptionId] = useState<string | null>(null);

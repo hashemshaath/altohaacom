@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Badge } from "@/components/ui/badge";
@@ -26,8 +27,7 @@ interface MessageCategoryFilterProps {
 }
 
 export const MessageCategoryFilter = memo(function MessageCategoryFilter({ active, onChange, counts }: MessageCategoryFilterProps) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const filters: { key: MessageFilter; label: string; icon: React.ElementType; count: number }[] = [
     { key: "all", label: isAr ? "الكل" : "All", icon: Inbox, count: counts.all },

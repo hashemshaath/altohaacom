@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, memo, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -42,10 +43,9 @@ const INTERESTS = [
 
 export const OnboardingWizard = memo(function OnboardingWizard({ onComplete }: OnboardingWizardProps) {
   const { user } = useAuth();
-  const { language } = useLanguage();
+  const isAr = useIsAr();
   const { toast } = useToast();
   const navigate = useNavigate();
-  const isAr = language === "ar";
 
   const [step, setStep] = useState(1);
   const [saving, setSaving] = useState(false);

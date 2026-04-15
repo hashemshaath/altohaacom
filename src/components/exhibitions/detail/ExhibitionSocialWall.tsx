@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useMemo, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
@@ -18,9 +19,8 @@ interface Props {
 }
 
 export const ExhibitionSocialWall = memo(function ExhibitionSocialWall({ exhibitionId, exhibitionTitle, exhibitionHashtag }: Props) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
   const { user } = useAuth();
+  const isAr = useIsAr();
   const queryClient = useQueryClient();
   const [newPost, setNewPost] = useState("");
   const [filter, setFilter] = useState<string | null>(null);

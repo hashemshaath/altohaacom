@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useCallback, useRef, memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -21,7 +22,7 @@ const REPORT_TYPES = [
 
 const AIInsightsPanel = memo(function AIInsightsPanel() {
   const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const [insights, setInsights] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [hasGenerated, setHasGenerated] = useState(false);

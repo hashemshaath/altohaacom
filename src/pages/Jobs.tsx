@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { CACHE } from "@/lib/queryConfig";
 import { useState, useMemo, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -54,9 +55,8 @@ const CULINARY_CATEGORIES = [
 ];
 
 export default function Jobs() {
-  const { language } = useLanguage();
   const { user } = useAuth();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const navigate = useNavigate();
   const [heroSearch, setHeroSearch] = useState("");
 

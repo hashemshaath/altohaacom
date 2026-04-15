@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useMemo, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { cn } from "@/lib/utils";
@@ -7,6 +8,7 @@ interface PasswordStrengthMeterProps {
 }
 
 export function getPasswordStrength(password: string) {
+  const isAr = useIsAr();
   let score = 0;
   if (password.length >= 8) score++;
   if (password.length >= 12) score++;
@@ -21,8 +23,7 @@ export function getPasswordStrength(password: string) {
 }
 
 export const PasswordStrengthMeter = memo(function PasswordStrengthMeter({ password }: PasswordStrengthMeterProps) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const strength = useMemo(() => getPasswordStrength(password), [password]);
 

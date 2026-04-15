@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { CACHE } from "@/lib/queryConfig";
 import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -11,8 +12,7 @@ import { differenceInHours } from "date-fns";
 import { QUERY_LIMIT_MEDIUM } from "@/lib/constants";
 
 export const TicketPerformanceWidget = memo(function TicketPerformanceWidget() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const { data: stats } = useQuery({
     queryKey: ["ticket-performance-widget"],

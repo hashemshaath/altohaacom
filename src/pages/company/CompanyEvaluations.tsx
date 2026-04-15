@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useCompanyAccess } from "@/hooks/useCompanyAccess";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
@@ -13,11 +14,11 @@ import { EvaluationCard } from "@/components/company/evaluations/EvaluationCard"
 
 export default function CompanyEvaluations() {
   const { language } = useLanguage();
+  const isAr = useIsAr();
   const { companyId } = useCompanyAccess();
   const { user } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const isAr = language === "ar";
 
   const { data: evaluations = [], isLoading } = useQuery({
     queryKey: ["companyEvaluations", companyId],

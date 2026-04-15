@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent } from "@/components/ui/card";
@@ -41,8 +42,7 @@ interface Props {
 }
 
 export const OrderEmptyState = memo(function OrderEmptyState({ type, actionLabel, actionLabelAr, onAction }: Props) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const config = EMPTY_STATE_CONFIG[type];
   const Icon = config.icon;
 

@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
@@ -14,8 +15,7 @@ import { QUERY_LIMIT_MEDIUM, REFETCH_INTERVAL_DEFAULT } from "@/lib/constants";
 const COLORS = ["hsl(var(--primary))", "hsl(var(--chart-2))", "hsl(var(--chart-3))", "hsl(var(--chart-4))", "hsl(var(--chart-5))"];
 
 export const OrdersLiveStatsWidget = memo(function OrdersLiveStatsWidget() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const { data } = useQuery({
     queryKey: ["ordersLiveStats"],

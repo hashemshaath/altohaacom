@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -17,8 +18,7 @@ interface CountryBreakdownChartProps {
 }
 
 export const CountryBreakdownChart = memo(function CountryBreakdownChart({ metric }: CountryBreakdownChartProps) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const { data: countries } = useCountries();
 
   const titles: Record<string, { en: string; ar: string }> = {

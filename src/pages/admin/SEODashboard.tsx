@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { lazy, Suspense } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Button } from "@/components/ui/button";
@@ -29,12 +30,12 @@ const SEOContentGapAnalyzer = lazy(() => import("@/components/admin/seo/SEOConte
 import { SEOOverviewSection } from "@/pages/admin/seo/SEOOverviewSection";
 
 function SectionSkeleton() {
+  const isAr = useIsAr();
   return <div className="flex items-center justify-center py-16"><div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" /></div>;
 }
 
 export default function SEODashboard() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const data = useSEODashboardData(isAr);
   const { activeSection, setActiveSection, range, setRange, pinging, handlePingSitemap, activeSectionInfo,
     totalViews, uniqueSessions, bounceRate, avgDuration, prevTotalViews, prevUniqueSessions, prevBounceRate, prevAvgDuration,

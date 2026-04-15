@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -11,8 +12,8 @@ import { Link } from "react-router-dom";
 import { format } from "date-fns";
 
 export const UpcomingCompetitionsWidget = memo(function UpcomingCompetitionsWidget() {
+  const isAr = useIsAr();
   const { language, t } = useLanguage();
-  const isAr = language === "ar";
 
   const { data: competitions, isLoading } = useQuery({
     queryKey: ["upcoming-competitions-widget"],

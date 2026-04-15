@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useMemo, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
@@ -22,8 +23,7 @@ const CHART_COLORS = [
 ];
 
 export const AdAnalyticsDashboard = memo(function AdAnalyticsDashboard() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   // Fetch impressions with timestamps
   const { data: impressions = [], isLoading: loadingImpressions } = useQuery({

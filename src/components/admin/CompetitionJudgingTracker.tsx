@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { CACHE } from "@/lib/queryConfig";
 import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -11,8 +12,7 @@ import { Gavel, Users, CheckCircle, Clock, AlertCircle } from "lucide-react";
 import { REFETCH_INTERVAL_DEFAULT } from "@/lib/constants";
 
 export const CompetitionJudgingTracker = memo(function CompetitionJudgingTracker() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const { data } = useQuery({
     queryKey: ["competition-judging-tracker"],

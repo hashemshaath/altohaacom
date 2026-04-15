@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -15,8 +16,7 @@ import { cn } from "@/lib/utils";
 import { CACHE } from "@/lib/queryConfig";
 
 export const FinanceMembershipWidget = memo(function FinanceMembershipWidget() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const { data, isLoading } = useQuery({
     queryKey: ["admin-finance-membership-summary"],

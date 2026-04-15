@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useMemo, memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -33,9 +34,8 @@ interface CalendarEvent {
 }
 
 export const EventsCalendarWidget = memo(function EventsCalendarWidget() {
-  const { language } = useLanguage();
   const { user } = useAuth();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
   const [month, setMonth] = useState(new Date());
 

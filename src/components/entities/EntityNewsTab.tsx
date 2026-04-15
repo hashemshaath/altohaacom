@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -17,8 +18,7 @@ interface Props {
 }
 
 export const EntityNewsTab = memo(function EntityNewsTab({ entityId, entityName, entityNameAr }: Props) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const { data: articles, isLoading } = useQuery({
     queryKey: ["entity-news", entityId],

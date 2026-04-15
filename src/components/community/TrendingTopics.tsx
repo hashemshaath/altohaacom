@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -10,8 +11,7 @@ import { MS_PER_DAY, MS_PER_WEEK, QUERY_LIMIT_MEDIUM } from "@/lib/constants";
 import { CACHE } from "@/lib/queryConfig";
 
 export const TrendingTopics = memo(function TrendingTopics() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const { data: topics = [], isLoading } = useQuery({
     queryKey: ["trending-topics"],

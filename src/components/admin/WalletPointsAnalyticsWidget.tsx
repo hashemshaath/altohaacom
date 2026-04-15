@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { CACHE } from "@/lib/queryConfig";
 import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -10,8 +11,7 @@ import { Wallet, Coins, ArrowUpRight, ArrowDownRight, Gift, Star, Users, Trendin
 import { MS_PER_DAY, MS_PER_WEEK, QUERY_LIMIT_LARGE, QUERY_LIMIT_MEDIUM } from "@/lib/constants";
 
 export const WalletPointsAnalyticsWidget = memo(function WalletPointsAnalyticsWidget() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const { data } = useQuery({
     queryKey: ["wallet-points-analytics-widget"],

@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { forwardRef, useState } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
@@ -72,9 +73,8 @@ const trustBadges = [
 ];
 
 export const Footer = forwardRef<HTMLElement>(function Footer(_, ref) {
-  const { language } = useLanguage();
   const { user } = useAuth();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const siteSettings = useSiteSettingsContext();
   const footerCfg = siteSettings.footer || {};
   const brandCfg = siteSettings.branding || {};

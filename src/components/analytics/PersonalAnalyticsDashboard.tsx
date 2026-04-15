@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { CACHE } from "@/lib/queryConfig";
 import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -65,8 +66,7 @@ const tooltipStyle = {
 
 export const PersonalAnalyticsDashboard = memo(function PersonalAnalyticsDashboard() {
   const { user } = useAuth();
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["personal-analytics", user?.id],

@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useMemo, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
@@ -21,8 +22,7 @@ interface Anomaly {
 }
 
 export const AnomalyDetection = memo(function AnomalyDetection() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const [metric, setMetric] = useState("signups");
 
   const { data, isLoading } = useQuery({

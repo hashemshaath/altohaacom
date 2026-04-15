@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useMemo, memo } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -27,8 +28,7 @@ interface CommunityLeftSidebarProps {
 
 export const CommunityLeftSidebar = memo(function CommunityLeftSidebar({ activeTab, setActiveTab, leftSidebarOpen, setLeftSidebarOpen }: CommunityLeftSidebarProps) {
   const { user } = useAuth();
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const { data: profile } = useQuery({
     queryKey: ["community-profile", user?.id],

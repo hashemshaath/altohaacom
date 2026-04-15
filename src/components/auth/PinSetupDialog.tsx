@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useCallback, useRef, useEffect, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -19,9 +20,8 @@ interface PinSetupDialogProps {
 }
 
 export const PinSetupDialog = memo(function PinSetupDialog({ open, onOpenChange, onSuccess }: PinSetupDialogProps) {
-  const { language } = useLanguage();
   const { user } = useAuth();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const [pin, setPin] = useState("");
   const [confirmPin, setConfirmPin] = useState("");

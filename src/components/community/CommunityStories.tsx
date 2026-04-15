@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -10,8 +11,7 @@ import { CACHE } from "@/lib/queryConfig";
 
 export const CommunityStories = memo(function CommunityStories() {
   const { user } = useAuth();
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const { data: profiles = [] } = useQuery({
     queryKey: ["community-stories-profiles", user?.id],

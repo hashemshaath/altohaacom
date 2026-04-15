@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, memo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -24,8 +25,7 @@ const STATUS_STYLES: Record<string, { en: string; ar: string; color: string }> =
 };
 
 export const KitchenStationsPanel = memo(function KitchenStationsPanel({ competitionId, isOrganizer }: Props) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const queryClient = useQueryClient();
   const [showCreate, setShowCreate] = useState(false);
   const [form, setForm] = useState({ station_number: "", station_name: "", station_name_ar: "" });

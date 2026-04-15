@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useEffect, lazy, Suspense, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -85,9 +86,9 @@ const TabSkeleton = () => (
 export default function UserManagement() {
   const { t, language } = useLanguage();
   const { user } = useAuth();
+  const isAr = useIsAr();
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const isAr = language === "ar";
 
   const [activeTab, setActiveTab] = useState("users");
   const [searchQuery, setSearchQuery] = useState("");

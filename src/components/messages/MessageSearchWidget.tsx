@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { CACHE } from "@/lib/queryConfig";
 import { useState, useMemo, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -15,9 +16,8 @@ import { formatDistanceToNow } from "date-fns";
 import { ar, enUS } from "date-fns/locale";
 
 export const MessageSearchWidget = memo(function MessageSearchWidget() {
-  const { language } = useLanguage();
   const { user } = useAuth();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const navigate = useNavigate();
   const [query, setQuery] = useState("");
 

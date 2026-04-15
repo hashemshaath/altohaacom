@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent } from "@/components/ui/card";
@@ -15,6 +16,7 @@ interface ProfileOverviewTabProps {
 }
 
 function SectionTitle({ icon: Icon, label }: { icon: LucideIcon; label: string }) {
+  const isAr = useIsAr();
   return (
     <h3 className="flex items-center gap-2.5 text-sm font-bold mb-3.5 uppercase tracking-wider text-muted-foreground">
       <div className="flex h-7 w-7 items-center justify-center rounded-xl bg-gradient-to-br from-primary/15 to-primary/5 shadow-sm">
@@ -27,8 +29,7 @@ function SectionTitle({ icon: Icon, label }: { icon: LucideIcon; label: string }
 }
 
 export const ProfileOverviewTab = memo(function ProfileOverviewTab({ profile, userId }: ProfileOverviewTabProps) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const socialLinks = [
     { key: "website", label: "Web", value: profile?.website },

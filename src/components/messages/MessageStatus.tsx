@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { Check, CheckCheck, Clock } from "lucide-react";
 import {
@@ -17,8 +18,7 @@ interface MessageStatusProps {
 }
 
 export const MessageStatus = memo(function MessageStatus({ isMine, isRead, readAt, createdAt, isPending }: MessageStatusProps) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   if (!isMine) return null;
 

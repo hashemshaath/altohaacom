@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -18,8 +19,7 @@ import { ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, Radar, BarC
 export default function ChefPortfolio() {
   const { userId } = useParams<{ userId: string }>();
   const { user } = useAuth();
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const targetUserId = userId || user?.id;
 
   const { data: profile, isLoading: profileLoading } = useQuery({

@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { CACHE } from "@/lib/queryConfig";
 import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -13,8 +14,7 @@ import { MS_PER_DAY, MS_PER_WEEK } from "@/lib/constants";
 
 export const WalletBalanceWidget = memo(function WalletBalanceWidget() {
   const { user } = useAuth();
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const { data } = useQuery({
     queryKey: ["wallet-balance-widget", user?.id],

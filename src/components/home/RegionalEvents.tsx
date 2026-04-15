@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useRef, useMemo, forwardRef } from "react";
 import { ROUTES } from "@/config/routes";
 import { Link } from "react-router-dom";
@@ -22,8 +23,7 @@ const MIDDLE_EAST = ["SA", "AE", "KW", "BH", "QA", "OM", "JO", "LB", "IQ", "EG",
 type FilterTab = "saudi" | "middle-east" | "global";
 
 export function RegionalEvents() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const [activeTab, setActiveTab] = useState<FilterTab>("middle-east");
   const scrollRef = useRef<HTMLDivElement>(null);
   const sectionConfig = useSectionConfig();
@@ -121,6 +121,7 @@ export function RegionalEvents() {
 }
 
 const EventCard = forwardRef<HTMLAnchorElement, { item: any; isAr: boolean }>(function EventCard({ item, isAr }, ref) {
+  const isAr = useIsAr();
   const title = isAr && item.title_ar ? item.title_ar : item.title;
 
   const statusMap: Record<string, { label: string; labelAr: string; icon?: any; cls: string }> = {

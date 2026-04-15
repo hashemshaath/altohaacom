@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, memo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -42,11 +43,10 @@ interface CancellationRequest {
 }
 
 const MembershipCancellationsTab = memo(function MembershipCancellationsTab() {
-  const { language } = useLanguage();
   const { user } = useAuth();
+  const isAr = useIsAr();
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const isAr = language === "ar";
 
   const [statusFilter, setStatusFilter] = useState("pending");
   const [reviewRequest, setReviewRequest] = useState<CancellationRequest | null>(null);

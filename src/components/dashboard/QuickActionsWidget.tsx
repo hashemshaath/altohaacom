@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { CACHE } from "@/lib/queryConfig";
 import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -26,9 +27,8 @@ interface QuickAction {
 }
 
 export const QuickActionsWidget = memo(function QuickActionsWidget() {
-  const { language } = useLanguage();
   const { user } = useAuth();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const { data: pending } = useQuery({
     queryKey: ["quick-actions-pending", user?.id],

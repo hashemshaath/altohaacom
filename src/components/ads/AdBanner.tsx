@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { forwardRef, useEffect, useRef, useCallback } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -13,8 +14,7 @@ interface AdBannerProps {
 }
 
 export const AdBanner = forwardRef<HTMLDivElement, AdBannerProps>(function AdBanner({ placementSlug, className }, ref) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const impressionLogged = useRef(false);
 
   const { data: creative } = useQuery({

@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Badge } from "@/components/ui/badge";
@@ -31,8 +32,7 @@ const sessionStatusConfig: Record<string, { icon: LucideIcon; color: string }> =
 };
 
 export const ChefsTableSessionDetail = memo(function ChefsTableSessionDetail({ session, onNavigate }: Props) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const sc = sessionStatusConfig[session.status] || sessionStatusConfig.scheduled;
   const StatusIcon = sc.icon;
 

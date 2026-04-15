@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useRef, useEffect, useMemo } from "react";
 import { TicketSatisfactionRating } from "@/components/support/TicketSatisfactionRating";
 import { ScrollToTopFAB } from "@/components/mobile/ScrollToTopFAB";
@@ -91,10 +92,9 @@ const PRIORITIES = [
 
 export default function SupportTickets() {
   const { user } = useAuth();
-  const { language } = useLanguage();
+  const isAr = useIsAr();
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const isAr = language === "ar";
 
   const [selectedTicket, setSelectedTicket] = useState<SupportTicket | null>(null);
   const [statusFilter, setStatusFilter] = useState("all");

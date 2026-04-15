@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useEffect, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -21,6 +22,7 @@ interface Props {
 const CHAR_LIMITS = { title: 60, description: 160 };
 
 function CharCount({ value, max }: { value: string; max: number }) {
+  const isAr = useIsAr();
   const len = (value || "").length;
   const over = len > max;
   return (
@@ -31,8 +33,7 @@ function CharCount({ value, max }: { value: string; max: number }) {
 }
 
 export const SEOAnalyticsSettings = memo(function SEOAnalyticsSettings({ settings, onSave, isPending }: Props) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const existing = settings.seo_analytics || {};
 

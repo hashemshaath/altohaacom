@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Button } from "@/components/ui/button";
@@ -23,8 +24,7 @@ export const AdminTablePagination = memo(function AdminTablePagination({
   pageSize, pageSizeOptions, hasNext, hasPrev,
   onPageChange, onPageSizeChange,
 }: AdminTablePaginationProps) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   if (totalItems === 0) return null;
 

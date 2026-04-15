@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useEffect, useMemo, memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -30,8 +31,7 @@ interface LiveScore {
 }
 
 export const LiveScoringDashboard = memo(function LiveScoringDashboard({ competitionId, isOrganizer }: Props) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const [isLive, setIsLive] = useState(true);
   const [lastUpdate, setLastUpdate] = useState<Date>(new Date());
   const liveInterval = useVisibleRefetchInterval(5000);

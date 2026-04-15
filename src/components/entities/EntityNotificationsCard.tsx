@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -14,8 +15,7 @@ interface Props {
 }
 
 export const EntityNotificationsCard = memo(function EntityNotificationsCard({ entityId, entityName }: Props) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const { data: recentActivity } = useQuery({
     queryKey: ["entity-recent-activity", entityId],

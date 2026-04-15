@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -11,8 +12,7 @@ import { useToast } from "@/hooks/use-toast";
 
 export const JobAvailabilityWidget = memo(function JobAvailabilityWidget() {
   const { user } = useAuth();
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const { toast } = useToast();
   const qc = useQueryClient();
 

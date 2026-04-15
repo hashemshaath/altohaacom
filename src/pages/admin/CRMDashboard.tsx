@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useMemo } from "react";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import { CRMLiveStatsWidget } from "@/components/admin/CRMLiveStatsWidget";
@@ -54,8 +55,7 @@ import { ar, enUS } from "date-fns/locale";
 import { QUERY_LIMIT_LARGE } from "@/lib/constants";
 
 export default function CRMDashboard() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const [dateRange, setDateRange] = useState("7d");
 
   const dateRangeStart = useMemo(() => {

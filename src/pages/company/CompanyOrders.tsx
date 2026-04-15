@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useMemo } from "react";
 import { useCompanyAccess } from "@/hooks/useCompanyAccess";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -20,11 +21,11 @@ import { OrderDetailDialog } from "@/components/company/orders/OrderDetailDialog
 
 export default function CompanyOrders() {
   const { language } = useLanguage();
+  const isAr = useIsAr();
   const { companyId } = useCompanyAccess();
   const { user } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const isAr = language === "ar";
 
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");

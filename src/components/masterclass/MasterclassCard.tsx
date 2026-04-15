@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useMemo, memo } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -28,9 +29,8 @@ interface MasterclassCardProps {
 }
 
 export const MasterclassCard = memo(function MasterclassCard({ mc, isEnrolled }: MasterclassCardProps) {
-  const { language } = useLanguage();
+  const isAr = useIsAr();
   const navigate = useNavigate();
-  const isAr = language === "ar";
   const title = isAr && mc.title_ar ? mc.title_ar : mc.title;
   const description = isAr && mc.description_ar ? mc.description_ar : mc.description;
   const moduleCount = mc.masterclass_modules?.length || 0;

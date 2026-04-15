@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useRef, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -64,8 +65,7 @@ function parseCSV(text: string): ParsedRow[] {
 }
 
 export const CountryCSVImport = memo(function CountryCSVImport() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const fileRef = useRef<HTMLInputElement>(null);

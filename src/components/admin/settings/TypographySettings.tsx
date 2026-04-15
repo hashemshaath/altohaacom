@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useEffect, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -17,6 +18,7 @@ interface Props {
 
 /* ── Color helpers ── */
 function hslToHex(h: number, s: number, l: number) {
+  const isAr = useIsAr();
   s /= 100; l /= 100;
   const k = (n: number) => (n + h / 30) % 12;
   const a = s * Math.min(l, 1 - l);
@@ -26,6 +28,7 @@ function hslToHex(h: number, s: number, l: number) {
 }
 
 function hexToHsl(hex: string) {
+  const isAr = useIsAr();
   const r = parseInt(hex.slice(1, 3), 16) / 255;
   const g = parseInt(hex.slice(3, 5), 16) / 255;
   const b = parseInt(hex.slice(5, 7), 16) / 255;
@@ -69,8 +72,7 @@ function ColorSwatch({ label, labelAr, isAr, value, onChange }: {
 }
 
 export const TypographySettings = memo(function TypographySettings({ settings, onSave, isPending }: Props) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   // Font settings
   const typoCfg = settings.typography || {};

@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import React, { memo, useState, useMemo, useRef } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import {
@@ -49,12 +50,14 @@ function resolveEventType(type: string | null | undefined): GlobalEventType {
 }
 
 function formatEventDate(value: string, isAr: boolean) {
+  const isAr = useIsAr();
   const parsed = parseISO(value);
   if (Number.isNaN(parsed.getTime())) return isAr ? "تاريخ غير محدد" : "Date TBD";
   return format(parsed, "d MMM yyyy", { locale: isAr ? arLocale : undefined });
 }
 
 function formatDateParts(value: string, isAr: boolean) {
+  const isAr = useIsAr();
   const parsed = parseISO(value);
   if (Number.isNaN(parsed.getTime())) return { day: "?", month: "TBD" };
   return {
@@ -66,8 +69,7 @@ function formatDateParts(value: string, isAr: boolean) {
 
 /* ─── Main Component ─── */
 export const HomeEventsCalendarPreview = memo(function HomeEventsCalendarPreview() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const [selectedFilter, setSelectedFilter] = useState<GlobalEventType | null>(null);
   const { data: events = [] } = useGlobalEventsCalendar();
   const sectionConfig = useSectionConfig();
@@ -238,6 +240,7 @@ const FilterPill = memo(
     { label, active, count, onClick, dotColor },
     ref
   ) {
+  const isAr = useIsAr();
     return (
       <button
         ref={ref}
@@ -269,6 +272,7 @@ const FilterPill = memo(
 /* ─── Event Card ─── */
 const EventCard = memo(React.forwardRef<HTMLDivElement, { event: GlobalEvent; isAr: boolean }>(
   function EventCard({ event, isAr }, ref) {
+  const isAr = useIsAr();
   const eventType = resolveEventType(event.type);
   const colors = GLOBAL_EVENT_COLORS[eventType];
   const label = GLOBAL_EVENT_LABELS[eventType];

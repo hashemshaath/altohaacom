@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useParams, Link } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
 import { SEOHead } from "@/components/SEOHead";
@@ -106,6 +107,7 @@ const StatRow = memo(function StatRow({ icon: Icon, label, value }: { icon: type
 export default function ArticleDetail() {
   const { slug } = useParams<{ slug: string }>();
   const { language } = useLanguage();
+  const isAr = useIsAr();
   const { toast } = useToast();
   const [copied, setCopied] = useState(false);
   const [showScrollTop, setShowScrollTop] = useState(false);
@@ -116,7 +118,6 @@ export default function ArticleDetail() {
   const [likeCount, setLikeCount] = useState(0);
   const [helpful, setHelpful] = useState(false);
   const [lightboxIdx, setLightboxIdx] = useState<number | null>(null);
-  const isAr = language === "ar";
 
   const { data: article, isLoading } = useQuery({
     queryKey: ["article", slug],

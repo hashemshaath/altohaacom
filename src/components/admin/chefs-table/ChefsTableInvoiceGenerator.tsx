@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -21,9 +22,8 @@ interface PricingPlan {
 }
 
 export const ChefsTableInvoiceGenerator = memo(function ChefsTableInvoiceGenerator({ session }: { session: any }) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
   const { user } = useAuth();
+  const isAr = useIsAr();
   const queryClient = useQueryClient();
   const [selectedPricingId, setSelectedPricingId] = useState<string>("");
 

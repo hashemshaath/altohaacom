@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { CACHE } from "@/lib/queryConfig";
 import { useState, useRef, useEffect, useCallback, memo } from "react";
 import { useAuth } from "@/contexts/AuthContext";
@@ -48,8 +49,8 @@ const POST_TYPE_CONFIG = {
 export const PostComposer = memo(function PostComposer({ onPosted, replyToPostId, placeholder, compact, autoFocus }: PostComposerProps) {
   const { user } = useAuth();
   const { language } = useLanguage();
+  const isAr = useIsAr();
   const { toast } = useToast();
-  const isAr = language === "ar";
   const fileRef = useRef<HTMLInputElement>(null);
   const videoRef = useRef<HTMLInputElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);

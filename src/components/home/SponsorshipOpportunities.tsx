@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { forwardRef } from "react";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -26,7 +27,7 @@ const TIER_LABELS: Record<string, { en: string; ar: string; color: string }> = {
 
 export const SponsorshipOpportunities = forwardRef<HTMLElement>(function SponsorshipOpportunities(_props, _ref) {
   const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const sectionConfig = useSectionConfig();
 
   const itemCount = sectionConfig?.item_count || 8;

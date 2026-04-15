@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useCallback, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Button } from "@/components/ui/button";
@@ -53,6 +54,7 @@ const DEFAULT_WIDGETS: WidgetConfig[] = [
 ];
 
 export function useDashboardLayout() {
+  const isAr = useIsAr();
   const [widgets, setWidgets] = useState<WidgetConfig[]>(() => {
     try {
       const saved = localStorage.getItem(LAYOUT_KEY);
@@ -104,8 +106,6 @@ export const DashboardLayoutControl = memo(function DashboardLayoutControl({ wid
   toggleWidget: (id: string) => void;
   resetLayout: () => void;
 }) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
 
   return (
     <Popover>

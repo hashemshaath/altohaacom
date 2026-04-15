@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { CACHE } from "@/lib/queryConfig";
 import { useState, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -20,8 +21,7 @@ import { Search, Plus, Trash2, Shield, Clock, User, ChevronDown } from "lucide-r
 import { cn } from "@/lib/utils";
 
 const MembershipUserOverrides = memo(function MembershipUserOverrides() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const { user: adminUser } = useAuth();
   const queryClient = useQueryClient();
   const { data: features = [] } = useMembershipFeatures();

@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { cn } from "@/lib/utils";
@@ -12,8 +13,7 @@ interface FeedTabsProps {
 }
 
 export const FeedTabs = memo(function FeedTabs({ active, onChange, isLoggedIn }: FeedTabsProps) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const tabs: { id: FeedFilter; label: string; icon: LucideIcon; requiresAuth?: boolean }[] = [
     { id: "for_you", label: isAr ? "لك" : "For You", icon: Flame },

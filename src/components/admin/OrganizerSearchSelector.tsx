@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useEffect, useMemo, useRef, useCallback, memo } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -52,8 +53,7 @@ const ENTITY_TYPES = [
 type SourceCategory = "all" | "entity" | "company" | "chef";
 
 export const OrganizerSearchSelector = memo(function OrganizerSearchSelector({ value, onChange, label }: OrganizerSearchSelectorProps) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const queryClient = useQueryClient();
   const containerRef = useRef<HTMLDivElement>(null);
 

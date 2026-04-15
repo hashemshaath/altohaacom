@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useMemo, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
@@ -17,8 +18,7 @@ interface Props {
 const COLORS = ["hsl(var(--primary))", "hsl(var(--chart-2))", "hsl(var(--chart-3))", "hsl(var(--chart-4))", "hsl(var(--chart-5))"];
 
 export const ExhibitionAnalyticsDashboard = memo(function ExhibitionAnalyticsDashboard({ exhibitionId }: Props) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const [period, setPeriod] = useState("7d");
 
   const periodDays = period === "7d" ? 7 : period === "30d" ? 30 : 90;

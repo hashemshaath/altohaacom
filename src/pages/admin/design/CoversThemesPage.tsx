@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Layers } from "lucide-react";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
@@ -7,8 +8,7 @@ import { CoverSettings } from "@/components/admin/settings/CoverSettings";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export default function CoversThemesPage() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const { settings, isLoading, saveSetting } = useSiteSettings();
 
   const handleSave = (key: string, value: Record<string, any>, category?: string) => {

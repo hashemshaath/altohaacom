@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useMemo, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -17,8 +18,7 @@ interface CriteriaStepProps {
 }
 
 export const CriteriaStep = memo(function CriteriaStep({ criteria, onChange }: CriteriaStepProps) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const { totalWeight, weightPct, isBalanced } = useMemo(() => {
     const tw = criteria.reduce((sum, c) => sum + Number(c.weight), 0);

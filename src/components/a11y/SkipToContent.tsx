@@ -1,9 +1,9 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo, forwardRef } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 
 export const SkipToContent = memo(forwardRef<HTMLDivElement>(function SkipToContent(_props, _ref) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   return (
     <>

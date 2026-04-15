@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useEffect } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Ruler, Save } from "lucide-react";
@@ -44,8 +45,7 @@ const SPACING_SCALES = [
 ];
 
 export default function LayoutSpacingPage() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const { settings, isLoading, saveSetting } = useSiteSettings();
 
   const layoutCfg = settings.layout || {};

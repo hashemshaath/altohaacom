@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { CACHE } from "@/lib/queryConfig";
 import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -11,8 +12,7 @@ import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { MS_PER_DAY, MS_PER_WEEK, QUERY_LIMIT_MEDIUM } from "@/lib/constants";
 
 export const CommunicationsOverviewWidget = memo(function CommunicationsOverviewWidget() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const { data } = useQuery({
     queryKey: ["communications-overview-widget"],

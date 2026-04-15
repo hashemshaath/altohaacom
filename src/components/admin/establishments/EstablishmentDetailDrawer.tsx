@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
@@ -17,8 +18,7 @@ interface Props {
 }
 
 const EstablishmentDetailDrawer = memo(function EstablishmentDetailDrawer({ entityId, open, onClose }: Props) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const { data: entity } = useQuery({
     queryKey: ["entity-detail", entityId],
@@ -171,6 +171,7 @@ const EstablishmentDetailDrawer = memo(function EstablishmentDetailDrawer({ enti
 export default EstablishmentDetailDrawer;
 
 function MiniKPI({ icon: Icon, label, value }: { icon: LucideIcon; label: string; value: string | number }) {
+  const isAr = useIsAr();
   return (
     <div className="rounded-xl border bg-card p-2.5 text-center">
       <Icon className="h-4 w-4 mx-auto text-muted-foreground mb-1" />
@@ -181,6 +182,7 @@ function MiniKPI({ icon: Icon, label, value }: { icon: LucideIcon; label: string
 }
 
 function InfoRow({ icon: Icon, label, value }: { icon: LucideIcon; label: string; value: string }) {
+  const isAr = useIsAr();
   return (
     <div className="flex items-center gap-2 text-sm">
       <Icon className="h-3.5 w-3.5 text-muted-foreground shrink-0" />

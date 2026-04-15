@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -38,8 +39,7 @@ const TIER_LABELS: Record<string, { en: string; ar: string }> = {
 };
 
 const MembershipFeatureAnalytics = memo(function MembershipFeatureAnalytics() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const [days, setDays] = useState("30");
 
   const startDate = useMemo(() => format(subDays(new Date(), parseInt(days)), "yyyy-MM-dd"), [days]);
@@ -297,6 +297,7 @@ const MembershipFeatureAnalytics = memo(function MembershipFeatureAnalytics() {
 export default MembershipFeatureAnalytics;
 
 function FeatureExportButton({ featureAgg, isAr }: { featureAgg: any[]; isAr: boolean }) {
+  const isAr = useIsAr();
   const { exportData, isExporting } = useAdminExport();
 
   const handleExport = useCallback((fmt: "csv" | "json") => {

@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useMemo, useRef, useState, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { TastingEntry, TastingCriterion, TastingScore, EvalMethod, TastingSession } from "@/hooks/useTasting";
@@ -35,6 +36,7 @@ const COLORS = [
 const PIE_COLORS = ["#22c55e", "#3b82f6", "#f59e0b", "#ef4444"];
 
 function getScoreColor(pct: number) {
+  const isAr = useIsAr();
   if (pct >= 80) return "text-chart-5";
   if (pct >= 60) return "text-primary";
   if (pct >= 40) return "text-chart-4";
@@ -42,6 +44,7 @@ function getScoreColor(pct: number) {
 }
 
 function getScoreLabel(pct: number, isAr: boolean) {
+  const isAr = useIsAr();
   if (pct >= 90) return isAr ? "استثنائي" : "Exceptional";
   if (pct >= 80) return isAr ? "ممتاز" : "Excellent";
   if (pct >= 70) return isAr ? "جيد جداً" : "Very Good";
@@ -51,14 +54,14 @@ function getScoreLabel(pct: number, isAr: boolean) {
 }
 
 function getTrend(pct: number) {
+  const isAr = useIsAr();
   if (pct >= 75) return { icon: TrendingUp, color: "text-chart-5" };
   if (pct >= 50) return { icon: Minus, color: "text-chart-4" };
   return { icon: TrendingDown, color: "text-destructive" };
 }
 
 export const TastingReportPanel = memo(function TastingReportPanel({ session, entries, criteria, scores, evalMethod }: Props) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const reportRef = useRef<HTMLDivElement>(null);
   const [shareUrl, setShareUrl] = useState("");
 
@@ -209,6 +212,7 @@ export const TastingReportPanel = memo(function TastingReportPanel({ session, en
   function handlePrint() { window.print(); }
 
   function handleDownload() {
+  const isAr = useIsAr();
     const el = reportRef.current;
     if (!el) return;
     const title = session.title;
@@ -241,6 +245,7 @@ th{background:#f5f5f5;font-weight:600}
   }
 
   function handleCopyLink() {
+  const isAr = useIsAr();
     const url = `${window.location.origin}/tastings/${session.id}?tab=report`;
     navigator.clipboard.writeText(url).then(null, () => {});
     setShareUrl(url);

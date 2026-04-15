@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
@@ -82,11 +83,10 @@ function autoGenerateExcerpt(content: string, maxLength = 155): string {
 }
 
 export function ArticleEditorPro({ articleId, initialData, onBack }: Props) {
-  const { language } = useLanguage();
   const { user } = useAuth();
+  const isAr = useIsAr();
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const isAr = language === "ar";
   const t = (en: string, ar: string) => isAr ? ar : en;
   const autosaveTimerRef = useRef<ReturnType<typeof setTimeout>>();
 

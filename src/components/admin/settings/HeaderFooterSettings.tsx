@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useEffect } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -17,7 +18,7 @@ interface Props {
 
 export function HeaderFooterSettings({ settings, onSave, isPending }: Props) {
   const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const headerCfg = settings.header || {};
   const footerCfg = settings.footer || {};
 

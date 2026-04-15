@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useMemo, memo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -16,8 +17,7 @@ interface Props {
 }
 
 export const ChefsTableAnalytics = memo(function ChefsTableAnalytics({ requests, sessions }: Props) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const categoryData = useMemo(() => {
     const map: Record<string, number> = {};

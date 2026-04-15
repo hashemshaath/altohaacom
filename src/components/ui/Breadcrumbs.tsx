@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { cn } from "@/lib/utils";
@@ -19,8 +20,7 @@ interface Props {
  * Simple breadcrumb navigation for nested pages.
  */
 export const Breadcrumbs = memo(function Breadcrumbs({ items, className }: Props) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   return (
     <nav className={cn("flex items-center gap-1.5 text-xs text-muted-foreground animate-in fade-in-50 duration-300", className)} aria-label="Breadcrumb">

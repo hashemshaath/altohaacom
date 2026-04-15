@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { CACHE } from "@/lib/queryConfig";
 import { useState, memo } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -74,8 +75,7 @@ const TRACKING_DISPLAY = [
 ];
 
 const TrackingStatusCard = memo(function TrackingStatusCard() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const { data: activeTypes = [] } = useQuery({
     queryKey: ["integration-settings-tracking-status"],
@@ -135,12 +135,14 @@ const tabs = [
 
 // Settings completion calculator
 function getCompletionInfo(settings: Record<string, any>) {
+  const isAr = useIsAr();
   const categories = ["branding", "header", "footer", "seo", "layout", "security", "notifications", "content", "cover", "homepage"];
   const configured = categories.filter(k => settings[k] && Object.keys(settings[k]).length > 0).length;
   return { configured, total: categories.length, percent: Math.round((configured / categories.length) * 100) };
 }
 
 function QuickStatsCards({ settings, completion, isAr }: { settings: Record<string, any>; completion: { percent: number }; isAr: boolean }) {
+  const isAr = useIsAr();
   const { getStyle } = useStaggeredReveal(4, 80);
   const items = [
     { icon: Database, value: Object.keys(settings).length.toString(), label: isAr ? "مجموعات الإعدادات" : "Config Groups" },
@@ -168,8 +170,7 @@ function QuickStatsCards({ settings, completion, isAr }: { settings: Record<stri
 }
 
 export default function SystemSettings() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const [activeTab, setActiveTab] = useState("branding");
   const { settings, isLoading, saveSetting } = useSiteSettings();
 

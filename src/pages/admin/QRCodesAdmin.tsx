@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -26,9 +27,8 @@ import { Checkbox } from "@/components/ui/checkbox";
 const CATEGORIES = ["all", "account", "certificate", "invoice", "competition", "company", "exhibition", "participant", "judge", "team_member", "general"];
 
 export default function QRCodesAdmin() {
-  const { language } = useLanguage();
+  const isAr = useIsAr();
   const { toast } = useToast();
-  const isAr = language === "ar";
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("all");
 

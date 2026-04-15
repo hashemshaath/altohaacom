@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useMemo, memo, forwardRef } from "react";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -35,8 +36,7 @@ const MC_CAT_LABELS: Record<string, { en: string; ar: string }> = {
 };
 
 export const HomeMasterclasses = memo(forwardRef<HTMLElement>(function HomeMasterclasses(_props, _ref) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const [levelFilter, setLevelFilter] = useState<string | null>(null);
   const [catFilter, setCatFilter] = useState<string | null>(null);
   const sectionConfig = useSectionConfig();

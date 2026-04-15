@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, memo } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -45,10 +46,9 @@ export const SegmentBroadcastDialog = memo(function SegmentBroadcastDialog({
   filters,
 }: SegmentBroadcastDialogProps) {
   const { user } = useAuth();
-  const { language } = useLanguage();
+  const isAr = useIsAr();
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const isAr = language === "ar";
 
   const [title, setTitle] = useState("");
   const [message, setMessage] = useState("");

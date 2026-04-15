@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { CACHE } from "@/lib/queryConfig";
 import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -26,9 +27,8 @@ interface LiveCompetition {
 }
 
 export const LiveCompetitionsWidget = memo(function LiveCompetitionsWidget() {
-  const { language } = useLanguage();
   const { user } = useAuth();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const { data: competitions = [], isLoading } = useQuery({
     queryKey: ["live-competitions-widget", user?.id],

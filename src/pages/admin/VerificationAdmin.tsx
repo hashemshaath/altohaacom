@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useMemo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAllVerificationRequests, useReviewVerification, useRunAIVerification } from "@/hooks/useVerification";
@@ -46,8 +47,7 @@ const entityIcons: Record<string, typeof Users> = {
 };
 
 export default function VerificationAdmin() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const { data: requests, isLoading } = useAllVerificationRequests();
   const reviewMutation = useReviewVerification();
   const aiMutation = useRunAIVerification();

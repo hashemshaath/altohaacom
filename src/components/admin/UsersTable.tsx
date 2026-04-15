@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo, useState } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Badge } from "@/components/ui/badge";
@@ -75,8 +76,8 @@ export const UsersTable = memo(function UsersTable({
   onResetPassword, onSuspend, onSendNotification, onActivate,
   selected, toggleOne, toggleAll, isAllSelected, isSelected,
 }: UsersTableProps) {
+  const isAr = useIsAr();
   const { t, language } = useLanguage();
-  const isAr = language === "ar";
   const [viewMode, setViewMode] = useState<"table" | "card">("table");
   const [visibleColumns, setVisibleColumns] = useState<Record<ColumnKey, boolean>>(DEFAULT_COLUMNS);
 

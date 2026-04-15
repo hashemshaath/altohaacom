@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent } from "@/components/ui/card";
@@ -35,8 +36,7 @@ interface Props {
 const educationalTypes = ["culinary_academy", "university", "college", "training_center"];
 
 export const EntityOverviewCard = memo(function EntityOverviewCard({ entity, followerCount, counts }: Props) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const isEdu = educationalTypes.includes(entity.type);
 
   const metrics = [

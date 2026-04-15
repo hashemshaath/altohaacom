@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, memo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -30,9 +31,8 @@ const docTypes = [
 ];
 
 const JudgeDocumentsPanel = memo(function JudgeDocumentsPanel({ userId, isAdmin }: Props) {
-  const { language } = useLanguage();
   const { user } = useAuth();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const queryClient = useQueryClient();
   const [showForm, setShowForm] = useState(false);
   const [uploading, setUploading] = useState(false);

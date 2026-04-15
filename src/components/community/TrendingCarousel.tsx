@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -22,8 +23,7 @@ interface TrendingPost {
 }
 
 export const TrendingCarousel = memo(function TrendingCarousel() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const navigate = useNavigate();
   const scrollRef = useRef<HTMLDivElement>(null);
 

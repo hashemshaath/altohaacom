@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, memo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -26,11 +27,10 @@ import { format } from "date-fns";
 import { MS_PER_DAY, QUERY_LIMIT_LARGE } from "@/lib/constants";
 
 const MembershipNotificationsTab = memo(function MembershipNotificationsTab() {
-  const { language } = useLanguage();
   const { user } = useAuth();
+  const isAr = useIsAr();
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const isAr = language === "ar";
 
   const [search, setSearch] = useState("");
   const [readFilter, setReadFilter] = useState("all");

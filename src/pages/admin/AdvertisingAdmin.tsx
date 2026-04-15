@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, forwardRef, useMemo, lazy, Suspense } from "react";
 import { Link } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -42,8 +43,7 @@ const AdBehaviorInsights = lazy(() => import("@/components/ads/AdBehaviorInsight
 const TabFallback = () => <div className="space-y-3"><Skeleton className="h-40 rounded-2xl" /><Skeleton className="h-60 rounded-2xl" /></div>;
 
 const AdvertisingAdmin = forwardRef<HTMLDivElement>(function AdvertisingAdmin(_props, ref) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const qc = useQueryClient();
   const [rejectionTarget, setRejectionTarget] = useState<{ type: "request" | "campaign" | "creative"; id: string } | null>(null);
 

@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState } from "react";
 import { PageShell } from "@/components/PageShell";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -21,8 +22,7 @@ const socialLinks = [
 ];
 
 export default function ContactUs() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const { toast } = useToast();
 
   const [form, setForm] = useState({ name: "", email: "", subject: "", message: "" });

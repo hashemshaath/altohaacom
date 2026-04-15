@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -16,6 +17,7 @@ interface UserBadgesDisplayProps {
 
 export const UserBadgesDisplay = memo(function UserBadgesDisplay({ userId, limit }: UserBadgesDisplayProps) {
   const { language } = useLanguage();
+  const isAr = useIsAr();
 
   const { data: badges, isLoading } = useQuery({
     queryKey: ["user-badges", userId],
@@ -38,8 +40,6 @@ export const UserBadgesDisplay = memo(function UserBadgesDisplay({ userId, limit
   });
 
   if (!isLoading && !badges?.length) return null;
-
-  const isAr = language === "ar";
 
   return (
     <div>

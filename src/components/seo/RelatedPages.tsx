@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { forwardRef, useRef, useState, useEffect, type MutableRefObject } from "react";
 import { Link } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -89,8 +90,7 @@ export const RelatedPages = forwardRef<HTMLElement, Props>(function RelatedPages
   titleAr,
   className,
 }, ref) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const sectionRef = useRef<HTMLElement | null>(null);
   const [visible, setVisible] = useState(false);
 

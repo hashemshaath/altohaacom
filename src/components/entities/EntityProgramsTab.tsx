@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useEntityPrograms, useEnrollInProgram, useMyEnrollments } from "@/hooks/useEntities";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -34,9 +35,8 @@ interface Props {
 }
 
 export const EntityProgramsTab = memo(function EntityProgramsTab({ entityId }: Props) {
-  const { language } = useLanguage();
   const { user } = useAuth();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const { data: programs, isLoading } = useEntityPrograms(entityId);
   const { data: myEnrollments } = useMyEnrollments();
   const enrollMutation = useEnrollInProgram();

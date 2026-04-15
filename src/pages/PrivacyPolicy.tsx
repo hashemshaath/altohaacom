@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { SEOHead } from "@/components/SEOHead";
@@ -8,8 +9,7 @@ import { Separator } from "@/components/ui/separator";
 import { Shield, Calendar } from "lucide-react";
 
 export default function PrivacyPolicy() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const sections = isAr ? [
     { title: "١. مقدمة", content: "مرحباً بكم في منصة الطهاة (\"المنصة\"). نحن نلتزم بحماية خصوصيتكم وبياناتكم الشخصية وفقاً لنظام حماية البيانات الشخصية الصادر بالمرسوم الملكي رقم (م/19) بتاريخ 1443/02/09هـ ولائحته التنفيذية في المملكة العربية السعودية. توضح هذه السياسة كيفية جمع واستخدام وحماية ومشاركة بياناتكم الشخصية." },

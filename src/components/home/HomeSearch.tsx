@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useRef, useEffect, forwardRef } from "react";
 import { ROUTES } from "@/config/routes";
 import { useNavigate } from "react-router-dom";
@@ -22,8 +23,7 @@ const categories = [
 ];
 
 export const HomeSearch = forwardRef<HTMLElement>(function HomeSearch(_props, ref) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const navigate = useNavigate();
   const [query, setQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState("all");

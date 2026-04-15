@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useMemo } from "react";
 import { useCompanyAccess, useCompanyProfile } from "@/hooks/useCompanyAccess";
 import { useCompanyRoles, COMPANY_ROLES } from "@/hooks/useCompanyRoles";
@@ -40,6 +41,7 @@ import { QUERY_LIMIT_LARGE } from "@/lib/constants";
 
 export default function CompanyPortalDashboard() {
   const { language } = useLanguage();
+  const isAr = useIsAr();
   const { companyId } = useCompanyAccess();
   const { data: company, isLoading: companyLoading } = useCompanyProfile(companyId);
   const { data: companyRoles = [] } = useCompanyRoles(companyId);
@@ -72,7 +74,6 @@ export default function CompanyPortalDashboard() {
   });
 
   const isLoading = companyLoading || statsLoading;
-  const isAr = language === "ar";
 
   // Profile completion score
   const completionScore = useMemo(() => {
@@ -250,7 +251,6 @@ export default function CompanyPortalDashboard() {
 
 
 function SponsorshipWidget({ companyId, language }: { companyId: string | null; language: string }) {
-  const isAr = language === "ar";
   const { data: opportunities = [] } = useQuery({
     queryKey: ["company-dash-sponsor-opps", companyId],
     queryFn: async () => {

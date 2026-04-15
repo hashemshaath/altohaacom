@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useParams, Link } from "react-router-dom";
 import { useState, lazy, Suspense } from "react";
 
@@ -33,9 +34,8 @@ const difficultyColor = (d: string) => {
 
 export default function RecipeDetail() {
   const { slug } = useParams<{ slug: string }>();
-  const { language } = useLanguage();
   const { user } = useAuth();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const { data: recipe, isLoading } = useRecipeBySlug(slug);
   const rateMutation = useRateRecipe();
   const [myRating, setMyRating] = useState(0);

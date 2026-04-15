@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo, forwardRef } from "react";
 import { ROUTES } from "@/config/routes";
 import { useQuery } from "@tanstack/react-query";
@@ -37,8 +38,7 @@ function estimateReadTime(excerpt: string | null): number {
 }
 
 const ArticlesSection = memo(forwardRef<HTMLElement>(function ArticlesSection(_props, _ref) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const config = useSectionConfig();
 
   const itemCount = config?.item_count || 8;

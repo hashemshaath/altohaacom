@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { Link } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -22,8 +23,7 @@ interface Props {
 }
 
 export const AdPackagesTab = memo(function AdPackagesTab({ packages, onToggleActive, onEdit }: Props) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   return (
     <div className="space-y-4">

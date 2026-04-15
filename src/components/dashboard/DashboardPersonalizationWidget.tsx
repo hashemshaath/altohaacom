@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useEffect, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -17,8 +18,7 @@ const FONT_SIZE_KEY = "altoha_font_size";
 const COMPACT_KEY = "altoha_compact_mode";
 
 export const DashboardPersonalizationWidget = memo(function DashboardPersonalizationWidget() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const [selectedTheme, setSelectedTheme] = useState(() => { try { return localStorage.getItem(THEME_KEY) || ""; } catch { return ""; } });
   const [bodyFont, setBodyFont] = useState(() => { try { return localStorage.getItem(FONT_KEY) || ""; } catch { return ""; } });

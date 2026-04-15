@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useParams, Link, useSearchParams } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -113,9 +114,9 @@ ExhibitionTabTrigger.displayName = "ExhibitionTabTrigger";
 export default function ExhibitionDetail() {
   const { slug } = useParams<{ slug: string }>();
   const { language } = useLanguage();
+  const isAr = useIsAr();
   const { user } = useAuth();
   const queryClient = useQueryClient();
-  const isAr = language === "ar";
   const [activeTab, setActiveTab] = useState("overview");
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);

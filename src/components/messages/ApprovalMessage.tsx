@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
@@ -18,11 +19,10 @@ interface ApprovalMessageProps {
 }
 
 export const ApprovalMessage = memo(function ApprovalMessage({ messageId, senderId, receiverId, metadata, isMine }: ApprovalMessageProps) {
-  const { language } = useLanguage();
   const { user } = useAuth();
+  const isAr = useIsAr();
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const isAr = language === "ar";
   const [note, setNote] = useState("");
 
   const status = metadata?.approval_status || "pending";

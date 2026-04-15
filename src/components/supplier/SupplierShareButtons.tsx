@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Button } from "@/components/ui/button";
@@ -10,9 +11,8 @@ interface SupplierShareButtonsProps {
 }
 
 export const SupplierShareButtons = memo(function SupplierShareButtons({ companyName, companyId }: SupplierShareButtonsProps) {
-  const { language } = useLanguage();
+  const isAr = useIsAr();
   const { toast } = useToast();
-  const isAr = language === "ar";
   const url = `${window.location.origin}/pro-suppliers/${companyId}`;
 
   const copyLink = () => {

@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useEffect } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { SEOHead } from "@/components/SEOHead";
@@ -13,7 +14,7 @@ interface BeforeInstallPromptEvent extends Event {
 }
 
 export default function Install() {
-  const { language } = useLanguage();
+  const isAr = useIsAr();
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [isInstalled, setIsInstalled] = useState(false);
   const [isIOS, setIsIOS] = useState(false);
@@ -44,8 +45,6 @@ export default function Install() {
     }
     setDeferredPrompt(null);
   };
-
-  const isAr = language === "ar";
 
   const features = [
     {

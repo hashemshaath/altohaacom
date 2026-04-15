@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { CACHE } from "@/lib/queryConfig";
 import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -11,8 +12,7 @@ import { useVisibleRefetchInterval } from "@/hooks/useVisibleRefetchInterval";
 import { REFETCH_INTERVAL_DEFAULT } from "@/lib/constants";
 
 export const MessagingAdminOverview = memo(function MessagingAdminOverview() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const visibleInterval = useVisibleRefetchInterval(REFETCH_INTERVAL_DEFAULT);
 

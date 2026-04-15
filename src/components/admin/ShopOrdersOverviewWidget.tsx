@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { CACHE } from "@/lib/queryConfig";
 import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -12,8 +13,7 @@ import { cn } from "@/lib/utils";
 import { QUERY_LIMIT_MEDIUM } from "@/lib/constants";
 
 export const ShopOrdersOverviewWidget = memo(function ShopOrdersOverviewWidget() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const { data } = useQuery({
     queryKey: ["shop-orders-overview-widget"],

@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useMemo } from "react";
 import { useCompanyAccess } from "@/hooks/useCompanyAccess";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -25,10 +26,9 @@ import { format, startOfMonth, subMonths } from "date-fns";
 import { cn } from "@/lib/utils";
 
 export default function CompanyTransactions() {
-  const { language } = useLanguage();
   const { companyId } = useCompanyAccess();
+  const isAr = useIsAr();
   const { toast } = useToast();
-  const isAr = language === "ar";
 
   const [search, setSearch] = useState("");
   const [typeFilter, setTypeFilter] = useState("all");

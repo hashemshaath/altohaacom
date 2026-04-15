@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import React, { useState, useCallback, useRef } from "react";
 import { Bell, BellOff, ShoppingCart, CheckCircle, Trophy, FileText, Users, Heart, MessageCircle, UserPlus, Radio, Eye, Flame, Settings, Volume2, VolumeX } from "lucide-react";
 import { NotificationPriorityBadge, inferPriority } from "./NotificationPriorityBadge";
@@ -54,6 +55,7 @@ function formatRelativeTime(dateStr: string, isAr: boolean): string {
 
 /** Group similar notifications (same type within 1 hour) */
 function groupNotifications(notifications: any[]) {
+  const isAr = useIsAr();
   const groups: { key: string; items: any[]; type: string | null }[] = [];
   const used = new Set<string>();
 
@@ -83,12 +85,11 @@ function groupNotifications(notifications: any[]) {
 }
 
 export const NotificationBell = React.forwardRef<HTMLButtonElement, Record<string, never>>(function NotificationBell(_props, _ref) {
+  const isAr = useIsAr();
   const { notifications, unreadCount, markAsRead, markAllAsRead, loading } = useNotifications();
   const { getProfile } = useNotificationProfiles(notifications);
   const { soundEnabled, setSoundEnabled, dndMode, setDndMode } = useNotificationPrefs();
-  const { language } = useLanguage();
   const navigate = useNavigate();
-  const isAr = language === "ar";
   const [category, setCategory] = useState<NotificationCategory>("all");
   const [menuOpen, setMenuOpen] = useState(false);
   const triggerRef = useRef<HTMLButtonElement>(null);

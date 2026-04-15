@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useMemo, memo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -21,8 +22,7 @@ const TYPE_ICONS: Record<string, typeof Bell> = {
 };
 
 export const AdminNotificationCenter = memo(function AdminNotificationCenter() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const queryClient = useQueryClient();
   const [typeFilter, setTypeFilter] = useState("all");
 

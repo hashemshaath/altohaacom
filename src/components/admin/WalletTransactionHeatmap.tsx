@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { CACHE } from "@/lib/queryConfig";
 import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -10,8 +11,7 @@ import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { MS_PER_DAY, MS_PER_WEEK } from "@/lib/constants";
 
 export const WalletTransactionHeatmap = memo(function WalletTransactionHeatmap() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const { data } = useQuery({
     queryKey: ["wallet-txn-heatmap"],

@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useCallback, useEffect, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Input } from "@/components/ui/input";
@@ -12,8 +13,7 @@ interface ChatSearchBarProps {
 }
 
 export const ChatSearchBar = memo(function ChatSearchBar({ messages, onHighlight, onClose }: ChatSearchBarProps) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const [query, setQuery] = useState("");
   const [matchIds, setMatchIds] = useState<string[]>([]);
   const [currentIdx, setCurrentIdx] = useState(0);

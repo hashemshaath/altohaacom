@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Users, Trophy, BookOpen, Calendar, Eye, Globe, Briefcase } from "lucide-react";
@@ -33,8 +34,7 @@ export const EntityStatsStrip = memo(function EntityStatsStrip({
   viewCount,
   website,
 }: Props) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const stats: StatItem[] = [
     { icon: Users, value: followerCount, label: "Followers", labelAr: "متابع" },

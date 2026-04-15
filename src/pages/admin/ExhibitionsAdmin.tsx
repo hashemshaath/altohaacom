@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useMemo, memo, lazy, Suspense } from "react";
 import { useTableSort } from "@/hooks/useTableSort";
 import { usePagination } from "@/hooks/usePagination";
@@ -89,10 +90,9 @@ function WidgetFallback() {
 }
 
 export default function ExhibitionsAdmin() {
-  const { language } = useLanguage();
   const { user } = useAuth();
+  const isAr = useIsAr();
   const queryClient = useQueryClient();
-  const isAr = language === "ar";
   const t = (en: string, ar: string) => (isAr ? ar : en);
 
   const [activeTab, setActiveTab] = useState<TabKey>("events");

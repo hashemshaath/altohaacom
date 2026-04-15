@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useVisibleRefetchInterval } from "@/hooks/useVisibleRefetchInterval";
 import { useQuery } from "@tanstack/react-query";
@@ -27,8 +28,7 @@ interface PendingItem {
 }
 
 export const AdminPendingActionsWidget = memo(function AdminPendingActionsWidget() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const { data, isLoading } = useQuery({
     queryKey: ["admin-pending-actions"],

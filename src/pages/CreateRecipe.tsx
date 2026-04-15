@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -33,9 +34,8 @@ const categoryOptions = [
 ];
 
 export default function CreateRecipe() {
-  const { language } = useLanguage();
   const { user } = useAuth();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const navigate = useNavigate();
   const createRecipe = useCreateRecipe();
   const imageInputRef = useRef<HTMLInputElement>(null);

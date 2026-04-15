@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Header } from "@/components/Header";
@@ -13,8 +14,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export default function BioAnalytics() {
   const { user } = useAuth();
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const { data: page, isLoading } = useQuery({
     queryKey: ["bio-page-for-analytics", user?.id],

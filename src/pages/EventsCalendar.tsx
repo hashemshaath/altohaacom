@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useMemo, useCallback, useEffect, lazy, Suspense } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { PageShell } from "@/components/PageShell";
@@ -28,6 +29,7 @@ const SelectedDayPanel = lazy(() => import("./events-calendar/SelectedDayPanel")
 
 /* ─── Animated stat card ─── */
 function AnimatedStat({ icon: Icon, value, label, accent }: { icon: LucideIcon; value: number; label: string; accent: string }) {
+  const isAr = useIsAr();
   return (
     <div className={cn(
       "group relative flex items-center gap-3 rounded-2xl border px-4 py-3 transition-all duration-200",
@@ -46,8 +48,7 @@ function AnimatedStat({ icon: Icon, value, label, accent }: { icon: LucideIcon; 
 }
 
 export default function EventsCalendar() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const [viewMode, setViewMode] = useState<ViewMode>("month");
   const [selectedTypes, setSelectedTypes] = useState<GlobalEventType[]>([]);
   const [selectedCountry, setSelectedCountry] = useState<string>("");
@@ -415,6 +416,7 @@ export default function EventsCalendar() {
 
 /* ─── Skeleton loader per view mode ─── */
 function CalendarSkeleton({ viewMode }: { viewMode: ViewMode }) {
+  const isAr = useIsAr();
   if (viewMode === "month") {
     return (
       <div className="rounded-2xl border border-border/30 overflow-hidden">

@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { CACHE } from "@/lib/queryConfig";
 import { memo, forwardRef } from "react";
 import { Link } from "react-router-dom";
@@ -29,10 +30,10 @@ const tierLabels: Record<string, { en: string; ar: string; color: string }> = {
 };
 
 export const UserDropdown = memo(forwardRef<HTMLDivElement>(function UserDropdown(_props, ref) {
+  const isAr = useIsAr();
   const { user, signOut } = useAuth();
   const { t, language } = useLanguage();
   const { data: isAdmin } = useIsAdmin();
-  const isAr = language === "ar";
   const label = (en: string, ar: string) => (isAr ? ar : en);
 
   const { data: profile } = useQuery({

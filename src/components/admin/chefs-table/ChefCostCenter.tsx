@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useMemo, memo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -144,9 +145,8 @@ function calcEstimatedTotal(p: Partial<ChefCostProfile>) {
 
 // ─── Main Component ─────────────────────────
 export const ChefCostCenter = memo(function ChefCostCenter() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
   const { user } = useAuth();
+  const isAr = useIsAr();
   const queryClient = useQueryClient();
   const { data: countries = [] } = useCountries();
   const { data: profiles = [] } = useChefProfiles();

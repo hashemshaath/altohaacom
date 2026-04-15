@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useMemo } from "react";
 import { EntityFormGuard } from "@/components/admin/EntityFormGuard";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -48,9 +49,8 @@ const statusConfig: Record<string, { variant: "default" | "secondary" | "destruc
 };
 
 export default function EstablishmentsAdmin() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
   const { user } = useAuth();
+  const isAr = useIsAr();
   const queryClient = useQueryClient();
 
   const [search, setSearch] = useState("");

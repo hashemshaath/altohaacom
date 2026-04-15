@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { Header } from "@/components/Header";
@@ -52,9 +53,8 @@ const establishmentTypeLabels: Record<string, { en: string; ar: string }> = {
 
 export default function EstablishmentDetail() {
   const { id } = useParams<{ id: string }>();
-  const { language } = useLanguage();
-  const isAr = language === "ar";
   const { user } = useAuth();
+  const isAr = useIsAr();
   const { data: est, isLoading } = useEstablishment(id);
   const { data: associations } = useEstablishmentAssociations(id);
   const addAssociation = useAddAssociation();

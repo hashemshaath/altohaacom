@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo, forwardRef, useCallback } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -29,8 +30,7 @@ export const SupplierProductCard = memo(forwardRef<HTMLDivElement, SupplierProdu
   onAddToCart,
   compact = false,
 }, ref) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const title = isAr && product.name_ar ? product.name_ar : product.name;
   const price = product.unit_price || 0;

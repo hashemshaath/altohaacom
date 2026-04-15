@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import React from "react";
 
 import { useQuery } from "@tanstack/react-query";
@@ -16,8 +17,7 @@ interface OrganizerCardProps {
 
 export const OrganizerCard = React.forwardRef<HTMLDivElement, OrganizerCardProps>(
   function OrganizerCard({ organizerId, exhibitionId }, ref) {
-    const { language } = useLanguage();
-    const isAr = language === "ar";
+  const isAr = useIsAr();
 
     const { data: exhibition } = useQuery({
       queryKey: ["exhibition-organizer", exhibitionId],

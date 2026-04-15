@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -20,9 +21,8 @@ const CATEGORY_CONFIG: Record<string, { icon: React.ReactNode; color: string; en
 };
 
 export const CompetitionFeedbackPanel = memo(function CompetitionFeedbackPanel({ competitionId }: Props) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
   const { user } = useAuth();
+  const isAr = useIsAr();
 
   const { data: feedback, isLoading } = useQuery({
     queryKey: ["competition-feedback", competitionId, user?.id],

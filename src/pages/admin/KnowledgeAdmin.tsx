@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -31,9 +32,9 @@ type ResourceType = "link" | "file" | "document" | "image" | "video" | "law" | "
 
 export default function KnowledgeAdmin() {
   const { language } = useLanguage();
+  const isAr = useIsAr();
   const { user } = useAuth();
   const { toast } = useToast();
-  const isAr = language === "ar";
   const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState("resources");
   const [showAddResource, setShowAddResource] = useState(false);

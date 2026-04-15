@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, memo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -27,6 +28,7 @@ interface PricingPlan {
 }
 
 function useEvaluationPricing() {
+  const isAr = useIsAr();
   return useQuery({
     queryKey: ["evaluation-pricing"],
     queryFn: async () => {
@@ -41,8 +43,7 @@ function useEvaluationPricing() {
 }
 
 export const ChefsTablePricing = memo(function ChefsTablePricing() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const queryClient = useQueryClient();
   const { data: plans = [], isLoading } = useEvaluationPricing();
   const [editing, setEditing] = useState<Partial<PricingPlan> | null>(null);

@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useMemo, memo } from "react";
 import { useNotifications } from "@/hooks/useNotifications";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -8,9 +9,8 @@ import { BarChart, Bar, ResponsiveContainer, XAxis, Tooltip, Cell } from "rechar
 import { MS_PER_DAY } from "@/lib/constants";
 
 export const NotificationActivityWidget = memo(function NotificationActivityWidget() {
+  const isAr = useIsAr();
   const { notifications, unreadCount } = useNotifications();
-  const { language } = useLanguage();
-  const isAr = language === "ar";
 
   const chartData = useMemo(() => {
     const now = new Date();

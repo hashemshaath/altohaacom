@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { PanelTop, PanelBottom, Sparkles } from "lucide-react";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
@@ -6,8 +7,7 @@ import { HeaderFooterSettings } from "@/components/admin/settings/HeaderFooterSe
 import { Skeleton } from "@/components/ui/skeleton";
 
 export default function HeaderFooterPage() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const { settings, isLoading, saveSetting } = useSiteSettings();
 
   const handleSave = (key: string, value: Record<string, any>, category?: string) => {

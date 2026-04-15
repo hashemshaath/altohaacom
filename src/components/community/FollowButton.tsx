@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, forwardRef } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useIsFollowing, useToggleFollow } from "@/hooks/useFollow";
@@ -25,8 +26,7 @@ interface FollowButtonProps {
 export const FollowButton = forwardRef<HTMLDivElement, FollowButtonProps>(function FollowButton({ userId, userName, fullWidth = false, className = "" }, ref) {
   const { data: isFollowing } = useIsFollowing(userId);
   const toggleFollow = useToggleFollow(userId);
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const { toast } = useToast();
   const [showUnfollowDialog, setShowUnfollowDialog] = useState(false);
 

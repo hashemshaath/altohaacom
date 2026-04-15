@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
@@ -24,8 +25,7 @@ interface CountryStats {
 }
 
 export const CountryOverviewDashboard = memo(function CountryOverviewDashboard() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const { data: countryStats, isLoading } = useQuery({
     queryKey: ["country-overview-stats"],

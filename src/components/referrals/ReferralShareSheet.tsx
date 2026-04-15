@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Button } from "@/components/ui/button";
@@ -21,8 +22,7 @@ interface ReferralShareSheetProps {
 }
 
 export const ReferralShareSheet = memo(function ReferralShareSheet({ referralLink, referralCode, referralCodeId, compact }: ReferralShareSheetProps) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const { toast } = useToast();
   const sendInvitation = useSendInvitation();
   const awardPoints = useAwardPoints();

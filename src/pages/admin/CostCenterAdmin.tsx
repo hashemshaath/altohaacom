@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useMemo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useCSVExport } from "@/hooks/useCSVExport";
@@ -47,9 +48,8 @@ import {
 } from "lucide-react";
 
 export default function CostCenterAdmin() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
   const { user } = useAuth();
+  const isAr = useIsAr();
 
   const [activeTab, setActiveTab] = useState("overview");
   const [moduleFilter, setModuleFilter] = useState("all");

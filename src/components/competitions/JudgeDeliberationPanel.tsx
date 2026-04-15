@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, memo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -19,9 +20,8 @@ interface Props {
 }
 
 export const JudgeDeliberationPanel = memo(function JudgeDeliberationPanel({ competitionId }: Props) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
   const { user } = useAuth();
+  const isAr = useIsAr();
   const queryClient = useQueryClient();
   const [newTopic, setNewTopic] = useState("");
   const [activeDeliberation, setActiveDeliberation] = useState<string | null>(null);

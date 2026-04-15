@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useProfileAnalytics } from "@/hooks/useProfileViews";
@@ -29,8 +30,7 @@ const CHART_COLORS = [
 ];
 
 export const ProfileAnalyticsDashboard = memo(function ProfileAnalyticsDashboard({ userId }: ProfileAnalyticsDashboardProps) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const { data: analytics, isLoading } = useProfileAnalytics(userId);
 
   // Follower growth data (last 30 days)

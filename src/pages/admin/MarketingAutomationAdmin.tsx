@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -48,8 +49,7 @@ const CAMPAIGNS = [
 ];
 
 export default function MarketingAutomationAdmin() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const queryClient = useQueryClient();
 
   // Automation runs history
@@ -416,6 +416,7 @@ export default function MarketingAutomationAdmin() {
 
 // ── Workflow Builder Component ──────────────────────
 function WorkflowBuilder({ isAr }: { isAr: boolean }) {
+  const isAr = useIsAr();
   const [steps, setSteps] = useState<WorkflowStep[]>([
     { id: "1", type: "email", label: isAr ? "بريد ترحيبي" : "Welcome Email" },
     { id: "2", type: "wait", label: isAr ? "انتظار 24 ساعة" : "Wait 24 hours", delay: "24h" },

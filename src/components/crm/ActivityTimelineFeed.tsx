@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { CACHE } from "@/lib/queryConfig";
 import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -20,8 +21,7 @@ interface TimelineItem {
 }
 
 export const ActivityTimelineFeed = memo(function ActivityTimelineFeed() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const { data: timeline = [] } = useQuery({
     queryKey: ["crmActivityTimeline"],

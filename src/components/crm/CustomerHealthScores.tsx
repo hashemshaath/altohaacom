@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { CACHE } from "@/lib/queryConfig";
 import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -25,8 +26,7 @@ interface CustomerHealth {
 }
 
 export const CustomerHealthScores = memo(function CustomerHealthScores() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const { data: healthData = [], isLoading } = useQuery({
     queryKey: ["crmHealthScores"],

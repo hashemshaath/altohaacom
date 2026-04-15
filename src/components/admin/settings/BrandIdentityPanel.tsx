@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useEffect, useMemo, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -22,6 +23,7 @@ interface Props {
 
 /* ── Contrast ratio helpers ── */
 function hslToRgb(h: number, s: number, l: number) {
+  const isAr = useIsAr();
   s /= 100; l /= 100;
   const k = (n: number) => (n + h / 30) % 12;
   const a = s * Math.min(l, 1 - l);
@@ -29,10 +31,12 @@ function hslToRgb(h: number, s: number, l: number) {
   return [f(0), f(8), f(4)];
 }
 function luminance(r: number, g: number, b: number) {
+  const isAr = useIsAr();
   const a = [r, g, b].map(v => v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4));
   return 0.2126 * a[0] + 0.7152 * a[1] + 0.0722 * a[2];
 }
 function contrastRatio(hsl1: string, hsl2: string) {
+  const isAr = useIsAr();
   const parse = (s: string) => {
     const parts = s.trim().split(/\s+/).map(Number);
     return parts.length >= 3 ? parts : [0, 0, 0];
@@ -46,6 +50,7 @@ function contrastRatio(hsl1: string, hsl2: string) {
   return ((lighter + 0.05) / (darker + 0.05));
 }
 function getWcagGrade(ratio: number) {
+  const isAr = useIsAr();
   if (ratio >= 7) return { grade: "AAA", color: "text-green-600 dark:text-green-400" };
   if (ratio >= 4.5) return { grade: "AA", color: "text-yellow-600 dark:text-yellow-400" };
   if (ratio >= 3) return { grade: "AA Large", color: "text-orange-500" };
@@ -91,12 +96,14 @@ function ColorSwatch({ label, labelAr, isAr, value, onChange, size = "md" }: {
 }
 
 function hslToHex(h: number, s: number, l: number) {
+  const isAr = useIsAr();
   const [r, g, b] = hslToRgb(h, s, l);
   const toHex = (n: number) => Math.round(n * 255).toString(16).padStart(2, "0");
   return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
 }
 
 function hexToHsl(hex: string) {
+  const isAr = useIsAr();
   const r = parseInt(hex.slice(1, 3), 16) / 255;
   const g = parseInt(hex.slice(3, 5), 16) / 255;
   const b = parseInt(hex.slice(5, 7), 16) / 255;
@@ -126,8 +133,7 @@ const OCCASION_PRESETS = [
 ];
 
 export const BrandIdentityPanel = memo(function BrandIdentityPanel({ settings, onSave, isPending }: Props) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const identity = settings.brand_identity || {};
 

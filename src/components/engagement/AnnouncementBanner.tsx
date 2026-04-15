@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAnnouncements } from "@/hooks/useAnnouncements";
@@ -12,8 +13,7 @@ const TYPE_STYLES: Record<string, { icon: LucideIcon; bg: string; border: string
 };
 
 export const AnnouncementBanner = memo(function AnnouncementBanner() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const { announcements, dismiss } = useAnnouncements();
 
   if (announcements.length === 0) return null;

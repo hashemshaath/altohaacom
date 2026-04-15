@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useMemo } from "react";
 import { Link } from "react-router-dom";
 import { Header } from "@/components/Header";
@@ -16,7 +17,6 @@ import { HomeSectionsRenderer } from "@/pages/home/HomeSectionsRenderer";
 /* ─── Fallbacks ─── */
 
 function HomeEmergencyHero({ language }: { language: string }) {
-  const isAr = language === "ar";
   return (
     <section className="bg-background">
       <div className="container py-16 lg:py-28 text-center">
@@ -40,7 +40,6 @@ function HomeEmergencyHero({ language }: { language: string }) {
 }
 
 function HomeEmergencySections({ language }: { language: string }) {
-  const isAr = language === "ar";
   return (
     <section className="bg-muted/30">
       <div className="container py-12">
@@ -62,7 +61,7 @@ function HomeEmergencySections({ language }: { language: string }) {
 
 const Index = () => {
   const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   useHomepageDataPrefetch();
   useRoutePrefetch();

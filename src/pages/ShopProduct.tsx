@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useParams, Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -23,9 +24,8 @@ import { useEcommerceTracking } from "@/hooks/useEcommerceTracking";
 
 export default function ShopProduct() {
   const { id } = useParams<{ id: string }>();
-  const { language } = useLanguage();
   const { user } = useAuth();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const cart = useCart();
   const [cartOpen, setCartOpen] = useState(false);
   const [qty, setQty] = useState(1);

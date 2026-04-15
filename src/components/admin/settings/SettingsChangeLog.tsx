@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -18,8 +19,7 @@ const CATEGORY_ICONS: Record<string, any> = {
 };
 
 export const SettingsChangeLog = memo(function SettingsChangeLog() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const { data: logs = [] } = useQuery({
     queryKey: ["settings-changelog"],

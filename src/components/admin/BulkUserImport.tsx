@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useRef, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
@@ -29,11 +30,10 @@ interface ParsedUser {
 }
 
 export const BulkUserImport = memo(function BulkUserImport() {
-  const { language } = useLanguage();
   const { user } = useAuth();
+  const isAr = useIsAr();
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const isAr = language === "ar";
   const fileRef = useRef<HTMLInputElement>(null);
 
   const [step, setStep] = useState<"upload" | "preview" | "importing" | "done">("upload");

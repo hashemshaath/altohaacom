@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { CACHE } from "@/lib/queryConfig";
 import { Link } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -17,8 +18,7 @@ import { HomepageLivePreview } from "@/components/admin/settings/homepage/Homepa
 import { useHomepageSections } from "@/hooks/useHomepageSections";
 
 export default function HomepageDesignPage() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const { data: sections = [] } = useHomepageSections();
 
   // Section health stats

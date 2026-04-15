@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo, useMemo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
@@ -28,8 +29,7 @@ interface QuickAction {
  * Admin command palette with quick stats and shortcuts.
  */
 export const AdminCommandBar = memo(function AdminCommandBar() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const { data } = useQuery({
     queryKey: ["adminCommandBarStats"],

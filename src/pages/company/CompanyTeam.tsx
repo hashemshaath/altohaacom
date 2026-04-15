@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState } from "react";
 import { useCompanyAccess } from "@/hooks/useCompanyAccess";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -33,10 +34,9 @@ const roleConfig: Record<string, { icon: LucideIcon; color: string; bg: string; 
 };
 
 export default function CompanyTeam() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
   const { companyId } = useCompanyAccess();
   const { user } = useAuth();
+  const isAr = useIsAr();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [inviteOpen, setInviteOpen] = useState(false);

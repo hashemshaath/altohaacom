@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { CACHE } from "@/lib/queryConfig";
 import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -19,8 +20,7 @@ interface StatItem {
 
 export const WeeklyOverviewWidget = memo(function WeeklyOverviewWidget() {
   const { user } = useAuth();
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const { data: stats } = useQuery({
     queryKey: ["weekly-overview", user?.id],

@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { CACHE } from "@/lib/queryConfig";
 import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -10,8 +11,7 @@ import { Trophy, Users, Gavel, Medal, Calendar, MapPin, TrendingUp, AlertTriangl
 import { MS_PER_DAY, QUERY_LIMIT_MEDIUM } from "@/lib/constants";
 
 export const CompetitionLifecycleWidget = memo(function CompetitionLifecycleWidget() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const { data } = useQuery({
     queryKey: ["competition-lifecycle-widget"],

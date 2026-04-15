@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useEffect, useMemo } from "react";
 import { useCompanyAccess } from "@/hooks/useCompanyAccess";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -47,9 +48,8 @@ const DEFAULT_FORM = {
 type SocialLinks = { twitter?: string; instagram?: string; linkedin?: string; facebook?: string; tiktok?: string; snapchat?: string };
 
 function CompanySettingsContent() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
   const { companyId } = useCompanyAccess();
+  const isAr = useIsAr();
   const { toast } = useToast();
   const queryClient = useQueryClient();
 

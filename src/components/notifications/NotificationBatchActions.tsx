@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 /**
  * Batch action toolbar for notifications page.
  * Appears when notifications are selected.
@@ -25,8 +26,7 @@ export const NotificationBatchActions = memo(function NotificationBatchActions({
   onClearSelection,
   className,
 }: NotificationBatchActionsProps) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   if (selectedCount === 0) return null;
 

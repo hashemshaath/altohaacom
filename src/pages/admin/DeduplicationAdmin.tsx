@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { CACHE } from "@/lib/queryConfig";
 import { useState, memo, useCallback } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -36,6 +37,7 @@ const ALL_TABLES = TABLE_OPTIONS.map(t => t.value);
 
 // ─── Audit Log Hook ───
 function useMergeAuditLog() {
+  const isAr = useIsAr();
   return useQuery({
     queryKey: ["dedup-audit-log"],
     queryFn: async () => {
@@ -60,8 +62,7 @@ interface GlobalScanResult {
 }
 
 const DeduplicationAdmin = memo(function DeduplicationAdmin() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const { scanning, batchScan, merging, mergeEntities } = useEntityDedup();
   const { data: auditLog, refetch: refetchAudit } = useMergeAuditLog();
 

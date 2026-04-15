@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -26,8 +27,7 @@ interface CreateGroupDialogProps {
 
 export const CreateGroupDialog = memo(function CreateGroupDialog({ open, onOpenChange, onCreated }: CreateGroupDialogProps) {
   const { user } = useAuth();
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const { toast } = useToast();
   const [groupName, setGroupName] = useState("");
   const [search, setSearch] = useState("");

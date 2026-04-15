@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Button } from "@/components/ui/button";
@@ -34,8 +35,7 @@ const INITIAL_FILTERS: FilterValues = {
 };
 
 export const UserAdvancedFilters = memo(function UserAdvancedFilters({ filters, onChange, onReset }: UserAdvancedFiltersProps) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const [open, setOpen] = useState(false);
 
   const activeCount = Object.entries(filters).filter(([key, val]) => val !== "all" && val !== "").length;

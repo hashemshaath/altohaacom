@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
@@ -22,8 +23,7 @@ export const SupervisingBodiesStep = memo(function SupervisingBodiesStep({
   onSupervisingChange,
   onJudgesChange,
 }: SupervisingBodiesStepProps) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const [entitySearch, setEntitySearch] = useState("");
   const [judgeSearch, setJudgeSearch] = useState("");
 

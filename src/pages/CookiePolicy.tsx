@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { SEOHead } from "@/components/SEOHead";
@@ -9,7 +10,7 @@ import { Cookie, Calendar } from "lucide-react";
 
 export default function CookiePolicy() {
   const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const sections = isAr ? [
     { title: "١. ما هي ملفات تعريف الارتباط؟", content: "ملفات تعريف الارتباط (الكوكيز) هي ملفات نصية صغيرة يتم تخزينها على جهازكم عند زيارة المنصة. تساعدنا هذه الملفات في تحسين تجربتكم وتقديم خدمات أفضل." },

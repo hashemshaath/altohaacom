@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import {
@@ -46,8 +47,7 @@ const DOMAIN_ICONS: Record<string, React.ElementType> = {
 };
 
 export const CriteriaManager = memo(function CriteriaManager() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const { data: domains, isLoading: domainsLoading } = useEvaluationDomains();
   const [activeDomain, setActiveDomain] = useState<string>("");
   const [productFilter, setProductFilter] = useState("all");

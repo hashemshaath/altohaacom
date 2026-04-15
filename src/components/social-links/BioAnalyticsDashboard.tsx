@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { CACHE } from "@/lib/queryConfig";
 import { memo, useState, useMemo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -33,6 +34,7 @@ const CHART_COLORS = [
 type Period = "7d" | "14d" | "30d";
 
 function TrendBadge({ value, isAr }: { value: number; isAr: boolean }) {
+  const isAr = useIsAr();
   if (value === 0) return <Badge variant="secondary" className="text-[12px] gap-0.5"><Minus className="h-2.5 w-2.5" />0%</Badge>;
   const positive = value > 0;
   return (
@@ -58,8 +60,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 };
 
 export const BioAnalyticsDashboard = memo(function BioAnalyticsDashboard({ pageId }: BioAnalyticsDashboardProps) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const [period, setPeriod] = useState<Period>("30d");
   const periodDays = period === "7d" ? 7 : period === "14d" ? 14 : 30;
 

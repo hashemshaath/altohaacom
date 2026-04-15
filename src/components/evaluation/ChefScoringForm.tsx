@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useMemo, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useEvaluationCriteriaByDomain, useUpsertEvaluationScore, type EvaluationCriterion, type EvaluationCriteriaCategory } from "@/hooks/useEvaluationSystem";
@@ -57,8 +58,7 @@ export const ChefScoringForm = memo(function ChefScoringForm({
   existingEvaluation,
   onComplete,
 }: Props) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const { data: criteriaData, isLoading } = useEvaluationCriteriaByDomain("chefs_table", productCategory);
   const upsertScore = useUpsertEvaluationScore();

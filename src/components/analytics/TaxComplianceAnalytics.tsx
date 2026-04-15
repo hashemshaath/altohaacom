@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, memo } from "react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -28,7 +29,7 @@ const COLORS = ["hsl(var(--primary))", "hsl(var(--chart-2))", "hsl(var(--chart-3
 
 export const TaxComplianceAnalytics = memo(function TaxComplianceAnalytics() {
   const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const [year, setYear] = useState(new Date().getFullYear().toString());
 
   const { data, isLoading } = useQuery({

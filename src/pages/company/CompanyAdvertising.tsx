@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -36,7 +37,7 @@ const statusColors: Record<string, string> = {
 export default function CompanyAdvertising() {
   const navigate = useNavigate();
   const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const { companyId } = useCompanyAccess();
   const qc = useQueryClient();
   const [requestOpen, setRequestOpen] = useState(false);

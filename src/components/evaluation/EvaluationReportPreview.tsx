@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useMemo, useRef, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent } from "@/components/ui/card";
@@ -53,6 +54,7 @@ const COLORS = [
 const PIE_COLORS = ["#22c55e", "#3b82f6", "#f59e0b", "#ef4444"];
 
 function getScoreColor(score: number) {
+  const isAr = useIsAr();
   if (score >= 9) return "text-chart-5";
   if (score >= 7.5) return "text-primary";
   if (score >= 6) return "text-chart-4";
@@ -60,6 +62,7 @@ function getScoreColor(score: number) {
 }
 
 function getScoreLabel(score: number, isAr: boolean) {
+  const isAr = useIsAr();
   if (score >= 9) return isAr ? "ممتاز" : "Excellent";
   if (score >= 7.5) return isAr ? "جيد جداً" : "Very Good";
   if (score >= 6) return isAr ? "جيد" : "Good";
@@ -67,6 +70,7 @@ function getScoreLabel(score: number, isAr: boolean) {
 }
 
 function generateRecommendations(categoryScores: any[], isAr: boolean) {
+  const isAr = useIsAr();
   const sorted = [...categoryScores].sort((a, b) => a.avgScore - b.avgScore);
   const weakest = sorted[0];
   const strongest = sorted[sorted.length - 1];
@@ -124,6 +128,7 @@ function generateRecommendations(categoryScores: any[], isAr: boolean) {
 }
 
 function downloadReportAsHTML(reportRef: React.RefObject<HTMLDivElement | null>, title: string) {
+  const isAr = useIsAr();
   const el = reportRef.current;
   if (!el) return;
   const html = `<!DOCTYPE html>
@@ -155,8 +160,7 @@ function downloadReportAsHTML(reportRef: React.RefObject<HTMLDivElement | null>,
 }
 
 export const EvaluationReportPreview = memo(function EvaluationReportPreview({ template, onClose }: TemplatePreviewProps) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const snapshot = template.criteria_snapshot || [];
   const reportRef = useRef<HTMLDivElement>(null);
   const reportId = useMemo(() => `REP-2026-${String(Math.floor(Math.random() * 9000) + 1000)}`, []);

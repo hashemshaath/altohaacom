@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -12,13 +13,13 @@ import {
 } from "@/lib/chartConfig";
 
 function NoData({ isAr }: { isAr: boolean }) {
+  const isAr = useIsAr();
   return <p className="py-12 text-center text-muted-foreground text-sm">{getNoDataText(isAr)}</p>;
 }
 
 /* ─── Registration Trend ─── */
 export const RegistrationTrendChart = memo(function RegistrationTrendChart({ data }: { data?: { month: string; count: number }[] }) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   return (
     <Card>
@@ -44,8 +45,7 @@ export const RegistrationTrendChart = memo(function RegistrationTrendChart({ dat
 
 /* ─── Competitions by Month ─── */
 export const MonthlyCompetitionsChart = memo(function MonthlyCompetitionsChart({ data }: { data?: { month: string; count: number }[] }) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   return (
     <Card>
@@ -71,8 +71,7 @@ export const MonthlyCompetitionsChart = memo(function MonthlyCompetitionsChart({
 
 /* ─── Score Distribution ─── */
 export const ScoreDistributionChart = memo(function ScoreDistributionChart({ data }: { data?: { range: string; count: number }[] }) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   return (
     <Card>
@@ -98,8 +97,7 @@ export const ScoreDistributionChart = memo(function ScoreDistributionChart({ dat
 
 /* ─── Status Breakdown ─── */
 export const StatusBreakdownChart = memo(function StatusBreakdownChart({ data }: { data?: { name: string; value: number }[] }) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   return (
     <Card>
@@ -125,8 +123,7 @@ export const StatusBreakdownChart = memo(function StatusBreakdownChart({ data }:
 
 /* ─── Top Countries ─── */
 export const TopCountriesChart = memo(function TopCountriesChart({ data }: { data?: { country: string; count: number }[] }) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   if (!data || data.length === 0) return null;
 

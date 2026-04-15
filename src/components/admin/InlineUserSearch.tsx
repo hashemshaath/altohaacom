@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { CACHE } from "@/lib/queryConfig";
 import { useState, useCallback, useRef, memo } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -18,8 +19,7 @@ interface InlineUserSearchProps {
 }
 
 export const InlineUserSearch = memo(function InlineUserSearch({ onSelectUser, onClose }: InlineUserSearchProps) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const [query, setQuery] = useState("");
   const [selectedIndex, setSelectedIndex] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);

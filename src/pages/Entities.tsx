@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useMemo, useCallback, memo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -112,10 +113,9 @@ const FeaturedEntities = memo(function FeaturedEntities({
 
 /* ─── Main Page ─── */
 export default function Entities() {
-  const { language } = useLanguage();
   const { user } = useAuth();
+  const isAr = useIsAr();
   const queryClient = useQueryClient();
-  const isAr = language === "ar";
   const [search, setSearch] = useState("");
   const [typeFilter, setTypeFilter] = useState<string>("all");
   const [scopeFilter, setScopeFilter] = useState<string>("all");

@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useHomepageSection } from "@/hooks/useHomepageSections";
 import { cn } from "@/lib/utils";
@@ -13,8 +14,7 @@ interface Props {
  * Renders title/subtitle from DB config with a professional "coming soon" state.
  */
 export default function GenericHomepageSection({ sectionKey }: Props) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const section = useHomepageSection(sectionKey);
 
   if (!section || !section.is_visible) return null;

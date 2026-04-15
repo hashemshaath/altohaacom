@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { CACHE } from "@/lib/queryConfig";
 import { useState, memo } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -70,7 +71,7 @@ const metricIcons: Record<string, React.ElementType> = {
 
 export const MLPredictionsPanel = memo(function MLPredictionsPanel() {
   const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const { data, isLoading, refetch, isFetching } = useQuery<MLInsightsData>({
     queryKey: ["ms-insights-ai"],

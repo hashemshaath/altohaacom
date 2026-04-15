@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -18,9 +19,8 @@ export default function AcceptInvite() {
   const token = searchParams.get("token");
   const navigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
-  const { language } = useLanguage();
+  const isAr = useIsAr();
   const { toast } = useToast();
-  const isAr = language === "ar";
 
   const { data: invite, isLoading } = useQuery({
     queryKey: ["employeeInvite", token],

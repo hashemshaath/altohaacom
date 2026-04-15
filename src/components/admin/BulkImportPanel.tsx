@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useRef, memo } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import type { Json } from "@/integrations/supabase/types";
@@ -42,10 +43,9 @@ const ENTITY_LABELS: Record<EntityType, { en: string; ar: string }> = {
 };
 
 export const BulkImportPanel = memo(function BulkImportPanel({ entityType, onImportComplete, competitionNumber }: BulkImportPanelProps) {
-  const { language } = useLanguage();
   const { user } = useAuth();
+  const isAr = useIsAr();
   const queryClient = useQueryClient();
-  const isAr = language === "ar";
   const t = (en: string, ar: string) => (isAr ? ar : en);
   const fileInputRef = useRef<HTMLInputElement>(null);
 

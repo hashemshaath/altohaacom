@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { Navigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -14,11 +15,10 @@ import { ShieldX } from "lucide-react";
  * Uses server-side role check — cannot be bypassed client-side.
  */
 export const AdminRoute = memo(function AdminRoute({ children }: { children: React.ReactNode }) {
+  const isAr = useIsAr();
   const { user, loading: authLoading } = useAuth();
   const { hasAdminAccess, canAccessPage, isSuperAdminOnlyPage, isLoading: adminLoading } = useAdminRole();
   const location = useLocation();
-  const { language } = useLanguage();
-  const isAr = language === "ar";
 
   if (authLoading || adminLoading) {
     return (

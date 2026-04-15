@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useRef, useState, memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -104,8 +105,7 @@ interface Props {
 }
 
 const EntityFormTabs = memo(function EntityFormTabs({ form, editingId, selectedManager, isSaving, onUpdate, onManagerChange, onSave, onCancel }: Props) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const [translatingField, setTranslatingField] = useState<string | null>(null);
   const [uploadingLogo, setUploadingLogo] = useState(false);
   const [uploadingCover, setUploadingCover] = useState(false);

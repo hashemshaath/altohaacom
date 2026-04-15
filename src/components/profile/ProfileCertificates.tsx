@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -44,12 +45,11 @@ const typeLabels: Record<string, { en: string; ar: string }> = {
 };
 
 export const ProfileCertificates = memo(function ProfileCertificates({ userId, isOwner = false }: ProfileCertificatesProps) {
-  const { language } = useLanguage();
   const { user } = useAuth();
+  const isAr = useIsAr();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
-  const isAr = language === "ar";
 
   const { data: certificates = [], isLoading } = useQuery({
     queryKey: ["profile-certificates", userId, isOwner],

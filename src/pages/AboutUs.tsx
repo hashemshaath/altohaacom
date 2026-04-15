@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { PageShell } from "@/components/PageShell";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent } from "@/components/ui/card";
@@ -6,8 +7,7 @@ import { Link } from "react-router-dom";
 import { Info, Target, Eye, Heart, Globe, Trophy, Users, GraduationCap, ArrowRight } from "lucide-react";
 
 export default function AboutUs() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const values = isAr ? [
     { icon: Trophy, title: "التميز", desc: "نسعى لتحقيق أعلى معايير الجودة في كل ما نقدمه لمجتمع الطهاة." },

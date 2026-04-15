@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
@@ -22,8 +23,7 @@ export const AddToCalendarButton = memo(function AddToCalendarButton({
   title, startDate, endDate, description, location, url,
   variant = "outline", size = "sm", className,
 }: Props) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const event = { title, startDate, endDate, description, location, url };
 
   const handleDownloadICS = () => {

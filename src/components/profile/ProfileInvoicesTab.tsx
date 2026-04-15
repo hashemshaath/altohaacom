@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, memo, useCallback } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
@@ -49,8 +50,7 @@ const statusLabels: Record<string, { en: string; ar: string }> = {
 };
 
 export const ProfileInvoicesTab = memo(function ProfileInvoicesTab({ userId }: ProfileInvoicesTabProps) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [selectedInvoiceId, setSelectedInvoiceId] = useState<string | null>(null);

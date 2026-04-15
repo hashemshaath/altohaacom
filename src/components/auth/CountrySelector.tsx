@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useMemo, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAllCountries, type Country } from "@/hooks/useCountries";
@@ -20,8 +21,7 @@ interface CountrySelectorProps {
 }
 
 export const CountrySelector = memo(function CountrySelector({ value, onChange, label, required, showFlag = true }: CountrySelectorProps) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const { data: countries, isLoading } = useAllCountries();
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");

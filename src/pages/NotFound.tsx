@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useLocation, Link, useNavigate } from "react-router-dom";
 import { SEOHead } from "@/components/SEOHead";
 import { Button } from "@/components/ui/button";
@@ -71,6 +72,7 @@ function getDiagnosis(pathname: string): DiagnosisItem[] {
 }
 
 function getSuggestedLinks(pathname: string) {
+  const isAr = useIsAr();
   const links: { to: string; labelEn: string; labelAr: string }[] = [
     { to: "/", labelEn: "Homepage", labelAr: "الصفحة الرئيسية" },
   ];
@@ -95,8 +97,6 @@ function getSuggestedLinks(pathname: string) {
 const NotFound = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { language } = useLanguage();
-  const isAr = language === "ar";
 
   const diagnosis = getDiagnosis(location.pathname);
   const suggestions = getSuggestedLinks(location.pathname);

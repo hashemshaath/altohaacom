@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, memo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -20,8 +21,7 @@ interface Props {
 }
 
 export const BlindJudgingPanel = memo(function BlindJudgingPanel({ competitionId, isOrganizer, blindJudgingEnabled = false, blindCodePrefix = "ENTRY" }: Props) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const queryClient = useQueryClient();
   const [enabled, setEnabled] = useState(blindJudgingEnabled);
   const [prefix, setPrefix] = useState(blindCodePrefix);

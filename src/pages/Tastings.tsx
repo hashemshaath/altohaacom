@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -24,10 +25,9 @@ const statusColors: Record<string, string> = {
 };
 
 export default function Tastings() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
   const navigate = useNavigate();
   const { user } = useAuth();
+  const isAr = useIsAr();
   const { data: sessions, isLoading } = useTastingSessions();
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");

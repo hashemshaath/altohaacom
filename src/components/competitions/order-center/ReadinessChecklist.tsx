@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useMemo, memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -28,8 +29,7 @@ interface ReadinessItem {
 }
 
 export const ReadinessChecklist = memo(function ReadinessChecklist({ competitionId }: Props) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const { data: lists } = useQuery({
     queryKey: ["readiness-lists", competitionId],

@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, lazy, Suspense, useCallback, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
@@ -63,6 +64,7 @@ const TAB_GROUPS = [
 ];
 
 function TabSkeleton() {
+  const isAr = useIsAr();
   return (
     <div className="space-y-4 p-4">
       <div className="flex gap-3">
@@ -77,8 +79,7 @@ function TabSkeleton() {
 }
 
 export const OrderCenterHub = memo(function OrderCenterHub({ competitionId, isOrganizer }: Props) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const [activeTab, setActiveTab] = useState("overview");
 
   // Show toast alerts for overdue/upcoming deadlines on load

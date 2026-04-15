@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -10,8 +11,7 @@ import { MS_PER_DAY, MS_PER_WEEK, QUERY_LIMIT_LARGE } from "@/lib/constants";
 import { CACHE } from "@/lib/queryConfig";
 
 export const WalletAdminOverview = memo(function WalletAdminOverview() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const { data: walletStats } = useQuery({
     queryKey: ["admin-wallet-overview"],

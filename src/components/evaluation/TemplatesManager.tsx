@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, memo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -61,6 +62,7 @@ interface Template {
 }
 
 function useEvaluationTemplates(domainId?: string) {
+  const isAr = useIsAr();
   return useQuery({
     queryKey: ["evaluation-templates", domainId],
     queryFn: async () => {
@@ -77,8 +79,7 @@ function useEvaluationTemplates(domainId?: string) {
 }
 
 export const TemplatesManager = memo(function TemplatesManager() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const queryClient = useQueryClient();
   const { data: domains } = useEvaluationDomains();
   const [selectedDomain, setSelectedDomain] = useState<string>("");

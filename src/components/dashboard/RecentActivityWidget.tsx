@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useEffect, useState, useCallback, memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -32,8 +33,8 @@ const ICON_MAP = {
 
 export const RecentActivityWidget = memo(function RecentActivityWidget() {
   const { user } = useAuth();
+  const isAr = useIsAr();
   const { language, t } = useLanguage();
-  const isAr = language === "ar";
   const [realtimeItems, setRealtimeItems] = useState<ActivityItem[]>([]);
 
   const { data: activities, isLoading } = useQuery({

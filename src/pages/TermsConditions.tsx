@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { SEOHead } from "@/components/SEOHead";
@@ -8,8 +9,7 @@ import { Separator } from "@/components/ui/separator";
 import { FileText, Calendar } from "lucide-react";
 
 export default function TermsConditions() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const sections = isAr ? [
     { title: "١. التعريفات", content: "• \"المنصة\": منصة الطهاة الإلكترونية المتاحة عبر الموقع والتطبيقات المرتبطة بها.\n• \"المستخدم\": كل شخص طبيعي أو اعتباري يستخدم المنصة.\n• \"الخدمات\": جميع الخدمات المقدمة عبر المنصة بما في ذلك المسابقات والمعارض والدورات والتواصل المهني.\n• \"المحتوى\": أي نصوص أو صور أو فيديوهات أو بيانات يتم نشرها على المنصة." },

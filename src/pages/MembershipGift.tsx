@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
@@ -37,9 +38,8 @@ const DURATION_OPTIONS = [
 ];
 
 export default function MembershipGift() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
   const { user } = useAuth();
+  const isAr = useIsAr();
   const navigate = useNavigate();
 
   const [step, setStep] = useState<"select" | "recipient" | "preview" | "success">("select");

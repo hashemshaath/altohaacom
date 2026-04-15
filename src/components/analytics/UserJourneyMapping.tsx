@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, memo, useMemo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
@@ -82,8 +83,7 @@ const FLOW_COLORS = [
 ];
 
 export const UserJourneyMapping = memo(function UserJourneyMapping() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const [period, setPeriod] = useState("7d");
   const [tab, setTab] = useState("flows");
 

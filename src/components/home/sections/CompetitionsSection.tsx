@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo, forwardRef } from "react";
 import { ROUTES } from "@/config/routes";
 import { useQuery } from "@tanstack/react-query";
@@ -25,8 +26,7 @@ const STATUS_STYLES: Record<string, { en: string; ar: string; dot: string }> = {
 };
 
 const CompetitionsSection = memo(forwardRef<HTMLElement>(function CompetitionsSection(_props, _ref) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const config = useSectionConfig();
 
   const itemCount = config?.item_count || 6;

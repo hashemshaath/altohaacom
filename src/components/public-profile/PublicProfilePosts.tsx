@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo, type KeyboardEvent, type MouseEvent } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -16,8 +17,7 @@ interface Props {
 }
 
 export const PublicProfilePosts = memo(function PublicProfilePosts({ userId, isOwnProfile }: Props) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const navigate = useNavigate();
 
   const { data: posts = [], isLoading } = useQuery({

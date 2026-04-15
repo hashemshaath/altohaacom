@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useMemo, memo } from "react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
@@ -12,10 +13,9 @@ import { cn } from "@/lib/utils";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
 export const AdminMobileNavDrawer = memo(function AdminMobileNavDrawer() {
+  const isAr = useIsAr();
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
-  const { language } = useLanguage();
-  const isAr = language === "ar";
   const { isSuperAdmin, isFullAdmin } = useAdminRole();
 
   const roleSections = useMemo(() => {

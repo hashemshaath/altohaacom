@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { forwardRef } from "react";
 import { useScrolled } from "@/hooks/useScrolled";
 import { Link } from "react-router-dom";
@@ -43,10 +44,9 @@ export const moreLinks = [
 
 export const Header = forwardRef<HTMLElement>(function Header(_, ref) {
   const { user } = useAuth();
-  const { language } = useLanguage();
+  const isAr = useIsAr();
   const { data: userRoles = [] } = useUserRoles();
   const isJudge = userRoles.includes("judge");
-  const isAr = language === "ar";
   const siteSettings = useSiteSettingsContext();
   const headerCfg = siteSettings.header || {};
   const brandCfg = siteSettings.branding || {};
