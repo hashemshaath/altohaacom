@@ -74,7 +74,7 @@ function useSwipe(onLeft: () => void, onRight: () => void) {
   };
 }
 
-function FallbackHero({ }: {: boolean }) {
+function FallbackHero() {
   const isAr = useIsAr();
   return (
     <section className="relative overflow-hidden bg-gradient-to-br from-primary/5 via-background to-accent/5" dir={isAr ? "rtl" : "ltr"}>

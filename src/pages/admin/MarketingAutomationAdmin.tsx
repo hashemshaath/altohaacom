@@ -415,7 +415,7 @@ export default function MarketingAutomationAdmin() {
 }
 
 // ── Workflow Builder Component ──────────────────────
-function WorkflowBuilder({ }: {: boolean }) {
+function WorkflowBuilder() {
   const isAr = useIsAr();
   const [steps, setSteps] = useState<WorkflowStep[]>([
     { id: "1", type: "email", label: isAr ? "بريد ترحيبي" : "Welcome Email" },
