@@ -327,10 +327,12 @@ export default function ArticleDetail() {
             <div className="relative w-full aspect-[2/1] sm:aspect-[2.4/1] max-h-[600px]">
               <img src={article.featured_image_url!}
                 alt={title}
+                width={1200} height={500}
                 className="absolute inset-0 w-full h-full object-cover will-change-transform"
                 onError={() => setImageFailed(true)}
                 loading="eager"
                 fetchPriority="high"
+                decoding="async"
               />
               {/* 4-layer cinematic gradient for depth */}
               <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/50 to-black/10" />

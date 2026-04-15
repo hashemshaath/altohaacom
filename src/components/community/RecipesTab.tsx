@@ -160,7 +160,7 @@ export const RecipesTab = memo(function RecipesTab() {
           <div key={recipe.id} className="group overflow-hidden rounded-xl border border-border/15 bg-card transition-all hover:shadow-md hover:border-primary/15">
             {recipe.image_url && (
               <div className="aspect-[16/10] overflow-hidden bg-muted">
-                <img src={recipe.image_url} alt={recipe.title} className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105" loading="lazy" decoding="async" />
+                <img src={recipe.image_url} alt={recipe.title} width={400} height={250} className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105" loading="lazy" decoding="async" />
               </div>
             )}
             <div className="p-3.5">

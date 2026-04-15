@@ -80,7 +80,7 @@ export const AdBanner = forwardRef<HTMLDivElement, AdBannerProps>(function AdBan
   return (
     <div ref={ref} role="button" tabIndex={0} onKeyDown={(e) => e.key === "Enter" && handleClick()} aria-label={isAr ? creative.title_ar || creative.title || "إعلان" : creative.title || "Advertisement"} className={cn("relative group cursor-pointer overflow-hidden rounded-xl border border-border/40 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none", className)} onClick={handleClick}>
       {creative.image_url && (
-        <img src={creative.image_url} alt={isAr ? creative.title_ar || creative.title : creative.title || "Ad"} className="w-full h-full object-cover" loading="lazy" />
+        <img src={creative.image_url} alt={isAr ? creative.title_ar || creative.title : creative.title || "Ad"} width={728} height={90} className="w-full h-full object-cover" loading="lazy" decoding="async" />
       )}
       {!creative.image_url && (
         <div className="flex flex-col items-center justify-center p-4 bg-muted/50 min-h-[100px]">
