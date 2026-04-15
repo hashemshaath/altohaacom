@@ -196,7 +196,7 @@ const MembershipAnalyticsDashboard = memo(function MembershipAnalyticsDashboard(
   const { exportData, isExporting } = useAdminExport();
 
   const handleExport = useCallback((fmt: "csv" | "json") => {
-    const rows: Record<string, unknown>[] = [];
+    const rows: Record<string, any>[] = [];
     // Tier distribution
     for (const t of tierDist || []) {
       rows.push({ section: "Tier Distribution", tier: t.tier, count: t.value, percentage: t.pct });

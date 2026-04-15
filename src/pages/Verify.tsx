@@ -43,8 +43,8 @@ export default function Verify() {
       if (!searchedCode) return null;
       const { data, error } = await supabase.rpc("verify_certificate", { p_code: searchedCode.toUpperCase() });
       if (error) throw error;
-      if (!data || (data as Record<string, unknown>[]).length === 0) return null;
-      return (data as Record<string, unknown>[])[0];
+      if (!data || (data as Record<string, any>[]).length === 0) return null;
+      return (data as Record<string, any>[])[0];
     },
     enabled: !!searchedCode && !qrResult,
   });
@@ -61,11 +61,11 @@ export default function Verify() {
             .select("full_name, username, specialization, city, bio, avatar_url, country_code, website")
             .eq("username", qrResult.entity_id)
             .maybeSingle();
-          return data ? { ...(data as Record<string, unknown>), type: "user" as const } : null;
+          return data ? { ...(data as Record<string, any>), type: "user" as const } : null;
         }
         case "certificate": {
           const { data } = await supabase.rpc("verify_certificate", { p_code: qrResult.entity_id });
-          const arr = data as Record<string, unknown>[] | null;
+          const arr = data as Record<string, any>[] | null;
           return arr && arr.length > 0 ? { ...arr[0], type: "certificate" as const } : null;
         }
         case "invoice": {
@@ -74,7 +74,7 @@ export default function Verify() {
             .select("invoice_number, total_amount, currency, status, due_date, created_at")
             .eq("invoice_number", qrResult.entity_id)
             .maybeSingle();
-          return data ? { ...(data as Record<string, unknown>), type: "invoice" as const } : null;
+          return data ? { ...(data as Record<string, any>), type: "invoice" as const } : null;
         }
         case "competition": {
           const { data } = await supabase
@@ -82,7 +82,7 @@ export default function Verify() {
             .select("title, title_ar, competition_start, competition_end, venue, city, country, status, competition_number, cover_image_url")
             .eq("id", qrResult.entity_id)
             .maybeSingle();
-          return data ? { ...(data as Record<string, unknown>), type: "competition" as const } : null;
+          return data ? { ...(data as Record<string, any>), type: "competition" as const } : null;
         }
         case "company": {
           const { data } = await supabase
@@ -90,7 +90,7 @@ export default function Verify() {
             .select("name, name_ar, type, status, company_number, email, phone, city, country, logo_url, website")
             .eq("id", qrResult.entity_id)
             .maybeSingle();
-          return data ? { ...(data as Record<string, unknown>), type: "company" as const } : null;
+          return data ? { ...(data as Record<string, any>), type: "company" as const } : null;
         }
         case "exhibition": {
           const { data } = await supabase
@@ -98,7 +98,7 @@ export default function Verify() {
             .select("title, title_ar, start_date, end_date, venue, city, country, status, cover_image_url, slug")
             .eq("id", qrResult.entity_id)
             .maybeSingle();
-          return data ? { ...(data as Record<string, unknown>), type: "exhibition" as const } : null;
+          return data ? { ...(data as Record<string, any>), type: "exhibition" as const } : null;
         }
         case "participant": {
           const { data: reg } = await supabase
@@ -336,8 +336,8 @@ function VerificationResult({
   code,
   onSaveContact,
 }: {
-  result: Record<string, unknown>;
-  entityDetails: Record<string, unknown> | null;
+  result: Record<string, any>;
+  entityDetails: Record<string, any> | null;
   code: string;
   onSaveContact: () => void;
 }) {
