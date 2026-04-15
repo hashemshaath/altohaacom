@@ -36,7 +36,7 @@ export function deriveCompetitionStatus(params: {
   const compStart = params.competitionStart ? new Date(params.competitionStart).getTime() : null;
   const compEnd = params.competitionEnd ? new Date(params.competitionEnd).getTime() : null;
 
-  const dayMs = 1000 * 60 * 60 * 24;
+  const dayMs = MS_PER_DAY;
 
   // Competition already ended
   if (compEnd && now > compEnd) {
