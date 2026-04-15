@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useMemo } from "react";
 import { Search, BookOpen, HelpCircle, MessageSquare, ChevronRight, Ticket, Headphones } from "lucide-react";
 import { SEOHead } from "@/components/SEOHead";
 import { Header } from "@/components/Header";
@@ -7,33 +7,11 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { AIAssistant } from "@/components/knowledge/AIAssistant";
 import { useLanguage } from "@/i18n/LanguageContext";
-import { supabase } from "@/integrations/supabase/client";
 import { Link } from "react-router-dom";
-import { QUERY_LIMIT_LARGE } from "@/lib/constants";
-
-interface FAQ {
-  id: string;
-  question: string;
-  question_ar: string | null;
-  answer: string;
-  answer_ar: string | null;
-  category: string;
-  is_featured: boolean;
-}
-
-interface KnowledgeArticle {
-  id: string;
-  title: string;
-  title_ar: string | null;
-  content: string;
-  content_ar: string | null;
-  category: string;
-  tags: string[];
-}
+import { useHelpCenterData } from "@/hooks/useHelpCenterData";
 
 const helpCategories = [
   { id: "getting-started", icon: BookOpen, labelEn: "Getting Started", labelAr: "البدء" },
@@ -45,26 +23,11 @@ const helpCategories = [
 export default function HelpCenter() {
   const { t, language } = useLanguage();
   const [searchQuery, setSearchQuery] = useState("");
-  const [faqs, setFaqs] = useState<FAQ[]>([]);
-  const [articles, setArticles] = useState<KnowledgeArticle[]>([]);
-  const [loading, setLoading] = useState(true);
   const [activeCategory, setActiveCategory] = useState("all");
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      const [faqsRes, articlesRes] = await Promise.all([
-        supabase.from("faqs").select("id, question, question_ar, answer, answer_ar, category, sort_order, is_featured").order("sort_order").limit(QUERY_LIMIT_LARGE),
-        supabase.from("knowledge_articles").select("id, title, title_ar, content, content_ar, category, status, tags, view_count, helpful_count, created_at, updated_at").eq("status", "published").order("created_at", { ascending: false }).limit(QUERY_LIMIT_LARGE),
-      ]);
-
-      if (faqsRes.data) setFaqs(faqsRes.data);
-      if (articlesRes.data) setArticles(articlesRes.data);
-      setLoading(false);
-    };
-
-    fetchData();
-  }, []);
+  const { data, isLoading: loading } = useHelpCenterData();
+  const faqs = data?.faqs ?? [];
+  const articles = data?.articles ?? [];
 
   const filteredFaqs = useMemo(() => faqs.filter(faq => {
     const matchesSearch = searchQuery === "" || 
