@@ -200,7 +200,7 @@ export function useCreateScheduleEvent() {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any -- non-schema table
       const { data, error } = await supabase
         .from("chef_schedule_events")
-        .insert({ ...event, chef_id: event.chef_id || user?.id, created_by: user?.id })
+        .insert({ ...event, chef_id: event.chef_id || user?.id, created_by: user?.id } as any)
         .select()
         .single();
       if (error) throw error;

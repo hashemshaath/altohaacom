@@ -63,7 +63,7 @@ export function useCreateGlobalEvent() {
     mutationFn: async (event: Partial<GlobalEventRecord>) => {
       const { data, error } = await supabase
         .from("global_events")
-        .insert(event)
+        .insert(event as any)
         .select()
         .single();
       if (error) throw error;
