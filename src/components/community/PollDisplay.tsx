@@ -1,18 +1,10 @@
 import { useIsAr } from "@/hooks/useIsAr";
-import { useState, useEffect, memo } from "react";
+import { memo } from "react";
 import { useAuth } from "@/contexts/AuthContext";
-import { supabase } from "@/integrations/supabase/client";
-import { Button } from "@/components/ui/button";
 import { BarChart3, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
-
-interface PollOption {
-  id: string;
-  option_text: string;
-  sort_order: number;
-  vote_count: number;
-}
+import { usePollDisplay } from "@/hooks/community/usePollDisplay";
 
 interface PollDisplayProps {
   postId: string;
@@ -21,85 +13,11 @@ interface PollDisplayProps {
 export const PollDisplay = memo(function PollDisplay({ postId }: PollDisplayProps) {
   const { user } = useAuth();
   const isAr = useIsAr();
-  const [poll, setPoll] = useState<{ id: string; question: string | null; ends_at: string | null } | null>(null);
-  const [options, setOptions] = useState<PollOption[]>([]);
-  const [userVoteOptionId, setUserVoteOptionId] = useState<string | null>(null);
-  const [totalVotes, setTotalVotes] = useState(0);
-  const [voting, setVoting] = useState(false);
-
-  useEffect(() => {
-    fetchPoll();
-  }, [postId]);
-
-  const fetchPoll = async () => {
-    const { data: pollData } = await supabase
-      .from("post_polls")
-      .select("id, question, ends_at")
-      .eq("post_id", postId)
-      .maybeSingle();
-
-    if (!pollData) return;
-    setPoll(pollData);
-
-    const { data: optionsData } = await supabase
-      .from("post_poll_options")
-      .select("id, option_text, sort_order")
-      .eq("poll_id", pollData.id)
-      .order("sort_order");
-
-    const { data: votesData } = await supabase
-      .from("post_poll_votes")
-      .select("option_id, user_id")
-      .eq("poll_id", pollData.id);
-
-    const votesByOption = new Map<string, number>();
-    let myVote: string | null = null;
-    (votesData || []).forEach((v) => {
-      votesByOption.set(v.option_id, (votesByOption.get(v.option_id) || 0) + 1);
-      if (user && v.user_id === user.id) myVote = v.option_id;
-    });
-
-    const enriched = (optionsData || []).map((o) => ({
-      ...o,
-      vote_count: votesByOption.get(o.id) || 0,
-    }));
-
-    setOptions(enriched);
-    setUserVoteOptionId(myVote);
-    setTotalVotes(votesData?.length || 0);
-  };
-
-  const handleVote = async (optionId: string) => {
-    if (!user || voting) return;
-    setVoting(true);
-
-    try {
-      if (userVoteOptionId) {
-        // Remove old vote
-        await supabase
-          .from("post_poll_votes")
-          .delete()
-          .eq("poll_id", poll!.id)
-          .eq("user_id", user.id);
-      }
-
-      if (optionId !== userVoteOptionId) {
-        await supabase.from("post_poll_votes").insert({
-          poll_id: poll!.id,
-          option_id: optionId,
-          user_id: user.id,
-        });
-      }
-
-      await fetchPoll();
-    } finally {
-      setVoting(false);
-    }
-  };
+  const { poll, isVoting, vote } = usePollDisplay(postId);
 
   if (!poll) return null;
 
-  const hasVoted = !!userVoteOptionId;
+  const hasVoted = !!poll.userVoteOptionId;
   const isExpired = poll.ends_at && new Date(poll.ends_at) < new Date();
   const showResults = hasVoted || isExpired;
 
@@ -112,21 +30,21 @@ export const PollDisplay = memo(function PollDisplay({ postId }: PollDisplayProp
         </p>
       )}
       <div className="space-y-1.5">
-        {options.map((opt) => {
-          const pct = totalVotes > 0 ? Math.round((opt.vote_count / totalVotes) * 100) : 0;
-          const isMyVote = opt.id === userVoteOptionId;
+        {poll.options.map((opt) => {
+          const pct = poll.totalVotes > 0 ? Math.round((opt.vote_count / poll.totalVotes) * 100) : 0;
+          const isMyVote = opt.id === poll.userVoteOptionId;
 
           return (
             <button
               key={opt.id}
-              onClick={() => !isExpired && handleVote(opt.id)}
-              disabled={voting || !!isExpired}
+              onClick={() => !isExpired && vote(opt.id)}
+              disabled={isVoting || !!isExpired}
               className={cn(
                 "relative w-full rounded-xl border px-3 py-2 text-start text-sm transition-all overflow-hidden",
                 isMyVote
                   ? "border-primary/40 bg-primary/5"
                   : "border-border hover:border-primary/20 hover:bg-muted/50",
-                (voting || isExpired) && "cursor-default"
+                (isVoting || isExpired) && "cursor-default"
               )}
             >
               {showResults && (
@@ -154,7 +72,7 @@ export const PollDisplay = memo(function PollDisplay({ postId }: PollDisplayProp
         })}
       </div>
       <p className="text-xs text-muted-foreground">
-        <AnimatedCounter value={totalVotes} className="inline" /> {isAr ? "صوت" : totalVotes === 1 ? "vote" : "votes"}
+        <AnimatedCounter value={poll.totalVotes} className="inline" /> {isAr ? "صوت" : poll.totalVotes === 1 ? "vote" : "votes"}
         {isExpired && (isAr ? " · انتهى" : " · Ended")}
       </p>
     </div>

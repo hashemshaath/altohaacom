@@ -1,34 +1,20 @@
 import { useIsAr } from "@/hooks/useIsAr";
-import { useState, useEffect, useCallback, memo } from "react";
+import { memo } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
-import { supabase } from "@/integrations/supabase/client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle,
 } from "@/components/ui/dialog";
-import { Heart, MessageCircle, Repeat2, Bookmark, Share2, User, X } from "lucide-react";
+import { Heart, X } from "lucide-react";
 import { toEnglishDigits } from "@/lib/formatNumber";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { PostComposer } from "./PostComposer";
 import { MentionText } from "./MentionText";
 import { cn } from "@/lib/utils";
-
-interface ThreadReply {
-  id: string;
-  content: string;
-  image_urls: string[];
-  image_url: string | null;
-  created_at: string;
-  author_id: string;
-  author_name: string | null;
-  author_username: string | null;
-  author_avatar: string | null;
-  likes_count: number;
-  is_liked: boolean;
-}
+import { usePostThread } from "@/hooks/community/usePostThread";
 
 interface PostThreadProps {
   postId: string;
@@ -39,93 +25,7 @@ interface PostThreadProps {
 export const PostThread = memo(function PostThread({ postId, onClose, onPostUpdated }: PostThreadProps) {
   const { user } = useAuth();
   const isAr = useIsAr();
-  const [parentPost, setParentPost] = useState<{
-    avatar_url?: string; display_name?: string; full_name?: string;
-    username?: string; author_id: string; content: string;
-    image_url?: string | null; image_urls?: string[] | null;
-    created_at: string; [key: string]: unknown;
-  } | null>(null);
-  const [replies, setReplies] = useState<ThreadReply[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  const fetchThread = useCallback(async () => {
-    // Fetch parent post
-    const { data: post } = await supabase.from("posts").select("id, content, author_id, image_url, image_urls, video_url, link_url, link_preview, visibility, replies_count, reposts_count, is_pinned, reply_to_post_id, created_at, updated_at").eq("id", postId).single();
-    if (!post) return;
-
-    // Fetch profile
-    const { data: profile } = await supabase.from("profiles")
-      .select("full_name, display_name, display_name_ar, username, avatar_url, specialization")
-      .eq("user_id", post.author_id).single();
-
-    setParentPost({ ...post, ...profile });
-
-    // Fetch replies
-    const { data: repliesData } = await supabase
-      .from("posts")
-      .select("id, author_id, content, created_at, edited_at, image_url, image_urls, is_pinned, link_preview, link_url, moderation_status, post_number, replies_count, reply_to_post_id, reposts_count, video_url, visibility")
-      .eq("reply_to_post_id", postId)
-      .eq("moderation_status", "approved")
-      .order("created_at", { ascending: true });
-
-    if (repliesData && repliesData.length > 0) {
-      const authorIds = [...new Set(repliesData.map((r) => r.author_id))];
-      const replyIds = repliesData.map((r) => r.id);
-
-      const [profilesRes, likesRes, userLikesRes] = await Promise.all([
-        supabase.from("profiles").select("user_id, full_name, full_name_ar, display_name, display_name_ar, username, avatar_url").in("user_id", authorIds),
-        supabase.from("post_likes").select("post_id").in("post_id", replyIds),
-        user ? supabase.from("post_likes").select("post_id").eq("user_id", user.id).in("post_id", replyIds) : { data: [] },
-      ]);
-
-      const pMap = new Map(profilesRes.data?.map((p) => [p.user_id, p]) || []);
-      const lMap = new Map<string, number>();
-      likesRes.data?.forEach((l) => lMap.set(l.post_id, (lMap.get(l.post_id) || 0) + 1));
-      const likedSet = new Set(userLikesRes.data?.map((l) => l.post_id) || []);
-
-      setReplies(
-        repliesData.map((r) => {
-          const p = pMap.get(r.author_id);
-          return {
-            id: r.id,
-            content: r.content,
-            image_urls: (r.image_urls as string[] | null) || [],
-            image_url: r.image_url,
-            created_at: r.created_at,
-            author_id: r.author_id,
-            author_name: p?.display_name || p?.full_name || null,
-            author_username: p?.username || null,
-            author_avatar: p?.avatar_url || null,
-            likes_count: lMap.get(r.id) || 0,
-            is_liked: likedSet.has(r.id),
-          };
-        })
-      );
-    }
-    setLoading(false);
-  }, [postId, user?.id]);
-
-  useEffect(() => {
-    let cancelled = false;
-    fetchThread().then(() => {
-      if (cancelled) return;
-    });
-    return () => { cancelled = true; };
-  }, [fetchThread]);
-
-  const handleLikeReply = async (replyId: string, isLiked: boolean) => {
-    if (!user) return;
-    if (isLiked) {
-      await supabase.from("post_likes").delete().eq("post_id", replyId).eq("user_id", user.id);
-    } else {
-      await supabase.from("post_likes").insert({ post_id: replyId, user_id: user.id });
-    }
-    setReplies((prev) =>
-      prev.map((r) =>
-        r.id === replyId ? { ...r, is_liked: !isLiked, likes_count: isLiked ? r.likes_count - 1 : r.likes_count + 1 } : r
-      )
-    );
-  };
+  const { parentPost, replies, isLoading, refetch, toggleReplyLike } = usePostThread(postId);
 
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr);
@@ -147,7 +47,7 @@ export const PostThread = memo(function PostThread({ postId, onClose, onPostUpda
         </DialogHeader>
 
         <ScrollArea className="flex-1">
-          {loading ? (
+          {isLoading ? (
             <div className="flex items-center justify-center py-12">
               <div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" />
             </div>
@@ -175,7 +75,6 @@ export const PostThread = memo(function PostThread({ postId, onClose, onPostUpda
                   <MentionText content={parentPost.content} />
                 </div>
 
-                {/* Images */}
                 {(parentPost.image_urls?.length ? true : parentPost.image_url) && (
                   <div className={cn(
                     "mt-3 overflow-hidden rounded-2xl border border-border",
@@ -195,7 +94,7 @@ export const PostThread = memo(function PostThread({ postId, onClose, onPostUpda
               {/* Reply composer */}
               {user && (
                 <PostComposer
-                  onPosted={() => { fetchThread(); onPostUpdated(); }}
+                  onPosted={() => { refetch(); onPostUpdated(); }}
                   replyToPostId={postId}
                   placeholder={isAr ? "اكتب ردك..." : "Post your reply..."}
                   compact
@@ -243,7 +142,7 @@ export const PostThread = memo(function PostThread({ postId, onClose, onPostUpda
                               "h-7 gap-1 rounded-full px-2 text-xs hover:text-destructive hover:bg-destructive/10",
                               reply.is_liked ? "text-destructive" : "text-muted-foreground"
                             )}
-                            onClick={() => handleLikeReply(reply.id, reply.is_liked)}
+                            onClick={() => toggleReplyLike(reply.id, reply.is_liked)}
                           >
                             <Heart className={cn("h-3.5 w-3.5", reply.is_liked && "fill-current")} />
                             {reply.likes_count > 0 && <AnimatedCounter value={reply.likes_count} className="inline" />}
