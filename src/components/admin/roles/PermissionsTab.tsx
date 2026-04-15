@@ -13,8 +13,18 @@ import {
 } from "lucide-react";
 import { ROLE_META, ALL_ROLES, type AppRole } from "./types";
 
+interface Permission {
+  id: string;
+  code: string;
+  name: string;
+  name_ar?: string;
+  description?: string;
+  category?: string;
+  [key: string]: any;
+}
+
 interface Props {
-  permissions: Record<string, any>[];
+  permissions: Permission[];
   rolePerms: Record<string, any>[];
   allRolePerms: Record<string, any>[];
   rolePermsLoading: boolean;

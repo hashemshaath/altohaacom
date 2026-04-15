@@ -65,16 +65,16 @@ export default function Verify() {
         }
         case "certificate": {
           const { data } = await supabase.rpc("verify_certificate", { p_code: qrResult.entity_id });
-          const arr = data as Record<string, any>[] | null;
+          const arr = data as any[] | null;
           return arr && arr.length > 0 ? { ...arr[0], type: "certificate" as const } : null;
         }
         case "invoice": {
           const { data } = await supabase
             .from("invoices")
-            .select("invoice_number, total_amount, currency, status, due_date, created_at")
+            .select("invoice_number, amount, currency, status, due_date, created_at")
             .eq("invoice_number", qrResult.entity_id)
             .maybeSingle();
-          return data ? { ...(data as Record<string, any>), type: "invoice" as const } : null;
+          return data ? { ...(data as any), type: "invoice" as const } : null;
         }
         case "competition": {
           const { data } = await supabase
@@ -82,7 +82,7 @@ export default function Verify() {
             .select("title, title_ar, competition_start, competition_end, venue, city, country, status, competition_number, cover_image_url")
             .eq("id", qrResult.entity_id)
             .maybeSingle();
-          return data ? { ...(data as Record<string, any>), type: "competition" as const } : null;
+          return data ? { ...(data as any), type: "competition" as const } : null;
         }
         case "company": {
           const { data } = await supabase
@@ -90,7 +90,7 @@ export default function Verify() {
             .select("name, name_ar, type, status, company_number, email, phone, city, country, logo_url, website")
             .eq("id", qrResult.entity_id)
             .maybeSingle();
-          return data ? { ...(data as Record<string, any>), type: "company" as const } : null;
+          return data ? { ...(data as any), type: "company" as const } : null;
         }
         case "exhibition": {
           const { data } = await supabase
@@ -98,7 +98,7 @@ export default function Verify() {
             .select("title, title_ar, start_date, end_date, venue, city, country, status, cover_image_url, slug")
             .eq("id", qrResult.entity_id)
             .maybeSingle();
-          return data ? { ...(data as Record<string, any>), type: "exhibition" as const } : null;
+          return data ? { ...(data as any), type: "exhibition" as const } : null;
         }
         case "participant": {
           const { data: reg } = await supabase

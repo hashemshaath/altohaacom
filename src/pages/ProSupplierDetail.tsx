@@ -198,7 +198,7 @@ export default function ProSupplierDetail() {
     return filtered;
   }, [products, selectedCategory, productSearch, productSort]);
 
-  const productsByCategory = products.reduce<Record<string, unknown[]>>((acc, p: any) => {
+  const productsByCategory = products.reduce<Record<string, any[]>>((acc, p: any) => {
     const cat = p.category || "other";
     if (!acc[cat]) acc[cat] = [];
     acc[cat].push(p);
