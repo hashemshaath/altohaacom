@@ -484,12 +484,7 @@
   textarea::placeholder {
     color: var(--color-subtle);
   }
-  .dark input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="hidden"]):not([type="color"]),
-  .dark textarea,
-  .dark select {
-    background: hsl(var(--card));
-    border-color: hsl(var(--border));
-  }
+  /* Dark mode input overrides — see "Dark mode input overrides" section below */
 
   /* ── RULE 10: Minimum touch targets ── */
   button, [role="button"], [role="menuitem"], [role="tab"],
