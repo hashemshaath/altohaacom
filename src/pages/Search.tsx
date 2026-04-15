@@ -775,7 +775,7 @@ function PostRow({ data }: { data: PostResult }) {
         </div>
         {data.image_url && (
           <div className="w-16 h-16 rounded-xl overflow-hidden shrink-0 bg-muted">
-            <img loading="lazy" src={data.image_url} alt={data.title || "Result"} className="w-full h-full object-cover" />
+            <img loading="lazy" src={data.image_url} alt="Result" className="w-full h-full object-cover" />
           </div>
         )}
       </div>
