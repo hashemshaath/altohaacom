@@ -1,6 +1,6 @@
 import { lazy } from "react";
 import { Route, Navigate, useParams } from "react-router-dom";
-import Index from "@/pages/Index";
+const Index = lazy(() => import("@/pages/Index"));
 const OfflinePage = lazy(() => import("@/pages/OfflinePage"));
 const Auth = lazy(() => import("@/pages/Auth"));
 const CompanyLogin = lazy(() => import("@/pages/CompanyLogin"));
