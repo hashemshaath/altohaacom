@@ -1,14 +1,15 @@
 import { useIsAr } from "@/hooks/useIsAr";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { PageShell } from "@/components/PageShell";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
-import { Mail, Phone, MapPin, Clock, MessageSquare, Globe, Send, CheckCircle2, Loader2 } from "lucide-react";
+import { Mail, Phone, MapPin, Clock, MessageSquare, Globe, Send, CheckCircle2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { FormField, FormErrorSummary, SubmitButton } from "@/components/form";
+import { useFormValidation, rules } from "@/hooks/useFormValidation";
 
 const socialLinks = [
   { name: "Instagram", handle: "@altohacom", url: "https://instagram.com/altohacom" },
@@ -28,6 +29,18 @@ export default function ContactUs() {
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
 
+  const fieldConfig = useMemo(() => ({
+    name: { rules: [rules.required(isAr ? "الاسم" : "Name", "الاسم"), rules.maxLength(100)] },
+    email: { rules: [rules.required(isAr ? "البريد" : "Email", "البريد"), rules.email()] },
+    subject: { rules: [rules.maxLength(200)] },
+    message: { rules: [rules.required(isAr ? "الرسالة" : "Message", "الرسالة"), rules.minLength(10), rules.maxLength(1000)] },
+  }), [isAr]);
+
+  const { errors, errorList, onBlur, onChange, validateAll, resetErrors, getError } = useFormValidation({
+    fields: fieldConfig,
+    isAr,
+  });
+
   const contactInfo = [
     { icon: Phone, label: isAr ? "الهاتف" : "Phone", value: "+966 56 922 0777", href: "tel:+966569220777" },
     { icon: Mail, label: isAr ? "البريد الإلكتروني" : "Email", value: "info@altoha.com", href: "mailto:info@altoha.com" },
@@ -37,13 +50,12 @@ export default function ContactUs() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!form.name || !form.email || !form.message) return;
+    if (!validateAll(form)) return;
 
     setSending(true);
     try {
       const id = crypto.randomUUID();
 
-      // Store in notifications for admin
       await supabase.from("notifications").insert({
         user_id: "00000000-0000-0000-0000-000000000000",
         title: `📩 Contact: ${form.name}`,
@@ -54,7 +66,6 @@ export default function ContactUs() {
         metadata: { id, sender_name: form.name, sender_email: form.email, subject: form.subject, message: form.message } as Record<string, string>,
       });
 
-      // Send confirmation email
       await supabase.functions.invoke("send-transactional-email", {
         body: {
           templateName: "contact-confirmation",
@@ -66,6 +77,7 @@ export default function ContactUs() {
 
       setSent(true);
       setForm({ name: "", email: "", subject: "", message: "" });
+      resetErrors();
       toast({
         title: isAr ? "تم إرسال رسالتك بنجاح! ✉️" : "Message sent successfully! ✉️",
         description: isAr ? "سنتواصل معك قريباً" : "We'll get back to you soon",
@@ -79,6 +91,11 @@ export default function ContactUs() {
     } finally {
       setSending(false);
     }
+  };
+
+  const handleChange = (field: keyof typeof form, value: string) => {
+    setForm((f) => ({ ...f, [field]: value }));
+    onChange(field);
   };
 
   return (
@@ -117,27 +134,71 @@ export default function ContactUs() {
                     </Button>
                   </div>
                 ) : (
-                  <form onSubmit={handleSubmit} className="space-y-4">
-                    <div>
-                      <Label htmlFor="name">{isAr ? "الاسم" : "Name"} *</Label>
-                      <Input id="name" value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} placeholder={isAr ? "اسمك الكامل" : "Your full name"} required className="mt-1.5 rounded-xl" />
-                    </div>
-                    <div>
-                      <Label htmlFor="email">{isAr ? "البريد الإلكتروني" : "Email"} *</Label>
-                      <Input id="email" type="email" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} placeholder={isAr ? "بريدك الإلكتروني" : "Your email address"} required dir="ltr" className="mt-1.5 rounded-xl" />
-                    </div>
-                    <div>
-                      <Label htmlFor="subject">{isAr ? "الموضوع" : "Subject"}</Label>
-                      <Input id="subject" value={form.subject} onChange={e => setForm(f => ({ ...f, subject: e.target.value }))} placeholder={isAr ? "موضوع الرسالة" : "Message subject"} className="mt-1.5 rounded-xl" />
-                    </div>
-                    <div>
-                      <Label htmlFor="message">{isAr ? "الرسالة" : "Message"} *</Label>
-                      <Textarea id="message" value={form.message} onChange={e => setForm(f => ({ ...f, message: e.target.value }))} placeholder={isAr ? "اكتب رسالتك هنا..." : "Write your message here..."} required rows={4} className="mt-1.5 rounded-xl resize-none" />
-                    </div>
-                    <Button type="submit" disabled={sending || !form.name || !form.email || !form.message} className="w-full rounded-xl gap-2 touch-manipulation">
-                      {sending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
-                      {sending ? (isAr ? "جارِ الإرسال..." : "Sending...") : (isAr ? "إرسال الرسالة" : "Send Message")}
-                    </Button>
+                  <form onSubmit={handleSubmit} className="space-y-4" noValidate>
+                    <FormErrorSummary errors={errorList} />
+
+                    <FormField label={isAr ? "الاسم" : "Name"} htmlFor="name" required error={getError("name")}>
+                      <Input
+                        id="name"
+                        value={form.name}
+                        onChange={(e) => handleChange("name", e.target.value)}
+                        onBlur={() => onBlur("name", form.name)}
+                        state={errors.name ? "error" : "default"}
+                        placeholder={isAr ? "اسمك الكامل" : "Your full name"}
+                        maxCharacters={100}
+                        className="rounded-xl"
+                      />
+                    </FormField>
+
+                    <FormField label={isAr ? "البريد الإلكتروني" : "Email"} htmlFor="email" required error={getError("email")}>
+                      <Input
+                        id="email"
+                        type="email"
+                        value={form.email}
+                        onChange={(e) => handleChange("email", e.target.value)}
+                        onBlur={() => onBlur("email", form.email)}
+                        state={errors.email ? "error" : "default"}
+                        placeholder={isAr ? "بريدك الإلكتروني" : "Your email address"}
+                        dir="ltr"
+                        className="rounded-xl"
+                      />
+                    </FormField>
+
+                    <FormField label={isAr ? "الموضوع" : "Subject"} htmlFor="subject" error={getError("subject")}>
+                      <Input
+                        id="subject"
+                        value={form.subject}
+                        onChange={(e) => handleChange("subject", e.target.value)}
+                        onBlur={() => onBlur("subject", form.subject)}
+                        state={errors.subject ? "error" : "default"}
+                        placeholder={isAr ? "موضوع الرسالة" : "Message subject"}
+                        maxCharacters={200}
+                        className="rounded-xl"
+                      />
+                    </FormField>
+
+                    <FormField label={isAr ? "الرسالة" : "Message"} htmlFor="message" required error={getError("message")}>
+                      <Textarea
+                        id="message"
+                        value={form.message}
+                        onChange={(e) => handleChange("message", e.target.value)}
+                        onBlur={() => onBlur("message", form.message)}
+                        state={errors.message ? "error" : "default"}
+                        placeholder={isAr ? "اكتب رسالتك هنا..." : "Write your message here..."}
+                        rows={4}
+                        maxCharacters={1000}
+                        className="rounded-xl resize-none"
+                      />
+                    </FormField>
+
+                    <SubmitButton
+                      loading={sending}
+                      loadingText={isAr ? "جارِ الإرسال..." : "Sending..."}
+                      icon={<Send className="h-4 w-4" />}
+                      className="w-full rounded-xl"
+                    >
+                      {isAr ? "إرسال الرسالة" : "Send Message"}
+                    </SubmitButton>
                   </form>
                 )}
               </CardContent>
