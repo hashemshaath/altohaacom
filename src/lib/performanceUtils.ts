@@ -34,18 +34,18 @@ export function throttle<T extends (...args: unknown[]) => unknown>(fn: T, limit
 /**
  * Simple memoize for single-argument pure functions.
  */
-export function memoize<T extends (arg: unknown) => unknown>(fn: T, maxSize = 100): T {
-  const cache = new Map<unknown, ReturnType<T>>();
-  return ((arg) => {
-    if (cache.has(arg)) return cache.get(arg);
+export function memoize<A, R>(fn: (arg: A) => R, maxSize = 100): (arg: A) => R {
+  const cache = new Map<A, R>();
+  return (arg: A): R => {
+    if (cache.has(arg)) return cache.get(arg)!;
     const result = fn(arg);
     if (cache.size >= maxSize) {
       const firstKey = cache.keys().next().value;
-      cache.delete(firstKey);
+      cache.delete(firstKey!);
     }
     cache.set(arg, result);
     return result;
-  }) as T;
+  };
 }
 
 /**
