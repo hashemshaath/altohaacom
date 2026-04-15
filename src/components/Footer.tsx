@@ -137,7 +137,7 @@ export const Footer = forwardRef<HTMLElement>(function Footer(_, ref) {
           {/* Brand */}
           <div className="max-w-sm">
             <Link to="/" className="inline-flex items-center gap-2.5 group">
-              <img src={logoUrl} alt={siteName} className="h-8 w-auto" loading="lazy" />
+              <img src={logoUrl} alt={siteName} width={32} height={32} className="h-8 w-auto" loading="lazy" decoding="async" />
               <span className={cn("text-lg font-bold text-[hsl(220_13%_11%)] dark:text-foreground", !isAr && "font-serif")}>
                 {siteName}
               </span>

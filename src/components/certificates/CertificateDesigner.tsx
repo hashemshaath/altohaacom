@@ -1,5 +1,5 @@
-import { defaultDesign, defaultLines, defaultLinesAr } from "./types";
-import type { CertificateDesign } from "./types";
+import { defaultDesign, defaultLines, defaultLinesAr, professionalTemplates } from "./types";
+import type { CertificateDesign, SignatureItem } from "./types";
 import { useState, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Button } from "@/components/ui/button";
@@ -21,8 +21,6 @@ import {
 import { CertificateLineEditor } from "./CertificateLineEditor";
 import { CertificateLogoManager } from "./CertificateLogoManager";
 import { CertificatePreview } from "./CertificatePreview";
-import type { CertificateDesign, SignatureItem } from "./types";
-import { professionalTemplates } from "./types";
 
 export type { CertificateDesign } from "./types";
 
