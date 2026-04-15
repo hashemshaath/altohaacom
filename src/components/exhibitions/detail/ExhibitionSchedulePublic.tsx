@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { toast } from "@/hooks/use-toast";
 import { Clock, MapPin, Star, UserPlus, UserMinus, CalendarClock, Users, Mic } from "lucide-react";
-import { format, parseISO, isSameDay } from "date-fns";
+import { format, parseISO } from "date-fns";
 import { CACHE } from "@/lib/queryConfig";
 import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 

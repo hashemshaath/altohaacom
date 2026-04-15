@@ -1,8 +1,6 @@
 import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import { AdminStatusBadge } from "@/components/admin/AdminStatusBadge";
-import { AdminFilterBar } from "@/components/admin/AdminFilterBar";
-import { AdminTableCard } from "@/components/admin/AdminTableCard";
 import { useTableSort } from "@/hooks/useTableSort";
 import { usePagination } from "@/hooks/usePagination";
 import { SortableTableHead } from "@/components/admin/SortableTableHead";
@@ -30,8 +28,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Switch } from "@/components/ui/switch";
-import { toEnglishDigits } from "@/lib/formatNumber";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import {
   Package, Search, Plus, Eye, CheckCircle, XCircle, Clock, ChevronLeft,
@@ -40,7 +36,7 @@ import {
 } from "lucide-react";
 import { format } from "date-fns";
 
-import { type OrderDirection, type OrderCategory, statusColors, categoryLabels, defaultOrderForm, getCategoryLabel } from "./orders/ordersAdminTypes";
+import { type OrderDirection, type OrderCategory, categoryLabels } from "./orders/ordersAdminTypes";
 import { CompanyOrderDetailView } from "./orders/CompanyOrderDetailView";
 import { ShopOrderDetailView } from "./orders/ShopOrderDetailView";
 import { useOrdersData } from "./orders/useOrdersData";

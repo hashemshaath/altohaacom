@@ -8,7 +8,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Trophy, Flame, Star } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Link } from "react-router-dom";
-import { MS_PER_DAY, MS_PER_WEEK } from "@/lib/constants";
+import { MS_PER_WEEK } from "@/lib/constants";
 import { CACHE } from "@/lib/queryConfig";
 
 export const WeeklyHighlights = memo(function WeeklyHighlights() {

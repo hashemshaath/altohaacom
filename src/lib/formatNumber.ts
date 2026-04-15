@@ -17,7 +17,7 @@ export function formatNumber(value: number, options?: Intl.NumberFormatOptions):
 /**
  * Formats a date string to a localized display, but forces English numerals.
  */
-export function formatLocalizedDate(
+function formatLocalizedDate(
   dateStr: string | Date,
   locale: string,
   options?: Intl.DateTimeFormatOptions

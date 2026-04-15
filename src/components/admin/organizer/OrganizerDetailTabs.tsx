@@ -4,7 +4,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
 import {
   Briefcase, Calendar, BarChart3, Eye, ExternalLink, ChevronRight,
   Loader2, RefreshCw, TrendingUp, Users, Star, Activity, Zap, History,

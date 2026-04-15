@@ -1,5 +1,5 @@
 import { useIsAr } from "@/hooks/useIsAr";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -14,7 +14,6 @@ import {
   Gift, Star, Crown, Check, Loader2, Heart, AlertCircle, Clock, User,
 } from "lucide-react";
 import { toast } from "sonner";
-import { cn } from "@/lib/utils";
 import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 const TIER_NAMES: Record<string, { en: string; ar: string }> = {

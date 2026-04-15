@@ -1,5 +1,5 @@
 import { useIsAr } from "@/hooks/useIsAr";
-import { useState, lazy, Suspense, memo, useMemo } from "react";
+import { useState, Suspense, memo, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
@@ -27,10 +27,8 @@ import {
   Lock, Unlock, Globe, Smartphone, Key, CheckCircle, Wifi, WifiOff,
   FileSearch, ChevronRight,
 } from "lucide-react";
-import { format, subDays, subHours, formatDistanceToNow } from "date-fns";
-import { ar as arLocale } from "date-fns/locale";
+import { format, subDays, subHours } from "date-fns";
 import { cn } from "@/lib/utils";
-import { toast } from "@/hooks/use-toast";
 import { CACHE } from "@/lib/queryConfig";
 import { QUERY_LIMIT_LARGE, QUERY_LIMIT_MEDIUM } from "@/lib/constants";
 import { handleSupabaseError } from "@/lib/supabaseErrorHandler";

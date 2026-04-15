@@ -226,7 +226,7 @@ async function handleCertificateIssued(ctx: WorkflowContext) {
  * Check for competitions starting tomorrow and send reminders.
  * Should be called from a scheduled edge function or manually.
  */
-export async function checkScheduledTriggers() {
+async function checkScheduledTriggers() {
   const tomorrow = new Date();
   tomorrow.setDate(tomorrow.getDate() + 1);
   const tomorrowStr = tomorrow.toISOString().split("T")[0];

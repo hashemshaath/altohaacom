@@ -22,7 +22,7 @@ import { AnimatedCounter } from "@/components/ui/animated-counter";
 import entitiesHero from "@/assets/entities-hero.jpg";
 import { cn } from "@/lib/utils";
 import type { Database } from "@/integrations/supabase/types";
-import { EntityCard, typeLabels, scopeLabels } from "@/pages/entities/EntityCard";
+import { EntityCard } from "@/pages/entities/EntityCard";
 import { CACHE } from "@/lib/queryConfig";
 import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 

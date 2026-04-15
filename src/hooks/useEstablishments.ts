@@ -2,7 +2,6 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "@/hooks/use-toast";
-import { CACHE } from "@/lib/queryConfig";
 import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 export function useEstablishments(filters?: { type?: string; country?: string; search?: string }) {
@@ -59,7 +58,7 @@ export function useEstablishmentAssociations(establishmentId?: string) {
   });
 }
 
-export function useMyEstablishmentAssociations() {
+function useMyEstablishmentAssociations() {
   const { user } = useAuth();
   return useQuery({
     queryKey: ["my-establishment-associations", user?.id],
@@ -76,7 +75,7 @@ export function useMyEstablishmentAssociations() {
   });
 }
 
-export function useMyEstablishmentQualifications() {
+function useMyEstablishmentQualifications() {
   const { user } = useAuth();
   return useQuery({
     queryKey: ["my-establishment-qualifications", user?.id],

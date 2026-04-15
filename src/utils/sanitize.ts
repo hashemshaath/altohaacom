@@ -3,7 +3,7 @@ import DOMPurify from "dompurify";
 /**
  * Sanitize HTML — allows safe formatting tags only.
  */
-export function sanitizeHtml(dirty: string): string {
+function sanitizeHtml(dirty: string): string {
   return DOMPurify.sanitize(dirty, {
     ALLOWED_TAGS: [
       "p", "br", "strong", "em", "b", "i", "u",
@@ -55,7 +55,7 @@ export function sanitizeCss(dirty: string): string {
 /**
  * Sanitize a URL — only allows http/https protocols.
  */
-export function sanitizeUrl(url: string): string {
+function sanitizeUrl(url: string): string {
   if (!url) return "";
   try {
     const parsed = new URL(url);
@@ -69,6 +69,6 @@ export function sanitizeUrl(url: string): string {
 /**
  * Sanitize a filename — strips unsafe characters and limits length.
  */
-export function sanitizeFilename(name: string): string {
+function sanitizeFilename(name: string): string {
   return name.replace(/[^a-zA-Z0-9._-]/g, "-").slice(0, 100);
 }

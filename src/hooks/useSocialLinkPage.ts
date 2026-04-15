@@ -2,7 +2,6 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
-import { CACHE } from "@/lib/queryConfig";
 import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 export function useSocialLinkPage(userId?: string) {
@@ -182,7 +181,7 @@ export function useManageSocialLinkItems() {
   return { addItem, updateItem, deleteItem, reorderItems };
 }
 
-export function useRecordLinkClick() {
+function useRecordLinkClick() {
   return useMutation({
     mutationFn: async (itemId: string) => {
       await supabase.rpc("increment_field" as any, { table_name: "social_link_items", field_name: "click_count", row_id: itemId });

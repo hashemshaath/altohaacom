@@ -3,7 +3,6 @@ import { useState, useEffect, useMemo, memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useVisibleRefetchInterval } from "@/hooks/useVisibleRefetchInterval";
-import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";

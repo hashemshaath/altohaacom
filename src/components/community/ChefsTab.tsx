@@ -7,15 +7,12 @@ import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { User, Search, ChefHat } from "lucide-react";
+import { User, Search } from "lucide-react";
 import { countryFlag } from "@/lib/countryFlag";
 import { FollowButton } from "./FollowButton";
 import { ChefBadge } from "./ChefBadge";
-import { MessageButton } from "./MessageButton";
-import { cn } from "@/lib/utils";
 import { CACHE } from "@/lib/queryConfig";
 
 interface ChefProfile {

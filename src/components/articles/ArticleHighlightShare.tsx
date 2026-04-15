@@ -1,6 +1,5 @@
 import { memo, useEffect, useState, useCallback, useRef } from "react";
-import { Twitter, Facebook, Link2, Quote, Check } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { Twitter, Link2, Quote, Check } from "lucide-react";
 
 interface Props {
   articleUrl: string;

@@ -1,12 +1,11 @@
 import { useIsAr } from "@/hooks/useIsAr";
-import { CACHE } from "@/lib/queryConfig";
 import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { Wallet, Coins, ArrowUpRight, ArrowDownRight, Gift, Star, Users, TrendingUp } from "lucide-react";
+import { Wallet, Coins, ArrowUpRight, ArrowDownRight, Gift, Star, Users } from "lucide-react";
 import { MS_PER_DAY, MS_PER_WEEK, QUERY_LIMIT_LARGE, QUERY_LIMIT_MEDIUM } from "@/lib/constants";
 
 export const WalletPointsAnalyticsWidget = memo(function WalletPointsAnalyticsWidget() {

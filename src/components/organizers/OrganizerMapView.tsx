@@ -2,8 +2,7 @@ import { memo, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { CheckCircle2, Globe, MapPin, ChevronDown, ChevronUp, Star, Landmark } from "lucide-react";
+import { CheckCircle2, Globe, ChevronDown, ChevronUp, Star, Landmark } from "lucide-react";
 
 interface Props {
   organizers: any[];

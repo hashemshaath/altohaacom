@@ -1,6 +1,5 @@
 import { useIsAr } from "@/hooks/useIsAr";
-import { useState, memo } from "react";
-import { Badge } from "@/components/ui/badge";
+import { memo } from "react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import {

@@ -8,7 +8,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { countryFlag } from "@/lib/countryFlag";
 import { Globe } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from "recharts";
-import { CHART_COLORS, TOOLTIP_STYLE, CHART_HEIGHT, H_BAR_RADIUS, getTooltipStyle } from "@/lib/chartConfig";
+import { CHART_COLORS, CHART_HEIGHT, H_BAR_RADIUS, getTooltipStyle } from "@/lib/chartConfig";
 import { CACHE } from "@/lib/queryConfig";
 import { QUERY_LIMIT_LARGE } from "@/lib/constants";
 

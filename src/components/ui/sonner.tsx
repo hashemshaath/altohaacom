@@ -25,4 +25,4 @@ const Toaster = forwardRef<HTMLDivElement, ToasterProps>(function Toaster(props,
   );
 });
 
-export { Toaster, toast };
+export { Toaster,  };

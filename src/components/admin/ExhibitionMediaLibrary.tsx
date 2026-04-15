@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "@/hooks/use-toast";
-import { Upload, Trash2, Loader2, Search, Filter, Image, FileText, Grid3X3, List, CheckSquare, Square, X } from "lucide-react";
+import { Upload, Trash2, Loader2, Search, Filter, Image, FileText, Grid3X3, List, CheckSquare, Square } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 

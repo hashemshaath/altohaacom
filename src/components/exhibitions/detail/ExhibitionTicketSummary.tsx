@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { Ticket, Users, CheckCircle2, TrendingUp, Clock, CreditCard } from "lucide-react";
+import { Ticket, CheckCircle2, TrendingUp, Clock } from "lucide-react";
 import { useVisibleRefetchInterval } from "@/hooks/useVisibleRefetchInterval";
 import { CACHE } from "@/lib/queryConfig";
 import { REFETCH_INTERVAL_DEFAULT } from "@/lib/constants";

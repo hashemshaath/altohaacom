@@ -1,7 +1,6 @@
 import { memo } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Globe, ExternalLink } from "lucide-react";
 
 const SOCIAL_PLATFORMS = [
   { key: "website", en: "Website", ar: "الموقع الإلكتروني", placeholder: "https://example.com", icon: "🌐" },

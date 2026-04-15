@@ -1,4 +1,3 @@
-import { ArrowUpRight, ArrowDownRight, Minus } from "lucide-react";
 
 export type TimeRange = "1h" | "24h" | "7d" | "30d" | "90d";
 

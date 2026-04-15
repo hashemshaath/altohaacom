@@ -1,7 +1,7 @@
 import { forwardRef, useState, useRef, useCallback } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
-import { Scale, ChevronDown, Compass } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 
 interface NavLink {
   to: string;

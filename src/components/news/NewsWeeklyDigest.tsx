@@ -1,8 +1,7 @@
 import { memo, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Calendar, Eye, BookOpen, Newspaper, Star } from "lucide-react";
+import { Calendar, Eye, Newspaper, Star } from "lucide-react";
 import { format, subDays, isAfter } from "date-fns";
 import { ar, enUS } from "date-fns/locale";
 import type { NewsArticle } from "./NewsArticleCard";

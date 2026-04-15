@@ -5,7 +5,6 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
@@ -13,8 +12,6 @@ import {
   Clock, ArrowRight, CheckCircle2, XCircle,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { formatDistanceToNow } from "date-fns";
-import { ar, enUS } from "date-fns/locale";
 import { MS_PER_DAY, MS_PER_WEEK, REFETCH_INTERVAL_BACKGROUND } from "@/lib/constants";
 import { CACHE } from "@/lib/queryConfig";
 

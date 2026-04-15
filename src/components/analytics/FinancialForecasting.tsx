@@ -18,7 +18,7 @@ import {
   ResponsiveContainer, Area, Legend, ReferenceLine,
 } from "recharts";
 import { formatCurrency } from "@/lib/currencyFormatter";
-import { format, subMonths, eachMonthOfInterval, startOfMonth } from "date-fns";
+import { format, subMonths } from "date-fns";
 import { ar } from "date-fns/locale";
 import { CACHE } from "@/lib/queryConfig";
 import { QUERY_LIMIT_LARGE } from "@/lib/constants";

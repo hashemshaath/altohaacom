@@ -1,6 +1,5 @@
 import { useIsAr } from "@/hooks/useIsAr";
-import { CACHE } from "@/lib/queryConfig";
-import { useState, memo } from "react";
+import { memo } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRecipeSave } from "@/hooks/useRecipeSave";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -15,7 +14,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuLabel,
 } from "@/components/ui/dropdown-menu";
-import { Bookmark, Share2, FolderPlus, Check, Copy, Link2 } from "lucide-react";
+import { Bookmark, Share2, FolderPlus } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 
 interface RecipeActionBarProps {

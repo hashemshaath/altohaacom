@@ -5,7 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useVisibleRefetchInterval } from "@/hooks/useVisibleRefetchInterval";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Users, UserCheck, UserPlus, Shield, Crown, Globe, TrendingUp, Activity } from "lucide-react";
+import { Users, UserCheck, UserPlus, Shield, Crown, Globe, Activity } from "lucide-react";
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 import { format, subDays } from "date-fns";
 import { translateRole, getTooltipStyle } from "@/lib/chartConfig";

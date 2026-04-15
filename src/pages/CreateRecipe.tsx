@@ -14,9 +14,8 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
-import { ArrowLeft, Plus, Trash2, UtensilsCrossed, GripVertical, Image as ImageIcon, Upload, Loader2 } from "lucide-react";
+import { ArrowLeft, Plus, Trash2, UtensilsCrossed, GripVertical, Upload, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
 const categoryOptions = [

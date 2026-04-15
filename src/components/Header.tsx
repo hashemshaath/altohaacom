@@ -19,14 +19,14 @@ import {
   HandHeart, Factory, Briefcase, CalendarDays, Medal,
 } from "lucide-react";
 
-export const primaryNav = [
+const primaryNav = [
   { to: "/competitions", icon: Trophy, labelEn: "Competitions", labelAr: "المسابقات" },
   { to: "/exhibitions", icon: Landmark, labelEn: "Exhibitions", labelAr: "المعارض" },
   { to: "/community", icon: Users, labelEn: "Community", labelAr: "المجتمع" },
   { to: "/blog", icon: Newspaper, labelEn: "News", labelAr: "الأخبار" },
 ];
 
-export const moreLinks = [
+const moreLinks = [
   { to: "/jobs", icon: Briefcase, labelEn: "Jobs", labelAr: "الوظائف" },
   { to: "/organizers", icon: Building2, labelEn: "Organizers", labelAr: "المنظمون" },
   { to: "/masterclasses", icon: GraduationCap, labelEn: "Masterclasses", labelAr: "الدروس المتقدمة" },

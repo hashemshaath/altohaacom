@@ -1,5 +1,4 @@
 import { useState, useCallback, useEffect, useMemo } from "react";
-import { DEFAULT_CURRENCY } from "@/lib/currencyFormatter";
 
 export interface CartItem {
   product_id: string;

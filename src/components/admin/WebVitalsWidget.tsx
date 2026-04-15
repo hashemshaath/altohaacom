@@ -1,12 +1,11 @@
 import { useIsAr } from "@/hooks/useIsAr";
-import { CACHE } from "@/lib/queryConfig";
 import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useVisibleRefetchInterval } from "@/hooks/useVisibleRefetchInterval";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Gauge, Smartphone, Monitor, Tablet, Wifi } from "lucide-react";
+import { Gauge, Smartphone, Monitor, Tablet } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { MS_PER_DAY, QUERY_LIMIT_MEDIUM, REFETCH_INTERVAL_SLOW } from "@/lib/constants";
 import { handleSupabaseError } from "@/lib/supabaseErrorHandler";

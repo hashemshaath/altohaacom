@@ -25,7 +25,7 @@ interface UserCardProps {
   onView: (userId: string) => void;
 }
 
-export const UserCard = memo(function UserCard({ user, onView }: UserCardProps) {
+const UserCard = memo(function UserCard({ user, onView }: UserCardProps) {
   const isAr = useIsAr();
 
   const statusColor = user.account_status === "active"

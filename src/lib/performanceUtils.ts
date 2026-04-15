@@ -51,7 +51,7 @@ export function memoize<A, R>(fn: (arg: A) => R, maxSize = 100): (arg: A) => R {
 /**
  * LRU Cache with configurable max size.
  */
-export class LRUCache<K, V> {
+class LRUCache<K, V> {
   private cache = new Map<K, V>();
   private maxSize: number;
 
@@ -83,7 +83,7 @@ export class LRUCache<K, V> {
 /**
  * Batch multiple database count queries into a single parallel execution.
  */
-export async function batchCountQueries(
+async function batchCountQueries(
   queries: Array<{ key: string; query: Promise<{ count: number | null }> }>
 ): Promise<Record<string, number>> {
   const results = await Promise.all(

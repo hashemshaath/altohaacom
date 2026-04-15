@@ -1,6 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { CACHE } from "@/lib/queryConfig";
 import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 export interface ContentReview {
@@ -42,7 +41,7 @@ export function useContentReviewStats(entityType: string, entityId: string) {
   return { count, avg: Math.round(avg * 10) / 10 };
 }
 
-export function useSubmitReview() {
+function useSubmitReview() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async (review: { entity_type: string; entity_id: string; rating: number; content?: string }) => {
@@ -70,7 +69,7 @@ export function useSubmitReview() {
   });
 }
 
-export function useDeleteReview() {
+function useDeleteReview() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async ({ id, entityType, entityId }: { id: string; entityType: string; entityId: string }) => {

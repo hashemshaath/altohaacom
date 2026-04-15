@@ -51,6 +51,7 @@ import {
 } from "@/components/ui/table";
 import { useToast } from "@/hooks/use-toast";
 import {
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
   Search,
   MoreHorizontal,
   Eye,
@@ -77,7 +78,6 @@ import {
 import { format, formatDistanceToNow } from "date-fns";
 import { ar, enUS } from "date-fns/locale";
 import { QUERY_LIMIT_LARGE } from "@/lib/constants";
-import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface Lead {
   id: string;

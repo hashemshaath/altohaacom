@@ -8,7 +8,6 @@ import { Badge } from "@/components/ui/badge";
 import { Flame, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useRef, useCallback } from "react";
-import { cn } from "@/lib/utils";
 import { CACHE } from "@/lib/queryConfig";
 
 interface TrendingPost {

@@ -15,7 +15,7 @@ const toDate = (input: DateInput): Date | null => {
 };
 
 /** Short date: "Jan 5, 2025" or "٥ يناير ٢٠٢٥" → always English digits */
-export function formatDate(input: DateInput, isAr = false): string {
+function formatDate(input: DateInput, isAr = false): string {
   const d = toDate(input);
   if (!d) return "";
   return toEnglishDigits(
@@ -28,7 +28,7 @@ export function formatDate(input: DateInput, isAr = false): string {
 }
 
 /** Month + year only: "Jan 2025" */
-export function formatMonthYear(input: DateInput, isAr = false): string {
+function formatMonthYear(input: DateInput, isAr = false): string {
   const d = toDate(input);
   if (!d) return "";
   return toEnglishDigits(
@@ -40,7 +40,7 @@ export function formatMonthYear(input: DateInput, isAr = false): string {
 }
 
 /** Short date without year: "Jan 5" */
-export function formatShortDate(input: DateInput, isAr = false): string {
+function formatShortDate(input: DateInput, isAr = false): string {
   const d = toDate(input);
   if (!d) return "";
   return toEnglishDigits(
@@ -52,7 +52,7 @@ export function formatShortDate(input: DateInput, isAr = false): string {
 }
 
 /** Full date: "Monday, January 5, 2025" */
-export function formatFullDate(input: DateInput, isAr = false): string {
+function formatFullDate(input: DateInput, isAr = false): string {
   const d = toDate(input);
   if (!d) return "";
   return toEnglishDigits(
@@ -79,7 +79,7 @@ export function formatWeekdayShort(input: DateInput, isAr = false): string {
 }
 
 /** Date + time: "Jan 5, 2025, 3:30 PM" */
-export function formatDateTime(input: DateInput, isAr = false): string {
+function formatDateTime(input: DateInput, isAr = false): string {
   const d = toDate(input);
   if (!d) return "";
   return toEnglishDigits(
@@ -120,7 +120,7 @@ export function formatTime(input: DateInput, isAr = false): string {
 }
 
 /** Relative time: "2 hours ago", "3 days ago", "just now" */
-export function formatRelativeTime(input: DateInput, isAr = false): string {
+function formatRelativeTime(input: DateInput, isAr = false): string {
   const d = toDate(input);
   if (!d) return "";
   const now = Date.now();
@@ -138,12 +138,12 @@ export function formatRelativeTime(input: DateInput, isAr = false): string {
 }
 
 /** ISO string for DB writes: always use this instead of new Date().toISOString() */
-export function nowISO(): string {
+function nowISO(): string {
   return new Date().toISOString();
 }
 
 /** Date-only ISO: "2025-01-05" */
-export function toISODate(input: DateInput): string {
+function toISODate(input: DateInput): string {
   const d = toDate(input);
   if (!d) return "";
   return d.toISOString().slice(0, 10);

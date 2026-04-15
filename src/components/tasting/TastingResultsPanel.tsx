@@ -2,7 +2,6 @@ import { useIsAr } from "@/hooks/useIsAr";
 import { useMemo, memo } from "react";
 import { TastingEntry, TastingCriterion, TastingScore, EvalMethod } from "@/hooks/useTasting";
 import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { BarChart3, Trophy, Award } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar } from "recharts";
 

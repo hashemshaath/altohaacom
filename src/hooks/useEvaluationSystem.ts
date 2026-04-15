@@ -1,6 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { CACHE } from "@/lib/queryConfig";
 import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -107,7 +106,7 @@ export function useEvaluationDomains() {
   });
 }
 
-export function useEvaluationCriteriaCategories(domainId?: string, productCategory?: string) {
+function useEvaluationCriteriaCategories(domainId?: string, productCategory?: string) {
   return useQuery({
     queryKey: ["evaluation-criteria-categories", domainId, productCategory],
     queryFn: async () => {
@@ -126,7 +125,7 @@ export function useEvaluationCriteriaCategories(domainId?: string, productCatego
   });
 }
 
-export function useEvaluationCriteria(categoryId?: string) {
+function useEvaluationCriteria(categoryId?: string) {
   return useQuery({
     queryKey: ["evaluation-criteria", categoryId],
     queryFn: async () => {
@@ -184,7 +183,7 @@ export function useEvaluationCriteriaByDomain(domainSlug: string, productCategor
   });
 }
 
-export function useEvaluationScores(entityId?: string, domainSlug?: string) {
+function useEvaluationScores(entityId?: string, domainSlug?: string) {
   return useQuery({
     queryKey: ["evaluation-scores", entityId, domainSlug],
     queryFn: async () => {
@@ -200,7 +199,7 @@ export function useEvaluationScores(entityId?: string, domainSlug?: string) {
   });
 }
 
-export function useEvaluationReports(domainSlug?: string) {
+function useEvaluationReports(domainSlug?: string) {
   return useQuery({
     queryKey: ["evaluation-reports", domainSlug],
     queryFn: async () => {

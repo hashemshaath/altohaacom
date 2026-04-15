@@ -1,8 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
-import { CACHE } from "@/lib/queryConfig";
-import { MS_PER_DAY, MS_PER_WEEK, QUERY_LIMIT_LARGE } from "@/lib/constants";
+import { MS_PER_WEEK, QUERY_LIMIT_LARGE } from "@/lib/constants";
 import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 export function useFollowStats(userId: string | undefined) {

@@ -24,7 +24,7 @@ function escapeICS(text: string): string {
   });
 }
 
-export function generateICS(event: CalendarEvent): string {
+function generateICS(event: CalendarEvent): string {
   const start = formatICSDate(event.startDate);
   const end = event.endDate ? formatICSDate(event.endDate) : formatICSDate(
     new Date(new Date(event.startDate).getTime() + MS_PER_DAY).toISOString()

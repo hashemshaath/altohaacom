@@ -29,8 +29,8 @@ import {
   ArrowLeftRight, Upload, History,
 } from "lucide-react";
 import { safeLazy } from "@/lib/safeLazy";
-import { CountryCompletenessScore, getCompletenessScore } from "@/components/admin/countries/CountryCompletenessScore";
-import { useCountriesData, defaultForm, continents, regions, type Country } from "./countries/useCountriesData";
+import { CountryCompletenessScore } from "@/components/admin/countries/CountryCompletenessScore";
+import { useCountriesData, continents, regions, type Country } from "./countries/useCountriesData";
 
 const CountryOverviewDashboard = safeLazy(() => import("@/components/admin/CountryOverviewDashboard").then(m => ({ default: m.CountryOverviewDashboard })));
 const CountryComparisonTool = safeLazy(() => import("@/components/admin/countries/CountryComparisonTool").then(m => ({ default: m.CountryComparisonTool })));

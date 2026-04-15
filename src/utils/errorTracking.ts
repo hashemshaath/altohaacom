@@ -8,7 +8,7 @@ interface ErrorReport {
   userAgent: string;
 }
 
-export function reportError(error: Error, context?: Record<string, unknown>): void {
+function reportError(error: Error, context?: Record<string, unknown>): void {
   if (import.meta.env.DEV) {
     console.error("[Error Report]", error, context);
     return;

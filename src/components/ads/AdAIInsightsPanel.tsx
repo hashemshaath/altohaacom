@@ -1,5 +1,4 @@
 import { useIsAr } from "@/hooks/useIsAr";
-import { CACHE } from "@/lib/queryConfig";
 import { useState, memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -7,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Sparkles, TrendingUp, Target, DollarSign, Clock, RefreshCw, Users, Repeat } from "lucide-react";
+import { Sparkles, TrendingUp, Target, DollarSign, Clock, RefreshCw, Repeat } from "lucide-react";
 import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 export const AdAIInsightsPanel = memo(function AdAIInsightsPanel() {

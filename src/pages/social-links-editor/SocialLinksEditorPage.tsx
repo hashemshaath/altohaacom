@@ -1,5 +1,4 @@
 import { useIsAr } from "@/hooks/useIsAr";
-import { CACHE } from "@/lib/queryConfig";
 import { useState, useEffect, useMemo, useCallback, useRef } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useSocialLinkPage, useSocialLinkItems, useUpsertSocialLinkPage, useManageSocialLinkItems } from "@/hooks/useSocialLinkPage";
@@ -32,7 +31,7 @@ import {
   parseExtra, DEFAULT_EXTRA,
   type ExtraSettings,
 } from "@/lib/socialLinksConstants";
-import { SOCIAL_PLATFORMS, CONTACT_FIELDS, normalizeSocialUrl } from "./constants";
+import { SOCIAL_PLATFORMS, normalizeSocialUrl } from "./constants";
 import { EditorSkeleton } from "./EditorSkeleton";
 import { SocialsTab } from "./SocialsTab";
 import { SettingsTab } from "./SettingsTab";

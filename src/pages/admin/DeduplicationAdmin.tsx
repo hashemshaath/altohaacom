@@ -1,5 +1,4 @@
 import { useIsAr } from "@/hooks/useIsAr";
-import { CACHE } from "@/lib/queryConfig";
 import { useState, memo, useCallback } from "react";
 import { AdminBreadcrumb } from "@/components/admin/AdminBreadcrumb";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -18,7 +17,7 @@ import {
   ScanSearch, Merge, AlertTriangle, CheckCircle2, Loader2,
   Shield, Clock, Activity, Zap, BarChart3,
 } from "lucide-react";
-import { useEntityDedup, type DupGroup, type DupCandidate } from "@/hooks/useEntityDedup";
+import { useEntityDedup, type DupGroup } from "@/hooks/useEntityDedup";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";

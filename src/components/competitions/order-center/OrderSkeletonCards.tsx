@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 
 /** Skeleton for metric cards grid (4 cards) */
-export const MetricCardsSkeleton = memo(function MetricCardsSkeleton() {
+const MetricCardsSkeleton = memo(function MetricCardsSkeleton() {
   return (
     <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3">
       {Array.from({ length: 4 }).map((_, i) => (
@@ -20,7 +20,7 @@ export const MetricCardsSkeleton = memo(function MetricCardsSkeleton() {
 });
 
 /** Skeleton for a single list card with items */
-export const ListCardSkeleton = memo(function ListCardSkeleton({ itemCount = 4 }: { itemCount?: number }) {
+const ListCardSkeleton = memo(function ListCardSkeleton({ itemCount = 4 }: { itemCount?: number }) {
   return (
     <Card className="border-border/60 overflow-hidden">
       <CardHeader className="py-2.5 px-3 bg-muted/30 border-b">

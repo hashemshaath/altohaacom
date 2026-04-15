@@ -67,7 +67,7 @@ export async function notifyDeliveryConfirmed(params: {
   );
 }
 
-export async function notifyNewSuggestion(params: {
+async function notifyNewSuggestion(params: {
   competitionId: string;
   suggestedBy: string;
   itemName: string;
@@ -90,7 +90,7 @@ export async function notifyNewSuggestion(params: {
   );
 }
 
-export async function notifyOverdueItems(params: {
+async function notifyOverdueItems(params: {
   competitionId: string;
   overdueCount: number;
 }) {

@@ -25,7 +25,7 @@ const DEFAULT_CONFIG: CoverConfig = {
   pages: {},
 };
 
-export const HEIGHT_MAP: Record<CoverMode, number | null> = {
+const HEIGHT_MAP: Record<CoverMode, number | null> = {
   full: 520,
   medium: 340,
   small: 200,

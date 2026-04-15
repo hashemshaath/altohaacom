@@ -2,7 +2,7 @@ import { memo } from "react";
 import { Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Trophy, Users, Flame, ArrowRight, MapPin } from "lucide-react";
+import { Trophy, Users, Flame } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { countryFlag } from "@/lib/countryFlag";
 import { getDerivedStatus, type CompetitionWithRegs } from "./CompetitionCard";

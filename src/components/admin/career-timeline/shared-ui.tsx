@@ -18,7 +18,7 @@ import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 // ── Smart Translate Button ──────────────────────────────────────
 
-export const SmartTranslateBtn = memo(function SmartTranslateBtn({ sourceText, fromLang, onTranslated, className }: {
+const SmartTranslateBtn = memo(function SmartTranslateBtn({ sourceText, fromLang, onTranslated, className }: {
   sourceText: string; fromLang: "en" | "ar"; onTranslated: (text: string) => void; className?: string;
 }) {
   const [loading, setLoading] = useState(false);
@@ -251,7 +251,7 @@ export const SortableItem = memo(function SortableItem({ id, sectionKey, childre
   );
 });
 
-export const SectionDragListenersContext = createContext<Record<string, any> | null>(null);
+const SectionDragListenersContext = createContext<Record<string, any> | null>(null);
 
 export const SortableSectionItem = memo(function SortableSectionItem({ id, children }: { id: string; children: React.ReactNode }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({

@@ -1,5 +1,4 @@
 import { useIsAr } from "@/hooks/useIsAr";
-import { CACHE } from "@/lib/queryConfig";
 import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -7,7 +6,7 @@ import { useVisibleRefetchInterval } from "@/hooks/useVisibleRefetchInterval";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { Gavel, Users, CheckCircle, Clock, AlertCircle } from "lucide-react";
+import { Gavel, Users, CheckCircle } from "lucide-react";
 import { REFETCH_INTERVAL_DEFAULT } from "@/lib/constants";
 
 export const CompetitionJudgingTracker = memo(function CompetitionJudgingTracker() {

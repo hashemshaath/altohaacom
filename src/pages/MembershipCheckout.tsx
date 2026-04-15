@@ -1,5 +1,5 @@
 import { useIsAr } from "@/hooks/useIsAr";
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo } from "react";
 import { createMembershipInvoice } from "@/lib/membershipInvoice";
 import { SEOHead } from "@/components/SEOHead";
 import { useAuth } from "@/contexts/AuthContext";

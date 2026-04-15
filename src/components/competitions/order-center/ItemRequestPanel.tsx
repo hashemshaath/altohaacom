@@ -18,6 +18,7 @@ import {
 import { ORDER_CATEGORIES, ITEM_UNITS } from "./OrderCenterCategories";
 import { DISH_TEMPLATES } from "@/data/dishTemplates";
 import { downloadCSV } from "@/lib/exportUtils";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 
 const STATUS_STYLES: Record<string, { icon: typeof Clock; color: string; labelEn: string; labelAr: string }> = {
@@ -254,7 +255,6 @@ export const ItemRequestPanel = memo(function ItemRequestPanel({ competitionId, 
       setShowTemplates(false);
       toast({
         title: isAr ? `تم إضافة ${t.ingredients.length} عنصر من قالب "${t.nameAr}"` : `Added ${t.ingredients.length} items from "${t.name}" template`,
-import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
       });
       if (user && competition) {
         import("@/lib/notificationTriggers").then(({ notifyItemRequestSubmitted }) => {

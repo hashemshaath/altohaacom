@@ -6,7 +6,6 @@
  * Reduces network requests by ~80% for analytics-heavy pages.
  */
 
-import { supabase } from "@/integrations/supabase/client";
 
 type QueuedRecord = Record<string, unknown>;
 
@@ -89,6 +88,6 @@ export function queueAnalyticsInsert(table: string, record: QueuedRecord) {
  * Immediately flush all pending analytics writes.
  * Useful before navigation or page unload.
  */
-export function flushAnalytics() {
+function flushAnalytics() {
   flushAll();
 }

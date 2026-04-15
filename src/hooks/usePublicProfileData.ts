@@ -5,7 +5,6 @@ import { useUserSpecialties } from "@/hooks/useSpecialties";
 import { useRecordProfileView } from "@/hooks/useProfileViews";
 import { useEntityQRCode } from "@/hooks/useQRCode";
 import type { Database } from "@/integrations/supabase/types";
-import { CACHE } from "@/lib/queryConfig";
 import { QUERY_LIMIT_LARGE } from "@/lib/constants";
 import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 

@@ -78,7 +78,7 @@ export const AdminStatusBadge = memo(function AdminStatusBadge({
 });
 
 /** Helper function for inline use without React component */
-export function getStatusStyle(status: string | null | undefined): string {
+function getStatusStyle(status: string | null | undefined): string {
   const key = status?.toLowerCase().replace(/\s+/g, "_") || "default";
   return STATUS_STYLES[key] || STATUS_STYLES.default;
 }

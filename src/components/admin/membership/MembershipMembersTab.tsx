@@ -31,7 +31,7 @@ import {
   Search, ArrowUpCircle, Mail, MoreHorizontal, CalendarPlus,
   Ban, ShieldOff, ShieldCheck, Download, Clock,
 } from "lucide-react";
-import { format, differenceInDays, addDays, addMonths, addYears } from "date-fns";
+import { format, differenceInDays, addDays } from "date-fns";
 import type { Database } from "@/integrations/supabase/types";
 import { MS_PER_DAY } from "@/lib/constants";
 import { CACHE } from "@/lib/queryConfig";

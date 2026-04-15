@@ -1,4 +1,3 @@
-import type { Database } from "@/integrations/supabase/types";
 
 export type HeroSlide = {
   id: string;

@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { QRCodeDisplay } from "@/components/qr/QRCodeDisplay";
-import { Ticket, CheckCircle2, Shield, Download, Share2, Calendar, MapPin, Clock } from "lucide-react";
+import { Ticket, CheckCircle2, Shield, Share2, Calendar, MapPin, Clock } from "lucide-react";
 import { format } from "date-fns";
 import { toast } from "@/hooks/use-toast";
 import { handleSupabaseError } from "@/lib/supabaseErrorHandler";

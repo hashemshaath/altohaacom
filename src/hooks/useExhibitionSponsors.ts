@@ -1,7 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import type { ExhibitionSponsor } from "@/components/exhibitions/ExhibitionCard";
-import { CACHE } from "@/lib/queryConfig";
 
 /**
  * Batch-fetch sponsors for all visible exhibitions in a single query.

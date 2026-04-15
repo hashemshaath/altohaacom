@@ -9,7 +9,7 @@ import { countryFlag } from "@/lib/countryFlag";
 import { deriveCompetitionStatus } from "@/lib/competitionStatus";
 import { toEnglishDigits } from "@/lib/formatNumber";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
-import { localizeLocation, localizeCity } from "@/lib/localizeLocation";
+import { localizeCity } from "@/lib/localizeLocation";
 import type { Database } from "@/integrations/supabase/types";
 
 type CompetitionStatus = Database["public"]["Enums"]["competition_status"];
@@ -41,7 +41,7 @@ export interface CompetitionWithRegs extends Competition {
   competition_registrations?: { id: string }[];
 }
 
-export const statusConfig: Record<CompetitionStatus, { bg: string; dot: string; label: string; labelAr: string }> = {
+const statusConfig: Record<CompetitionStatus, { bg: string; dot: string; label: string; labelAr: string }> = {
   pending: { bg: "bg-chart-4/10 text-chart-4", dot: "bg-chart-4", label: "Pending", labelAr: "بانتظار الموافقة" },
   draft: { bg: "bg-muted/60", dot: "bg-muted-foreground", label: "Draft", labelAr: "مسودة" },
   upcoming: { bg: "bg-accent/10 text-accent-foreground", dot: "bg-accent", label: "Upcoming", labelAr: "قادمة" },

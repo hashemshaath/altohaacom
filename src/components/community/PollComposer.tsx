@@ -3,7 +3,6 @@ import { useState, memo } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { X, Plus, BarChart3 } from "lucide-react";
-import { cn } from "@/lib/utils";
 
 interface PollComposerProps {
   onPollChange: (poll: { options: string[] } | null) => void;

@@ -2,8 +2,8 @@ import { useState, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import type { Json } from "@/integrations/supabase/types";
 import { useToast } from "@/hooks/use-toast";
-import { downloadCSV, downloadJSON } from "@/lib/exportUtils";
-import type { CVData, CVPersonalInfo } from "./types";
+import { downloadCSV } from "@/lib/exportUtils";
+import type { CVData } from "./types";
 import { getFlag, ROLE_LABELS } from "./types";
 import { normalizeDate } from "./CVPreviewHelpers";
 import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
@@ -41,7 +41,7 @@ export function useSmartTranslate() {
 }
 
 // ─── Normalize experience level ───
-export const normalizeExperienceLevel = (level?: string, years?: number | null): "beginner" | "amateur" | "professional" | null => {
+const normalizeExperienceLevel = (level?: string, years?: number | null): "beginner" | "amateur" | "professional" | null => {
   const normalized = (level || "").toLowerCase().trim();
   if (normalized === "beginner" || normalized === "amateur" || normalized === "professional") return normalized;
   if (normalized === "expert" || normalized === "advanced") return "professional";

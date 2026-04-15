@@ -1,12 +1,12 @@
 import { useState, useEffect, useCallback } from "react";
-import { MS_PER_DAY, MS_PER_WEEK } from "@/lib/constants";
+import { MS_PER_WEEK } from "@/lib/constants";
 
 interface BeforeInstallPromptEvent extends Event {
   prompt: () => Promise<void>;
   userChoice: Promise<{ outcome: "accepted" | "dismissed" }>;
 }
 
-export function useInstallPrompt() {
+function useInstallPrompt() {
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [isInstalled, setIsInstalled] = useState(false);
   const [dismissed, setDismissed] = useState(() => {
@@ -75,7 +75,7 @@ export function useOnlineStatus() {
   return isOnline;
 }
 
-export function usePWAUpdate() {
+function usePWAUpdate() {
   const [needsUpdate, setNeedsUpdate] = useState(false);
   const [registration, setRegistration] = useState<ServiceWorkerRegistration | null>(null);
 

@@ -1,6 +1,6 @@
 import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
-import { Eye, Clock, TrendingUp } from "lucide-react";
+import { Clock, TrendingUp } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 

@@ -27,7 +27,7 @@ export function canPrefetch(): boolean {
 }
 
 /** Returns "fast" | "medium" | "slow" */
-export function getConnectionTier(): "fast" | "medium" | "slow" {
+function getConnectionTier(): "fast" | "medium" | "slow" {
   const conn = getConnection();
   if (!conn) return "fast";
 

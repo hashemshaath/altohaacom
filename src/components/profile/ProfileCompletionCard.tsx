@@ -7,7 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Link } from "react-router-dom";
-import { ArrowRight, Sparkles, User, Camera, FileText, Briefcase, Globe, AtSign, Phone, Share2 } from "lucide-react";
+import { ArrowRight, Sparkles, User, Camera, FileText, Briefcase, Globe, AtSign, Phone } from "lucide-react";
 import { CACHE } from "@/lib/queryConfig";
 
 /**

@@ -3,7 +3,7 @@ import { useState, memo, useMemo } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { adminNavSections, type NavItem, type NavSection } from "@/config/adminNavSections";
+import { adminNavSections, type NavSection } from "@/config/adminNavSections";
 import { useAdminRole } from "@/hooks/useAdminRole";
 import { ChevronRight } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";

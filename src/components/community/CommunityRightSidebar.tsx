@@ -5,7 +5,6 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
 import { AdBanner } from "@/components/ads/AdBanner";
 import { ActivitySidebar } from "./ActivitySidebar";
 import { TrendingTopics } from "./TrendingTopics";

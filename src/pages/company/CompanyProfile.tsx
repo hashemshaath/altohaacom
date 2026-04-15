@@ -20,7 +20,6 @@ import {
   Hash,
   Shield,
   Earth, LucideIcon } from "lucide-react";
-import { toEnglishDigits } from "@/lib/formatNumber";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 export default function CompanyProfile() {

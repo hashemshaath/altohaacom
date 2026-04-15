@@ -29,7 +29,7 @@ export async function uploadMessageAttachment(
  * - If it's already a signed URL (contains "token="), return as-is.
  * - If it's an old public URL, extract the path and generate a signed URL.
  */
-export async function resolveAttachmentUrl(url: string): Promise<string> {
+async function resolveAttachmentUrl(url: string): Promise<string> {
   // Already a signed URL
   if (url.includes("token=")) return url;
 
@@ -51,7 +51,7 @@ export async function resolveAttachmentUrl(url: string): Promise<string> {
 /**
  * Batch resolve attachment URLs for efficiency.
  */
-export async function resolveAttachmentUrls(urls: string[]): Promise<string[]> {
+async function resolveAttachmentUrls(urls: string[]): Promise<string[]> {
   // Separate old public URLs that need re-signing from already-signed ones
   const needsSigning: { index: number; path: string }[] = [];
   const results = [...urls];

@@ -5,7 +5,6 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
 import { TrendingUp } from "lucide-react";
-import { toEnglishDigits } from "@/lib/formatNumber";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { AnalyticsKPICards } from "./AnalyticsKPICards";
 import { QUERY_LIMIT_LARGE } from "@/lib/constants";

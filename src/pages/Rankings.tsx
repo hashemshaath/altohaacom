@@ -1,5 +1,5 @@
 import { useIsAr } from "@/hooks/useIsAr";
-import { useState, useMemo, memo } from "react";
+import { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { PageShell } from "@/components/PageShell";
@@ -10,7 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Skeleton } from "@/components/ui/skeleton";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
-import { Trophy, TrendingUp, TrendingDown, Minus, Search, ChefHat, Crown, Medal, Flame, Globe, Users, Star, Sparkles } from "lucide-react";
+import { Trophy, TrendingUp, TrendingDown, Minus, Search, ChefHat, Crown, Medal, Globe, Users, Star, Sparkles } from "lucide-react";
 import { countryFlag } from "@/lib/countryFlag";
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";

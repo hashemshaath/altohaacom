@@ -14,7 +14,7 @@ export function getItemDisplayName(item: any, isAr: boolean): string {
 }
 
 /** Get item category from nested requirement_items */
-export function getItemCategory(item: any): string | null {
+function getItemCategory(item: any): string | null {
   return item.item_id && item.requirement_items ? item.requirement_items.category : null;
 }
 
@@ -31,7 +31,7 @@ export function calcOrderStats(items: any[]) {
 }
 
 /** Standard loading spinner for Order Center panels */
-export const OrderPanelLoader = memo(function OrderPanelLoader() {
+const OrderPanelLoader = memo(function OrderPanelLoader() {
   return (
     <div className="flex justify-center py-8">
       <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />

@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { ShieldAlert, ShieldCheck, Shield, Lock, LogIn, LogOut, UserX, KeyRound, AlertTriangle } from "lucide-react";
-import { format, formatDistanceToNow } from "date-fns";
+import { formatDistanceToNow } from "date-fns";
 import { ar } from "date-fns/locale";
 import { REFETCH_INTERVAL_DEFAULT } from "@/lib/constants";
 import { handleSupabaseError } from "@/lib/supabaseErrorHandler";

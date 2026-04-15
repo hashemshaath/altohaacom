@@ -6,11 +6,10 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { QRCodeDisplay } from "@/components/qr/QRCodeDisplay";
 import { toast } from "@/hooks/use-toast";
-import { Ticket, CheckCircle2, Sparkles, Shield, ChevronDown, ChevronUp, User, Mail, Phone, CreditCard } from "lucide-react";
+import { Ticket, CheckCircle2, Sparkles, Shield, ChevronDown, User, Mail, Phone } from "lucide-react";
 import { MoyasarPaymentForm } from "./MoyasarPaymentForm";
 import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 

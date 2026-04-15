@@ -2,7 +2,6 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "@/hooks/use-toast";
-import { CACHE } from "@/lib/queryConfig";
 import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 // === Programs ===
@@ -26,7 +25,7 @@ export function useEntityPrograms(entityId?: string) {
   });
 }
 
-export function useEntityProgramEnrollments(programId?: string) {
+function useEntityProgramEnrollments(programId?: string) {
   return useQuery({
     queryKey: ["program-enrollments", programId],
     queryFn: async () => {
@@ -98,7 +97,7 @@ export function useEntityMemberships(entityId?: string) {
   });
 }
 
-export function useMyMemberships() {
+function useMyMemberships() {
   const { user } = useAuth();
   return useQuery({
     queryKey: ["my-memberships", user?.id],
@@ -132,7 +131,7 @@ export function useEntityDegrees(entityId?: string) {
   });
 }
 
-export function useMyDegrees() {
+function useMyDegrees() {
   const { user } = useAuth();
   return useQuery({
     queryKey: ["my-degrees", user?.id],

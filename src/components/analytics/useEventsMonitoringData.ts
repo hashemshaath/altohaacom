@@ -7,7 +7,6 @@ import { toast } from "@/hooks/use-toast";
 import { format, subDays, subHours, parseISO, getHours, getDay } from "date-fns";
 import { type TimeRange, getDelta, type EcomMetrics } from "./eventsMonitoringTypes";
 import { QUERY_LIMIT_MEDIUM } from "@/lib/constants";
-import { CACHE } from "@/lib/queryConfig";
 
 function getTimeFilter(range: TimeRange): string {
   const now = new Date();

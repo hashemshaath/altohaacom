@@ -1,6 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { CACHE } from "@/lib/queryConfig";
 import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 export const COMPANY_ROLES = [
@@ -43,7 +42,7 @@ export function useActiveCompanyRoles(companyId: string | null) {
   return roles.filter(r => r.is_active).map(r => r.role);
 }
 
-export function useCompanyHasRole(companyId: string | null, role: string) {
+function useCompanyHasRole(companyId: string | null, role: string) {
   const activeRoles = useActiveCompanyRoles(companyId);
   return activeRoles.includes(role);
 }

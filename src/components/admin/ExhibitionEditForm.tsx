@@ -1,4 +1,4 @@
-import { memo, type ReactNode } from "react";
+import { memo } from "react";
 import { SectionHeader, FieldGroup, EmptyHint } from "@/components/admin/exhibition/ExhibitionFormHelpers";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";

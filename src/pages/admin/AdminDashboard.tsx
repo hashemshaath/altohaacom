@@ -7,7 +7,7 @@ import { AdminRealtimeNotificationBell } from "@/components/admin/AdminRealtimeN
 import { SecurityAlertsBanner } from "@/components/admin/SecurityAlertsBanner";
 import { useAdminCacheWarmer } from "@/hooks/useAdminCacheWarmer";
 import { supabase } from "@/integrations/supabase/client";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";

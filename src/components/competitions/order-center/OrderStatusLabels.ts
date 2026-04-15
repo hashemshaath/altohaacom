@@ -10,7 +10,7 @@ export const ITEM_STATUS_LABELS: Record<string, { en: string; ar: string }> = {
   delivered: { en: "Delivered", ar: "تم التسليم" },
 };
 
-export const LIST_STATUS_LABELS: Record<string, { en: string; ar: string }> = {
+const LIST_STATUS_LABELS: Record<string, { en: string; ar: string }> = {
   draft: { en: "Draft", ar: "مسودة" },
   in_progress: { en: "In Progress", ar: "قيد العمل" },
   review: { en: "Under Review", ar: "قيد المراجعة" },

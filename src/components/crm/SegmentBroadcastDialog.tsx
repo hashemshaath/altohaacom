@@ -23,7 +23,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { Send, Users, Bell, Mail, MessageSquare } from "lucide-react";
+import { Send, Users, Bell, Mail } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { QUERY_LIMIT_LARGE } from "@/lib/constants";
 import { handleSupabaseError } from "@/lib/supabaseErrorHandler";

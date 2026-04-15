@@ -27,7 +27,7 @@ const BG_SECONDARY = "bg-[#F8F8F8] dark:bg-muted/10";
  * Returns the alternating background for a section based on its visible index.
  * Even indices → white, Odd indices → light gray.
  */
-export function getSectionTheme(sectionKey: string, visibleIndex?: number): SectionTheme {
+function getSectionTheme(sectionKey: string, visibleIndex?: number): SectionTheme {
   const override = SECTION_OVERRIDES[sectionKey];
   if (override?.bg) {
     return {

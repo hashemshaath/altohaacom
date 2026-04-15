@@ -82,7 +82,7 @@ export const scopeOptions: { value: EntityScope; en: string; ar: string }[] = [
   { value: "international", en: "International", ar: "دولي" },
 ];
 
-export const statusOptions: EntityStatus[] = ["pending", "active", "suspended", "archived"];
+const statusOptions: EntityStatus[] = ["pending", "active", "suspended", "archived"];
 
 const statusLabels: Record<string, { en: string; ar: string }> = {
   pending: { en: "Pending", ar: "قيد المراجعة" },

@@ -18,7 +18,6 @@ import { TypesCategoriesStep } from "@/components/competitions/wizard/TypesCateg
 import { CriteriaStep } from "@/components/competitions/wizard/CriteriaStep";
 import { SupervisingBodiesStep } from "@/components/competitions/wizard/SupervisingBodiesStep";
 import { ReviewStep } from "@/components/competitions/wizard/ReviewStep";
-import { emptyCategory, emptyCriteria } from "@/components/competitions/wizard/types";
 import type { CompetitionFormData } from "@/components/competitions/wizard/types";
 import { EventCreationGate } from "@/components/permissions/EventCreationGate";
 

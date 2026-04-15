@@ -55,7 +55,7 @@ export function getCompletenessScore(country: Country) {
   return { score: Math.round((passed.length / checks.length) * 100), passed: passed.length, total: checks.length };
 }
 
-export function getCompleteness(country: Country) {
+function getCompleteness(country: Country) {
   return checks.map(ch => ({ ...ch, passed: ch.check(country) }));
 }
 

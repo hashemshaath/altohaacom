@@ -2,7 +2,6 @@ import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
-import { CACHE } from "@/lib/queryConfig";
 import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 type AppRole = Database["public"]["Enums"]["app_role"];
@@ -41,7 +40,7 @@ export function useRolePermissions(role?: AppRole) {
   });
 }
 
-export function useUserPermissions() {
+function useUserPermissions() {
   const { user } = useAuth();
 
   return useQuery({
@@ -90,7 +89,7 @@ export function useUserPermissions() {
   });
 }
 
-export function useHasPermission(permissionCode: string) {
+function useHasPermission(permissionCode: string) {
   const { data: permissions = [] } = useUserPermissions();
   return permissions.includes(permissionCode);
 }
@@ -99,7 +98,7 @@ export function useHasPermission(permissionCode: string) {
  * Check multiple permissions at once.
  * Returns an object keyed by permission code → boolean.
  */
-export function useHasPermissions(codes: string[]) {
+function useHasPermissions(codes: string[]) {
   const { data: permissions = [] } = useUserPermissions();
   return codes.reduce<Record<string, boolean>>((acc, code) => {
     acc[code] = permissions.includes(code);
@@ -109,7 +108,7 @@ export function useHasPermissions(codes: string[]) {
 
 // ── Competition Roles ────────────────────────────────────
 
-export function useCompetitionRoles(competitionId?: string) {
+function useCompetitionRoles(competitionId?: string) {
   return useQuery({
     queryKey: ["competitionRoles", competitionId],
     queryFn: async () => {
@@ -126,7 +125,7 @@ export function useCompetitionRoles(competitionId?: string) {
   });
 }
 
-export function useUserCompetitionRoles(competitionId?: string) {
+function useUserCompetitionRoles(competitionId?: string) {
   const { user } = useAuth();
 
   return useQuery({
@@ -148,7 +147,7 @@ export function useUserCompetitionRoles(competitionId?: string) {
 
 // ── User Titles ──────────────────────────────────────────
 
-export function useUserTitles(userId?: string) {
+function useUserTitles(userId?: string) {
   return useQuery({
     queryKey: ["userTitles", userId],
     queryFn: async () => {
@@ -167,7 +166,7 @@ export function useUserTitles(userId?: string) {
 
 // ── User Affiliations ────────────────────────────────────
 
-export function useUserAffiliations(userId?: string) {
+function useUserAffiliations(userId?: string) {
   return useQuery({
     queryKey: ["userAffiliations", userId],
     queryFn: async () => {

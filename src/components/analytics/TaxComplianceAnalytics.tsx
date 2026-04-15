@@ -8,7 +8,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Separator } from "@/components/ui/separator";
 import {
   Landmark, Receipt, Building2, ShieldCheck, AlertTriangle,
   CheckCircle2, Clock, Calculator,
@@ -18,7 +17,6 @@ import {
   PieChart, Pie, Cell, Legend,
 } from "recharts";
 import { formatCurrency } from "@/lib/currencyFormatter";
-import { format } from "date-fns";
 import { ar } from "date-fns/locale";
 import { CACHE } from "@/lib/queryConfig";
 import { QUERY_LIMIT_LARGE } from "@/lib/constants";

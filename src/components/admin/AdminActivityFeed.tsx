@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Link } from "react-router-dom";
-import { Activity, ArrowRight, UserPlus, Flag, Trophy, FileText, Shield, Package, AlertTriangle, Ticket, MessageSquare } from "lucide-react";
+import { Activity, ArrowRight, UserPlus, Flag, Trophy, Shield, Package, Ticket } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { ar } from "date-fns/locale";
 import { MS_PER_DAY, REFETCH_INTERVAL_DEFAULT } from "@/lib/constants";

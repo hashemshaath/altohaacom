@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { CACHE } from "@/lib/queryConfig";
 
 /**
  * Prefetches common admin dashboard queries during idle time

@@ -4,8 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { TrendingUp, Users, MessageCircle, Zap } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
-import { cn } from "@/lib/utils";
-import { MS_PER_DAY, MS_PER_WEEK } from "@/lib/constants";
+import { MS_PER_WEEK } from "@/lib/constants";
 import { CACHE } from "@/lib/queryConfig";
 
 export const CommunityInsights = memo(function CommunityInsights() {

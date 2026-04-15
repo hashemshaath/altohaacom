@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 export { sendNotification, supabase };
 export type { SendNotificationParams };
 
-export async function getAdminUserIds(): Promise<string[]> {
+async function getAdminUserIds(): Promise<string[]> {
   const { data } = await supabase
     .from("user_roles")
     .select("user_id")

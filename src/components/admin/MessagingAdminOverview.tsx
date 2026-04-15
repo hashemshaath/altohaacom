@@ -1,10 +1,8 @@
 import { useIsAr } from "@/hooks/useIsAr";
-import { CACHE } from "@/lib/queryConfig";
 import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { Card, CardContent } from "@/components/ui/card";
 import { MessageSquare, Ticket, Bell, TrendingUp, Users, Clock } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { useVisibleRefetchInterval } from "@/hooks/useVisibleRefetchInterval";

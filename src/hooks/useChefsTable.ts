@@ -1,8 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
-import { toast } from "sonner";
-import { CACHE } from "@/lib/queryConfig";
 import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -268,7 +266,7 @@ export function useChefsTableMedia(sessionId: string | undefined) {
   });
 }
 
-export function useChefsTableCriteriaPresets() {
+function useChefsTableCriteriaPresets() {
   return useQuery({
     queryKey: ["chefs-table-criteria-presets"],
     queryFn: async () => {
@@ -280,7 +278,7 @@ export function useChefsTableCriteriaPresets() {
   });
 }
 
-export function useMyChefInvitations() {
+function useMyChefInvitations() {
   const { user } = useAuth();
   return useQuery({
     queryKey: ["my-chef-invitations", user?.id],
@@ -317,7 +315,7 @@ export function useCreateChefsTableRequest() {
   });
 }
 
-export function useUpdateChefsTableSession() {
+function useUpdateChefsTableSession() {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -391,7 +389,7 @@ export function useSubmitEvaluation() {
   });
 }
 
-export function useAddChefsTableMedia() {
+function useAddChefsTableMedia() {
   const queryClient = useQueryClient();
   const { user } = useAuth();
 

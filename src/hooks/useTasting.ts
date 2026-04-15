@@ -1,8 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
-import { toast } from "sonner";
-import { CACHE } from "@/lib/queryConfig";
 import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -211,7 +209,7 @@ export function useCriteriaPresets() {
   });
 }
 
-export function useTastingJudges(sessionId: string | undefined) {
+function useTastingJudges(sessionId: string | undefined) {
   return useQuery({
     queryKey: ["tasting-judges", sessionId],
     queryFn: async () => {
@@ -266,7 +264,7 @@ export function useUpdateTastingSession() {
   });
 }
 
-export function useDeleteTastingSession() {
+function useDeleteTastingSession() {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -330,7 +328,7 @@ export function useAddTastingEntry() {
   });
 }
 
-export function useUpdateTastingEntry() {
+function useUpdateTastingEntry() {
   const queryClient = useQueryClient();
 
   return useMutation({

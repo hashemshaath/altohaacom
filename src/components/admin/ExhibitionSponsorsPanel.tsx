@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "@/hooks/use-toast";
-import { Plus, Trash2, Award, Building, Search, Pencil, X, Check, AlertTriangle, GripVertical } from "lucide-react";
+import { Plus, Trash2, Award, Building, Search, Pencil, X, Check, AlertTriangle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 

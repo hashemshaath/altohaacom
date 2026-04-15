@@ -15,7 +15,7 @@ function escapeICS(text: string): string {
   });
 }
 
-export function generateICS(event: GlobalEvent): string {
+function generateICS(event: GlobalEvent): string {
   const uid = `${event.id}@altoha.com`;
   const dtStart = formatICSDate(event.start_date, event.all_day);
   const dtEnd = event.end_date

@@ -129,7 +129,7 @@ export const ROUTES = {
 } as const;
 
 /** Base URL for canonical/SEO purposes */
-export const SITE_URL = 'https://altoha.com';
+const SITE_URL = 'https://altoha.com';
 
 /** Build a full canonical URL */
-export const canonical = (path: string) => `${SITE_URL}${path}`;
+const canonical = (path: string) => `${SITE_URL}${path}`;
