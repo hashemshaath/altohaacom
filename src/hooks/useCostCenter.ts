@@ -106,7 +106,7 @@ export interface CostTemplate {
 
 // ─── Untyped table helper (tables not yet in generated types) ───
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const untypedFrom = (table: string) => supabase.from(table as any);
+const untypedFrom = (table: string) => supabase.from(table as any) as any;
 
 const ESTIMATE_COLS = "id, estimate_number, module_type, module_id, module_title, module_title_ar, company_id, title, title_ar, description, description_ar, subtotal, tax_rate, tax_amount, discount_amount, total_amount, currency, status, prepared_by, approved_by, approved_at, rejection_reason, valid_until, invoice_id, notes, notes_ar, internal_notes, version, parent_estimate_id, tags, created_at, updated_at" as const;
 const ITEM_COLS = "id, estimate_id, category, title, title_ar, description, description_ar, quantity, unit, unit_ar, unit_price, total_price, person_id, person_role, cost_profile_id, sort_order, notes, created_at" as const;

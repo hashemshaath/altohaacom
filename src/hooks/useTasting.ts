@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import { CACHE } from "@/lib/queryConfig";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const untypedFrom = (table: string) => supabase.from(table as any);
+const untypedFrom = (table: string) => supabase.from(table as any) as any;
 
 export type EvalMethod = "numeric" | "stars" | "pass_fail";
 export type SessionStatus = "draft" | "open" | "in_progress" | "completed" | "cancelled";
