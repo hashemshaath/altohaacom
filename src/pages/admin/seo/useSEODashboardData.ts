@@ -67,7 +67,7 @@ export function useSEODashboardData(isAr: boolean) {
   const { data: crawlLog, error: crawlLogError } = useQuery({
     queryKey: ["seo-crawl-log"],
     queryFn: async () => {
-      const { data, error } = await supabase.from("seo_crawl_log").select("id, url, status_code, response_time_ms, crawler, created_at").order("created_at", { ascending: false }).limit(20);
+      const { data, error } = await supabase.from("seo_crawl_log").select("id, action, target_url, search_engine, status, response_code, created_at").order("created_at", { ascending: false }).limit(20);
       if (error) throw handleSupabaseError(error);
       return data || [];
     },
@@ -85,7 +85,7 @@ export function useSEODashboardData(isAr: boolean) {
   const { data: trackedKeywords, refetch: refetchKeywords, error: trackedKeywordsError } = useQuery({
     queryKey: ["seo-tracked-keywords"],
     queryFn: async () => {
-      const { data, error } = await supabase.from("seo_tracked_keywords").select("id, keyword, current_position, previous_position, search_volume, difficulty, url, created_at, updated_at").order("created_at", { ascending: false }).limit(QUERY_LIMIT_LARGE);
+      const { data, error } = await supabase.from("seo_tracked_keywords").select("id, keyword, keyword_ar, target_page, search_engine, country_code, current_position, previous_position, best_position, last_checked_at, is_active, notes, created_at, updated_at").order("created_at", { ascending: false }).limit(QUERY_LIMIT_LARGE);
       if (error) throw handleSupabaseError(error);
       return data || [];
     },
@@ -94,7 +94,7 @@ export function useSEODashboardData(isAr: boolean) {
   const { data: indexingStatus, refetch: refetchIndexing, error: indexingStatusError } = useQuery({
     queryKey: ["seo-indexing-status"],
     queryFn: async () => {
-      const { data, error } = await supabase.from("seo_indexing_status").select("id, url, status, last_crawled_at, coverage_state, updated_at").order("updated_at", { ascending: false }).limit(QUERY_LIMIT_LARGE);
+      const { data, error } = await supabase.from("seo_indexing_status").select("id, url, path, status, last_submitted_at, last_indexed_at, submitted_to, coverage_state, updated_at").order("updated_at", { ascending: false }).limit(QUERY_LIMIT_LARGE);
       if (error) throw handleSupabaseError(error);
       return data || [];
     },
