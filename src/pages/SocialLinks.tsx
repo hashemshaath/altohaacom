@@ -199,32 +199,32 @@ export default function SocialLinks() {
   const fontFamily = FONT_MAP[page?.font_family || "default"] || "inherit";
 
   const displayName = pickLocalizedText(isRtl, profile.display_name_ar || profile.full_name_ar || null, profile.display_name || profile.full_name || null) || (isRtl ? "الملف الشخصي" : "Profile");
-  const bio = pickLocalizedText(isRtl, page?.bio_ar || (profile as any).bio_ar || null, page?.bio || (profile as any).bio || null);
+  const bio = pickLocalizedText(isRtl, page?.bio_ar || profile.bio_ar || null, page?.bio || profile.bio || null);
   const title = pickLocalizedText(isRtl, page?.page_title_ar || null, page?.page_title || null) || displayName;
-  const specialization = pickLocalizedText(isRtl, (profile as any).specialization_ar || null, (profile as any).specialization || null);
-  const jobTitle = pickLocalizedText(isRtl, (profile as any).job_title_ar || null, (profile as any).job_title || null);
+  const specialization = pickLocalizedText(isRtl, profile.specialization_ar || null, profile.specialization || null);
+  const jobTitle = pickLocalizedText(isRtl, profile.job_title_ar || null, profile.job_title || null);
 
   const socialPlatforms = [
     { key: "instagram", value: profile.instagram }, { key: "twitter", value: profile.twitter },
     { key: "facebook", value: profile.facebook }, { key: "linkedin", value: profile.linkedin },
-    { key: "youtube", value: profile.youtube }, { key: "tiktok", value: (profile as any).tiktok },
-    { key: "snapchat", value: (profile as any).snapchat }, { key: "website", value: profile.website },
+    { key: "youtube", value: profile.youtube }, { key: "tiktok", value: profile.tiktok },
+    { key: "snapchat", value: profile.snapchat }, { key: "website", value: profile.website },
   ].filter(s => s.value);
 
-  const whatsapp = (profile as any).whatsapp;
-  const phone = (profile as any).phone;
+  const whatsapp = (profile as Record<string, unknown>).whatsapp as string | undefined;
+  const phone = (profile as Record<string, unknown>).phone as string | undefined;
   const buttonColorStyle = page?.button_color && page.button_color !== "#000000" ? { backgroundColor: page.button_color, color: page.text_color || "#ffffff" } : {};
-  const coverImage = extra.cover_image_url || (profile as any).cover_image_url || page?.background_image_url;
-  const isVerified = (profile as any).is_verified;
-  const yearsExp = (profile as any).years_of_experience;
-  const city = (profile as any).city;
-  const countryCode = (profile as any).country_code;
-  const nationalityCode = (profile as any).nationality;
-  const secondNationalityCode = (profile as any).second_nationality;
-  const showNationality = (profile as any).show_nationality !== false;
-  const membershipTier = (profile as any).membership_tier;
-  const globalAwards = (profile as any).global_awards;
-  const viewCount = (profile as any).view_count || 0;
+  const coverImage = extra.cover_image_url || profile.cover_image_url || page?.background_image_url;
+  const isVerified = profile.is_verified;
+  const yearsExp = profile.years_of_experience;
+  const city = profile.city;
+  const countryCode = profile.country_code;
+  const nationalityCode = profile.nationality;
+  const secondNationalityCode = (profile as Record<string, unknown>).second_nationality as string | undefined;
+  const showNationality = profile.show_nationality !== false;
+  const membershipTier = profile.membership_tier;
+  const globalAwards = (profile as Record<string, unknown>).global_awards as number | undefined;
+  const viewCount = profile.view_count || 0;
   const hasCover = !!coverImage;
   const followersCount = followStats?.followers || 0;
 
