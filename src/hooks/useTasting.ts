@@ -4,6 +4,9 @@ import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import { CACHE } from "@/lib/queryConfig";
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const untypedFrom = (table: string) => supabase.from(table as any);
+
 export type EvalMethod = "numeric" | "stars" | "pass_fail";
 export type SessionStatus = "draft" | "open" | "in_progress" | "completed" | "cancelled";
 
@@ -70,7 +73,7 @@ export interface TastingEntry {
   photo_url: string | null;
   category: string | null;
   is_active: boolean | null;
-  sort_order: number | null;
+  sort_order: number;
   images: string[] | null;
   stage: string | null;
   created_at: string;
@@ -115,15 +118,19 @@ export interface TastingJudge {
   completed_at: string | null;
 }
 
+const SESSION_COLS = "id, title, title_ar, description, description_ar, competition_id, organizer_id, eval_method, status, max_score, session_date, session_end, venue, venue_ar, city, country, country_code, cover_image_url, notes, is_blind_tasting, allow_notes, evaluation_category, evaluation_type, round, created_at, updated_at" as const;
+const CRITERIA_COLS = "id, session_id, name, name_ar, description, description_ar, category, weight, max_score, sort_order, is_required, stage, guidelines, guidelines_ar, reference_images, eval_scale, created_at" as const;
+const ENTRY_COLS = "id, session_id, entry_number, dish_name, dish_name_ar, description, description_ar, chef_name, chef_name_ar, chef_id, photo_url, category, is_active, sort_order, images, stage, created_at" as const;
+const SCORE_COLS = "id, session_id, entry_id, criterion_id, judge_id, score, stars, passed, note, note_ar, created_at, updated_at" as const;
+
 // ─── Queries ────────────────────────────────────
 
 export function useTastingSessions() {
   return useQuery({
     queryKey: ["tasting-sessions"],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("tasting_sessions" as any)
-        .select("id, title, title_ar, description, description_ar, competition_id, organizer_id, eval_method, status, max_score, session_date, session_end, venue, venue_ar, city, country, country_code, cover_image_url, notes, is_blind_tasting, allow_notes, evaluation_category, evaluation_type, round, created_at, updated_at")
+      const { data, error } = await untypedFrom("tasting_sessions")
+        .select(SESSION_COLS)
         .order("created_at", { ascending: false });
       if (error) throw error;
       return (data || []) as unknown as TastingSession[];
@@ -135,9 +142,8 @@ export function useTastingSession(id: string | undefined) {
   return useQuery({
     queryKey: ["tasting-session", id],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("tasting_sessions" as any)
-        .select("id, title, title_ar, description, description_ar, competition_id, organizer_id, eval_method, status, max_score, session_date, session_end, venue, venue_ar, city, country, country_code, cover_image_url, notes, is_blind_tasting, allow_notes, evaluation_category, evaluation_type, round, created_at, updated_at")
+      const { data, error } = await untypedFrom("tasting_sessions")
+        .select(SESSION_COLS)
         .eq("id", id!)
         .single();
       if (error) throw error;
@@ -152,9 +158,8 @@ export function useTastingCriteria(sessionId: string | undefined) {
   return useQuery({
     queryKey: ["tasting-criteria", sessionId],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("tasting_criteria" as any)
-        .select("id, session_id, name, name_ar, description, description_ar, category, weight, max_score, sort_order, is_required, stage, guidelines, guidelines_ar, reference_images, eval_scale, created_at")
+      const { data, error } = await untypedFrom("tasting_criteria")
+        .select(CRITERIA_COLS)
         .eq("session_id", sessionId!)
         .order("sort_order");
       if (error) throw error;
@@ -168,9 +173,8 @@ export function useTastingEntries(sessionId: string | undefined) {
   return useQuery({
     queryKey: ["tasting-entries", sessionId],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("tasting_entries" as any)
-        .select("id, session_id, entry_number, dish_name, dish_name_ar, description, description_ar, chef_name, chef_name_ar, chef_id, photo_url, category, is_active, sort_order, images, stage, created_at")
+      const { data, error } = await untypedFrom("tasting_entries")
+        .select(ENTRY_COLS)
         .eq("session_id", sessionId!)
         .order("sort_order");
       if (error) throw error;
@@ -184,9 +188,8 @@ export function useTastingScores(sessionId: string | undefined) {
   return useQuery({
     queryKey: ["tasting-scores", sessionId],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("tasting_scores" as any)
-        .select("id, session_id, entry_id, criterion_id, judge_id, score, stars, passed, note, note_ar, created_at, updated_at")
+      const { data, error } = await untypedFrom("tasting_scores")
+        .select(SCORE_COLS)
         .eq("session_id", sessionId!);
       if (error) throw error;
       return (data || []) as unknown as TastingScore[];
@@ -199,8 +202,7 @@ export function useCriteriaPresets() {
   return useQuery({
     queryKey: ["tasting-criteria-presets"],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("tasting_criteria_presets" as any)
+      const { data, error } = await untypedFrom("tasting_criteria_presets")
         .select("id, preset_name, preset_name_ar, category, criteria, is_system");
       if (error) throw error;
       return (data || []) as unknown as CriteriaPreset[];
@@ -212,8 +214,7 @@ export function useTastingJudges(sessionId: string | undefined) {
   return useQuery({
     queryKey: ["tasting-judges", sessionId],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("tasting_judges" as any)
+      const { data, error } = await untypedFrom("tasting_judges")
         .select("id, session_id, judge_id, assigned_at, has_completed, completed_at")
         .eq("session_id", sessionId!);
       if (error) throw error;
@@ -231,9 +232,8 @@ export function useCreateTastingSession() {
 
   return useMutation({
     mutationFn: async (session: Partial<TastingSession>) => {
-      const { data, error } = await supabase
-        .from("tasting_sessions" as any)
-        .insert({ ...session, organizer_id: user?.id } as any)
+      const { data, error } = await untypedFrom("tasting_sessions")
+        .insert({ ...session, organizer_id: user?.id } as Record<string, unknown>)
         .select()
         .single();
       if (error) throw error;
@@ -250,9 +250,8 @@ export function useUpdateTastingSession() {
 
   return useMutation({
     mutationFn: async ({ id, ...updates }: Partial<TastingSession> & { id: string }) => {
-      const { data, error } = await supabase
-        .from("tasting_sessions" as any)
-        .update(updates as any)
+      const { data, error } = await untypedFrom("tasting_sessions")
+        .update(updates as Record<string, unknown>)
         .eq("id", id)
         .select()
         .single();
@@ -271,8 +270,7 @@ export function useDeleteTastingSession() {
 
   return useMutation({
     mutationFn: async (id: string) => {
-      const { error } = await supabase
-        .from("tasting_sessions" as any)
+      const { error } = await untypedFrom("tasting_sessions")
         .delete()
         .eq("id", id);
       if (error) throw error;
@@ -297,10 +295,9 @@ export function useSubmitScore() {
       passed?: boolean;
       note?: string;
     }) => {
-      const { data, error } = await supabase
-        .from("tasting_scores" as any)
+      const { data, error } = await untypedFrom("tasting_scores")
         .upsert(
-          { ...score, judge_id: user?.id } as any,
+          { ...score, judge_id: user?.id } as Record<string, unknown>,
           { onConflict: "entry_id,criterion_id,judge_id" }
         )
         .select()
@@ -319,9 +316,8 @@ export function useAddTastingEntry() {
 
   return useMutation({
     mutationFn: async (entry: Partial<TastingEntry>) => {
-      const { data, error } = await supabase
-        .from("tasting_entries" as any)
-        .insert(entry as any)
+      const { data, error } = await untypedFrom("tasting_entries")
+        .insert(entry as Record<string, unknown>)
         .select()
         .single();
       if (error) throw error;
@@ -338,9 +334,8 @@ export function useUpdateTastingEntry() {
 
   return useMutation({
     mutationFn: async ({ id, ...updates }: Partial<TastingEntry> & { id: string }) => {
-      const { data, error } = await supabase
-        .from("tasting_entries" as any)
-        .update(updates as any)
+      const { data, error } = await untypedFrom("tasting_entries")
+        .update(updates as Record<string, unknown>)
         .eq("id", id)
         .select()
         .single();
@@ -348,7 +343,7 @@ export function useUpdateTastingEntry() {
       return data as unknown as TastingEntry;
     },
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ["tasting-entries", (data as any).session_id] });
+      queryClient.invalidateQueries({ queryKey: ["tasting-entries", data.session_id] });
     },
   });
 }
@@ -358,8 +353,7 @@ export function useDeleteTastingEntry() {
 
   return useMutation({
     mutationFn: async ({ id, sessionId }: { id: string; sessionId: string }) => {
-      const { error } = await supabase
-        .from("tasting_entries" as any)
+      const { error } = await untypedFrom("tasting_entries")
         .delete()
         .eq("id", id);
       if (error) throw error;
@@ -376,9 +370,8 @@ export function useAddTastingCriteria() {
 
   return useMutation({
     mutationFn: async (criteria: Array<Partial<TastingCriterion>>) => {
-      const { data, error } = await supabase
-        .from("tasting_criteria" as any)
-        .insert(criteria as any)
+      const { data, error } = await untypedFrom("tasting_criteria")
+        .insert(criteria as Record<string, unknown>[])
         .select();
       if (error) throw error;
       return data;
@@ -395,8 +388,7 @@ export function useDeleteTastingCriterion() {
 
   return useMutation({
     mutationFn: async ({ id, sessionId }: { id: string; sessionId: string }) => {
-      const { error } = await supabase
-        .from("tasting_criteria" as any)
+      const { error } = await untypedFrom("tasting_criteria")
         .delete()
         .eq("id", id);
       if (error) throw error;

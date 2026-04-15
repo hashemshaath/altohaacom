@@ -2,6 +2,9 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { CACHE } from "@/lib/queryConfig";
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const untypedFrom = (table: string) => supabase.from(table as Record<string, unknown>);
+
 // ─── Types ──────────────────────────────────────
 
 export interface EvaluationDomain {
@@ -93,8 +96,7 @@ export function useEvaluationDomains() {
   return useQuery({
     queryKey: ["evaluation-domains"],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("evaluation_domains" as any)
+      const { data, error } = await untypedFrom("evaluation_domains")
         .select("id, name, name_ar, slug, description, description_ar, icon, is_active, sort_order, created_at")
         .eq("is_active", true)
         .order("sort_order");
@@ -108,8 +110,7 @@ export function useEvaluationCriteriaCategories(domainId?: string, productCatego
   return useQuery({
     queryKey: ["evaluation-criteria-categories", domainId, productCategory],
     queryFn: async () => {
-      let query = supabase
-        .from("evaluation_criteria_categories" as any)
+      let query = untypedFrom("evaluation_criteria_categories")
         .select("id, domain_id, name, name_ar, description, description_ar, product_category, sort_order, is_active, created_at")
         .eq("is_active", true)
         .order("sort_order");
@@ -128,8 +129,7 @@ export function useEvaluationCriteria(categoryId?: string) {
   return useQuery({
     queryKey: ["evaluation-criteria", categoryId],
     queryFn: async () => {
-      let query = supabase
-        .from("evaluation_criteria" as any)
+      let query = untypedFrom("evaluation_criteria")
         .select("id, category_id, name, name_ar, description, description_ar, max_score, weight, scoring_guide, scoring_guide_ar, is_required, sort_order, is_active, created_at, updated_at")
         .eq("is_active", true)
         .order("sort_order");
@@ -146,17 +146,15 @@ export function useEvaluationCriteriaByDomain(domainSlug: string, productCategor
     queryKey: ["evaluation-criteria-by-domain", domainSlug, productCategory],
     queryFn: async () => {
       // Get domain
-      const { data: domains } = await supabase
-        .from("evaluation_domains" as any)
+      const { data: domains } = await untypedFrom("evaluation_domains")
         .select("id")
         .eq("slug", domainSlug)
         .single();
       if (!domains) return { categories: [], criteria: [] };
-      const domainId = (domains as any).id;
+      const domainId = (domains as unknown as { id: string }).id;
 
       // Get categories
-      let catQuery = supabase
-        .from("evaluation_criteria_categories" as any)
+      let catQuery = untypedFrom("evaluation_criteria_categories")
         .select("id, domain_id, name, name_ar, description, description_ar, product_category, sort_order, is_active, created_at")
         .eq("domain_id", domainId)
         .eq("is_active", true)
@@ -171,8 +169,7 @@ export function useEvaluationCriteriaByDomain(domainSlug: string, productCategor
       if (catIds.length === 0) return { categories: categories || [], criteria: [] };
 
       // Get criteria for those categories
-      const { data: criteria } = await supabase
-        .from("evaluation_criteria" as any)
+      const { data: criteria } = await untypedFrom("evaluation_criteria")
         .select("id, category_id, name, name_ar, description, description_ar, max_score, weight, scoring_guide, scoring_guide_ar, is_required, sort_order, is_active, created_at, updated_at")
         .in("category_id", catIds)
         .eq("is_active", true)
@@ -190,8 +187,7 @@ export function useEvaluationScores(entityId?: string, domainSlug?: string) {
   return useQuery({
     queryKey: ["evaluation-scores", entityId, domainSlug],
     queryFn: async () => {
-      let query = supabase
-        .from("evaluation_scores" as any)
+      let query = untypedFrom("evaluation_scores")
         .select("id, domain_slug, entity_id, evaluator_id, subject_id, criterion_id, score, notes, notes_ar, evidence_urls, created_at, updated_at")
         .eq("entity_id", entityId!);
       if (domainSlug) query = query.eq("domain_slug", domainSlug);
@@ -207,8 +203,7 @@ export function useEvaluationReports(domainSlug?: string) {
   return useQuery({
     queryKey: ["evaluation-reports", domainSlug],
     queryFn: async () => {
-      let query = supabase
-        .from("evaluation_reports" as any)
+      let query = untypedFrom("evaluation_reports")
         .select("id, domain_slug, entity_id, report_number, title, title_ar, summary, summary_ar, overall_score, category_scores, evaluator_count, criteria_count, strengths, weaknesses, recommendations, images, status, generated_by, generated_at, created_at, updated_at")
         .order("created_at", { ascending: false });
       if (domainSlug) query = query.eq("domain_slug", domainSlug);
@@ -225,9 +220,8 @@ export function useUpsertEvaluationScore() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (score: Partial<EvaluationScore>) => {
-      const { data, error } = await supabase
-        .from("evaluation_scores" as any)
-        .upsert(score as any, { onConflict: "entity_id,evaluator_id,subject_id,criterion_id" })
+      const { data, error } = await untypedFrom("evaluation_scores")
+        .upsert(score as Record<string, unknown>, { onConflict: "entity_id,evaluator_id,subject_id,criterion_id" })
         .select()
         .single();
       if (error) throw error;
@@ -243,9 +237,8 @@ export function useCreateCriterion() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (criterion: Partial<EvaluationCriterion>) => {
-      const { data, error } = await supabase
-        .from("evaluation_criteria" as any)
-        .insert(criterion as any)
+      const { data, error } = await untypedFrom("evaluation_criteria")
+        .insert(criterion as Record<string, unknown>)
         .select()
         .single();
       if (error) throw error;
@@ -262,9 +255,8 @@ export function useUpdateCriterion() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async ({ id, ...updates }: Partial<EvaluationCriterion> & { id: string }) => {
-      const { data, error } = await supabase
-        .from("evaluation_criteria" as any)
-        .update(updates as any)
+      const { data, error } = await untypedFrom("evaluation_criteria")
+        .update(updates as Record<string, unknown>)
         .eq("id", id)
         .select()
         .single();
@@ -282,9 +274,8 @@ export function useDeleteCriterion() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (id: string) => {
-      const { error } = await supabase
-        .from("evaluation_criteria" as any)
-        .update({ is_active: false } as any)
+      const { error } = await untypedFrom("evaluation_criteria")
+        .update({ is_active: false } as Record<string, unknown>)
         .eq("id", id);
       if (error) throw error;
     },
@@ -299,9 +290,8 @@ export function useCreateCriteriaCategory() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (category: Partial<EvaluationCriteriaCategory>) => {
-      const { data, error } = await supabase
-        .from("evaluation_criteria_categories" as any)
-        .insert(category as any)
+      const { data, error } = await untypedFrom("evaluation_criteria_categories")
+        .insert(category as Record<string, unknown>)
         .select()
         .single();
       if (error) throw error;

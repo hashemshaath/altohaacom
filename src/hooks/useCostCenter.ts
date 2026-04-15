@@ -104,6 +104,20 @@ export interface CostTemplate {
   updated_at: string;
 }
 
+// ─── Untyped table helper (tables not yet in generated types) ───
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const untypedFrom = (table: string) => supabase.from(table as any);
+
+const ESTIMATE_COLS = "id, estimate_number, module_type, module_id, module_title, module_title_ar, company_id, title, title_ar, description, description_ar, subtotal, tax_rate, tax_amount, discount_amount, total_amount, currency, status, prepared_by, approved_by, approved_at, rejection_reason, valid_until, invoice_id, notes, notes_ar, internal_notes, version, parent_estimate_id, tags, created_at, updated_at" as const;
+const ITEM_COLS = "id, estimate_id, category, title, title_ar, description, description_ar, quantity, unit, unit_ar, unit_price, total_price, person_id, person_role, cost_profile_id, sort_order, notes, created_at" as const;
+const LOG_COLS = "id, estimate_id, action, performed_by, comments, comments_ar, previous_status, new_status, created_at" as const;
+const TEMPLATE_COLS = "id, name, name_ar, description, description_ar, module_type, items, is_active, created_by, created_at, updated_at" as const;
+
+/** Short select for notification context */
+interface EstimateNotifyFields { estimate_number: string; title: string; prepared_by: string | null; }
+/** Invoice result shape */
+interface InvoiceResult { id: string; invoice_number: string; }
+
 // ─── Category Metadata ─────────────────────
 
 export const COST_ITEM_CATEGORIES: Record<CostItemCategory, { en: string; ar: string; icon: string }> = {
@@ -145,9 +159,8 @@ export function useCostEstimates(filters?: { moduleType?: string; status?: strin
   return useQuery({
     queryKey: ["cost-estimates", filters],
     queryFn: async () => {
-      let query = supabase
-        .from("cost_estimates" as any)
-        .select("id, estimate_number, module_type, module_id, module_title, module_title_ar, company_id, title, title_ar, description, description_ar, subtotal, tax_rate, tax_amount, discount_amount, total_amount, currency, status, prepared_by, approved_by, approved_at, rejection_reason, valid_until, invoice_id, notes, notes_ar, internal_notes, version, parent_estimate_id, tags, created_at, updated_at")
+      let query = untypedFrom("cost_estimates")
+        .select(ESTIMATE_COLS)
         .order("created_at", { ascending: false });
       if (filters?.moduleType && filters.moduleType !== "all") {
         query = query.eq("module_type", filters.moduleType);
@@ -166,9 +179,8 @@ export function useCostEstimate(id: string | undefined) {
   return useQuery({
     queryKey: ["cost-estimate", id],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("cost_estimates" as any)
-        .select("id, estimate_number, module_type, module_id, module_title, module_title_ar, company_id, title, title_ar, description, description_ar, subtotal, tax_rate, tax_amount, discount_amount, total_amount, currency, status, prepared_by, approved_by, approved_at, rejection_reason, valid_until, invoice_id, notes, notes_ar, internal_notes, version, parent_estimate_id, tags, created_at, updated_at")
+      const { data, error } = await untypedFrom("cost_estimates")
+        .select(ESTIMATE_COLS)
         .eq("id", id!)
         .single();
       if (error) throw error;
@@ -183,9 +195,8 @@ export function useCostEstimateItems(estimateId: string | undefined) {
   return useQuery({
     queryKey: ["cost-estimate-items", estimateId],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("cost_estimate_items" as any)
-        .select("id, estimate_id, category, title, title_ar, description, description_ar, quantity, unit, unit_ar, unit_price, total_price, person_id, person_role, cost_profile_id, sort_order, notes, created_at")
+      const { data, error } = await untypedFrom("cost_estimate_items")
+        .select(ITEM_COLS)
         .eq("estimate_id", estimateId!)
         .order("sort_order");
       if (error) throw error;
@@ -199,9 +210,8 @@ export function useCostApprovalLog(estimateId: string | undefined) {
   return useQuery({
     queryKey: ["cost-approval-log", estimateId],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("cost_approval_log" as any)
-        .select("id, estimate_id, action, performed_by, comments, comments_ar, previous_status, new_status, created_at")
+      const { data, error } = await untypedFrom("cost_approval_log")
+        .select(LOG_COLS)
         .eq("estimate_id", estimateId!)
         .order("created_at", { ascending: false });
       if (error) throw error;
@@ -215,9 +225,8 @@ export function useCostTemplates(moduleType?: CostModuleType) {
   return useQuery({
     queryKey: ["cost-templates", moduleType],
     queryFn: async () => {
-      let query = supabase
-        .from("cost_templates" as any)
-        .select("id, name, name_ar, description, description_ar, module_type, items, is_active, created_by, created_at, updated_at")
+      let query = untypedFrom("cost_templates")
+        .select(TEMPLATE_COLS)
         .eq("is_active", true)
         .order("name");
       if (moduleType) {
@@ -238,9 +247,8 @@ export function useCreateCostEstimate() {
 
   return useMutation({
     mutationFn: async (estimate: Partial<CostEstimate>) => {
-      const { data, error } = await supabase
-        .from("cost_estimates" as any)
-        .insert({ ...estimate, prepared_by: user?.id } as any)
+      const { data, error } = await untypedFrom("cost_estimates")
+        .insert({ ...estimate, prepared_by: user?.id } as Record<string, unknown>)
         .select()
         .single();
       if (error) throw error;
@@ -257,9 +265,8 @@ export function useUpdateCostEstimate() {
 
   return useMutation({
     mutationFn: async ({ id, ...updates }: Partial<CostEstimate> & { id: string }) => {
-      const { data, error } = await supabase
-        .from("cost_estimates" as any)
-        .update(updates as any)
+      const { data, error } = await untypedFrom("cost_estimates")
+        .update(updates as Record<string, unknown>)
         .eq("id", id)
         .select()
         .single();
@@ -282,9 +289,8 @@ export function useSaveCostEstimateItem() {
       const payload = { ...item, total_price: totalPrice };
       if (item.id) {
         const { id, ...rest } = payload;
-        const { data, error } = await supabase
-          .from("cost_estimate_items" as any)
-          .update(rest as any)
+        const { data, error } = await untypedFrom("cost_estimate_items")
+          .update(rest as Record<string, unknown>)
           .eq("id", id)
           .select()
           .single();
@@ -292,9 +298,8 @@ export function useSaveCostEstimateItem() {
         return data as unknown as CostEstimateItem;
       } else {
         const { id, ...rest } = payload;
-        const { data, error } = await supabase
-          .from("cost_estimate_items" as any)
-          .insert(rest as any)
+        const { data, error } = await untypedFrom("cost_estimate_items")
+          .insert(rest as Record<string, unknown>)
           .select()
           .single();
         if (error) throw error;
@@ -313,8 +318,7 @@ export function useDeleteCostEstimateItem() {
 
   return useMutation({
     mutationFn: async ({ id, estimateId }: { id: string; estimateId: string }) => {
-      const { error } = await supabase
-        .from("cost_estimate_items" as any)
+      const { error } = await untypedFrom("cost_estimate_items")
         .delete()
         .eq("id", id);
       if (error) throw error;
@@ -332,13 +336,14 @@ export function useSubmitForApproval() {
 
   return useMutation({
     mutationFn: async ({ estimateId, comments }: { estimateId: string; comments?: string }) => {
-      const { data: est } = await supabase.from("cost_estimates" as any).select("estimate_number, title").eq("id", estimateId).single();
-      await supabase
-        .from("cost_estimates" as any)
-        .update({ status: "pending_approval" } as any)
+      const { data: raw } = await untypedFrom("cost_estimates").select("estimate_number, title").eq("id", estimateId).single();
+      const est = raw as unknown as EstimateNotifyFields | null;
+
+      await untypedFrom("cost_estimates")
+        .update({ status: "pending_approval" } as Record<string, unknown>)
         .eq("id", estimateId);
-      await supabase
-        .from("cost_approval_log" as any)
+
+      await untypedFrom("cost_approval_log")
         .insert({
           estimate_id: estimateId,
           action: "submitted",
@@ -346,17 +351,18 @@ export function useSubmitForApproval() {
           comments,
           previous_status: "draft",
           new_status: "pending_approval",
-        } as any);
+        } as Record<string, unknown>);
+
       // Notify admins
-      const { data: admins } = await supabase.from("user_roles" as any).select("user_id").eq("role", "supervisor");
+      const { data: admins } = await untypedFrom("user_roles").select("user_id").eq("role", "supervisor");
       if (admins && est) {
         for (const a of (admins as unknown as { user_id: string }[])) {
           sendNotification({
             userId: a.user_id,
-            title: `Cost Estimate Submitted: ${(est as any).estimate_number}`,
-            titleAr: `تم تقديم تقدير تكلفة: ${(est as any).estimate_number}`,
-            body: `"${(est as any).title}" needs your approval`,
-            bodyAr: `"${(est as any).title}" يحتاج موافقتك`,
+            title: `Cost Estimate Submitted: ${est.estimate_number}`,
+            titleAr: `تم تقديم تقدير تكلفة: ${est.estimate_number}`,
+            body: `"${est.title}" needs your approval`,
+            bodyAr: `"${est.title}" يحتاج موافقتك`,
             type: "info",
             link: "/admin/cost-center",
             channels: ["in_app"],
@@ -377,28 +383,28 @@ export function useDuplicateCostEstimate() {
 
   return useMutation({
     mutationFn: async (sourceId: string) => {
-      const { data: source, error: srcErr } = await supabase
-        .from("cost_estimates" as any).select("id, estimate_number, module_type, module_id, module_title, module_title_ar, company_id, title, title_ar, description, description_ar, subtotal, tax_rate, tax_amount, discount_amount, total_amount, currency, status, prepared_by, approved_by, approved_at, rejection_reason, valid_until, invoice_id, notes, notes_ar, internal_notes, version, parent_estimate_id, tags, created_at, updated_at").eq("id", sourceId).single();
+      const { data: source, error: srcErr } = await untypedFrom("cost_estimates")
+        .select(ESTIMATE_COLS).eq("id", sourceId).single();
       if (srcErr) throw srcErr;
       const src = source as unknown as CostEstimate;
 
-      const { data: items, error: itemsErr } = await supabase
-        .from("cost_estimate_items" as any).select("id, estimate_id, category, title, title_ar, description, description_ar, quantity, unit, unit_ar, unit_price, total_price, person_id, person_role, cost_profile_id, sort_order, notes, created_at").eq("estimate_id", sourceId).order("sort_order");
+      const { data: items, error: itemsErr } = await untypedFrom("cost_estimate_items")
+        .select(ITEM_COLS).eq("estimate_id", sourceId).order("sort_order");
       if (itemsErr) throw itemsErr;
 
       const { id, estimate_number, created_at, updated_at, status, approved_by, approved_at, rejection_reason, invoice_id, ...rest } = src;
-      const { data: newEst, error: newErr } = await supabase
-        .from("cost_estimates" as any)
-        .insert({ ...rest, title: `${src.title} (Copy)`, status: "draft", prepared_by: user?.id, version: (src.version || 1) + 1, parent_estimate_id: sourceId } as any)
+      const { data: newEst, error: newErr } = await untypedFrom("cost_estimates")
+        .insert({ ...rest, title: `${src.title} (Copy)`, status: "draft", prepared_by: user?.id, version: (src.version || 1) + 1, parent_estimate_id: sourceId } as Record<string, unknown>)
         .select().single();
       if (newErr) throw newErr;
+      const newEstTyped = newEst as unknown as CostEstimate;
 
       const lineItems = (items || []) as unknown as CostEstimateItem[];
       for (const item of lineItems) {
         const { id: _, estimate_id: __, created_at: ___, ...itemRest } = item;
-        await supabase.from("cost_estimate_items" as any).insert({ ...itemRest, estimate_id: (newEst as any).id } as any);
+        await untypedFrom("cost_estimate_items").insert({ ...itemRest, estimate_id: newEstTyped.id } as Record<string, unknown>);
       }
-      return newEst as unknown as CostEstimate;
+      return newEstTyped;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["cost-estimates"] });
@@ -412,24 +418,26 @@ export function useApproveCostEstimate() {
 
   return useMutation({
     mutationFn: async ({ estimateId, comments }: { estimateId: string; comments?: string }) => {
-      const { data: est } = await supabase.from("cost_estimates" as any).select("estimate_number, title, prepared_by").eq("id", estimateId).single();
-      await supabase
-        .from("cost_estimates" as any)
-        .update({ status: "approved", approved_by: user?.id, approved_at: new Date().toISOString() } as any)
+      const { data: raw } = await untypedFrom("cost_estimates").select("estimate_number, title, prepared_by").eq("id", estimateId).single();
+      const est = raw as unknown as EstimateNotifyFields | null;
+
+      await untypedFrom("cost_estimates")
+        .update({ status: "approved", approved_by: user?.id, approved_at: new Date().toISOString() } as Record<string, unknown>)
         .eq("id", estimateId);
-      await supabase
-        .from("cost_approval_log" as any)
+
+      await untypedFrom("cost_approval_log")
         .insert({
           estimate_id: estimateId, action: "approved", performed_by: user?.id,
           comments, previous_status: "pending_approval", new_status: "approved",
-        } as any);
-      if (est && (est as any).prepared_by) {
+        } as Record<string, unknown>);
+
+      if (est?.prepared_by) {
         sendNotification({
-          userId: (est as any).prepared_by,
-          title: `Estimate Approved: ${(est as any).estimate_number}`,
-          titleAr: `تمت الموافقة على التقدير: ${(est as any).estimate_number}`,
-          body: `"${(est as any).title}" has been approved`,
-          bodyAr: `تمت الموافقة على "${(est as any).title}"`,
+          userId: est.prepared_by,
+          title: `Estimate Approved: ${est.estimate_number}`,
+          titleAr: `تمت الموافقة على التقدير: ${est.estimate_number}`,
+          body: `"${est.title}" has been approved`,
+          bodyAr: `تمت الموافقة على "${est.title}"`,
           type: "success", link: "/admin/cost-center", channels: ["in_app"],
         });
       }
@@ -447,24 +455,26 @@ export function useRejectCostEstimate() {
 
   return useMutation({
     mutationFn: async ({ estimateId, reason, comments }: { estimateId: string; reason: string; comments?: string }) => {
-      const { data: est } = await supabase.from("cost_estimates" as any).select("estimate_number, title, prepared_by").eq("id", estimateId).single();
-      await supabase
-        .from("cost_estimates" as any)
-        .update({ status: "rejected", rejection_reason: reason } as any)
+      const { data: raw } = await untypedFrom("cost_estimates").select("estimate_number, title, prepared_by").eq("id", estimateId).single();
+      const est = raw as unknown as EstimateNotifyFields | null;
+
+      await untypedFrom("cost_estimates")
+        .update({ status: "rejected", rejection_reason: reason } as Record<string, unknown>)
         .eq("id", estimateId);
-      await supabase
-        .from("cost_approval_log" as any)
+
+      await untypedFrom("cost_approval_log")
         .insert({
           estimate_id: estimateId, action: "rejected", performed_by: user?.id,
           comments: comments || reason, previous_status: "pending_approval", new_status: "rejected",
-        } as any);
-      if (est && (est as any).prepared_by) {
+        } as Record<string, unknown>);
+
+      if (est?.prepared_by) {
         sendNotification({
-          userId: (est as any).prepared_by,
-          title: `Estimate Rejected: ${(est as any).estimate_number}`,
-          titleAr: `تم رفض التقدير: ${(est as any).estimate_number}`,
-          body: `"${(est as any).title}" was rejected: ${reason}`,
-          bodyAr: `تم رفض "${(est as any).title}": ${reason}`,
+          userId: est.prepared_by,
+          title: `Estimate Rejected: ${est.estimate_number}`,
+          titleAr: `تم رفض التقدير: ${est.estimate_number}`,
+          body: `"${est.title}" was rejected: ${reason}`,
+          bodyAr: `تم رفض "${est.title}": ${reason}`,
           type: "warning", link: "/admin/cost-center", channels: ["in_app"],
         });
       }
@@ -482,24 +492,20 @@ export function useConvertToInvoice() {
 
   return useMutation({
     mutationFn: async (estimateId: string) => {
-      // Get estimate with items
-      const { data: estimate, error: estErr } = await supabase
-        .from("cost_estimates" as any)
-        .select("id, estimate_number, module_type, module_id, module_title, module_title_ar, company_id, title, title_ar, description, description_ar, subtotal, tax_rate, tax_amount, discount_amount, total_amount, currency, status, prepared_by, approved_by, approved_at, rejection_reason, valid_until, invoice_id, notes, notes_ar, internal_notes, version, parent_estimate_id, tags, created_at, updated_at")
+      const { data: estimate, error: estErr } = await untypedFrom("cost_estimates")
+        .select(ESTIMATE_COLS)
         .eq("id", estimateId)
         .single();
       if (estErr) throw estErr;
       const est = estimate as unknown as CostEstimate;
 
-      const { data: items, error: itemsErr } = await supabase
-        .from("cost_estimate_items" as any)
-        .select("id, estimate_id, category, title, title_ar, description, description_ar, quantity, unit, unit_ar, unit_price, total_price, person_id, person_role, cost_profile_id, sort_order, notes, created_at")
+      const { data: items, error: itemsErr } = await untypedFrom("cost_estimate_items")
+        .select(ITEM_COLS)
         .eq("estimate_id", estimateId)
         .order("sort_order");
       if (itemsErr) throw itemsErr;
       const lineItems = (items || []) as unknown as CostEstimateItem[];
 
-      // Create invoice
       const invoiceItems = lineItems.map(item => ({
         description: item.title,
         description_ar: item.title_ar,
@@ -508,8 +514,7 @@ export function useConvertToInvoice() {
         total: item.total_price,
       }));
 
-      const { data: invoice, error: invErr } = await supabase
-        .from("invoices" as any)
+      const { data: invoice, error: invErr } = await untypedFrom("invoices")
         .insert({
           company_id: est.company_id,
           title: est.title,
@@ -527,30 +532,27 @@ export function useConvertToInvoice() {
           issued_by: user?.id,
           due_date: new Date(Date.now() + 30 * MS_PER_DAY).toISOString(),
           notes: `Generated from estimate ${est.estimate_number}`,
-        } as any)
+        } as Record<string, unknown>)
         .select()
         .single();
       if (invErr) throw invErr;
+      const inv = invoice as unknown as InvoiceResult;
 
-      // Update estimate
-      await supabase
-        .from("cost_estimates" as any)
-        .update({ status: "invoiced", invoice_id: (invoice as any).id } as any)
+      await untypedFrom("cost_estimates")
+        .update({ status: "invoiced", invoice_id: inv.id } as Record<string, unknown>)
         .eq("id", estimateId);
 
-      // Log
-      await supabase
-        .from("cost_approval_log" as any)
+      await untypedFrom("cost_approval_log")
         .insert({
           estimate_id: estimateId,
           action: "invoiced",
           performed_by: user?.id,
-          comments: `Invoice created: ${(invoice as any).invoice_number}`,
+          comments: `Invoice created: ${inv.invoice_number}`,
           previous_status: "approved",
           new_status: "invoiced",
-        } as any);
+        } as Record<string, unknown>);
 
-      return invoice;
+      return inv;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["cost-estimates"] });
@@ -568,16 +570,14 @@ export function useSaveCostTemplate() {
     mutationFn: async (template: Partial<CostTemplate>) => {
       if (template.id) {
         const { id, ...rest } = template;
-        const { error } = await supabase
-          .from("cost_templates" as any)
-          .update(rest as any)
+        const { error } = await untypedFrom("cost_templates")
+          .update(rest as Record<string, unknown>)
           .eq("id", id);
         if (error) throw error;
       } else {
         const { id, ...rest } = template;
-        const { error } = await supabase
-          .from("cost_templates" as any)
-          .insert({ ...rest, created_by: user?.id } as any);
+        const { error } = await untypedFrom("cost_templates")
+          .insert({ ...rest, created_by: user?.id } as Record<string, unknown>);
         if (error) throw error;
       }
     },

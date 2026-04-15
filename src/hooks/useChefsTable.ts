@@ -4,6 +4,9 @@ import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import { CACHE } from "@/lib/queryConfig";
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const untypedFrom = (table: string) => supabase.from(table as Record<string, unknown>);
+
 // ─── Types ──────────────────────────────────────
 
 export type RequestStatus = "pending" | "approved" | "rejected" | "cancelled";
@@ -179,8 +182,7 @@ export function useChefsTableSessions(statusFilter?: string) {
   return useQuery({
     queryKey: ["chefs-table-sessions", statusFilter],
     queryFn: async () => {
-      let query = supabase
-        .from("chefs_table_sessions" as any)
+      let query = untypedFrom("chefs_table_sessions")
         .select("id, request_id, company_id, session_number, title, title_ar, product_name, product_name_ar, product_category, experience_type, venue, venue_ar, city, country_code, session_date, session_end, cover_image_url, status, organizer_id, max_chefs, is_published, created_at, updated_at")
         .order("created_at", { ascending: false });
       if (statusFilter && statusFilter !== "all") {
@@ -197,8 +199,7 @@ export function useChefsTableSession(id: string | undefined) {
   return useQuery({
     queryKey: ["chefs-table-session", id],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("chefs_table_sessions" as any)
+      const { data, error } = await untypedFrom("chefs_table_sessions")
         .select("id, request_id, company_id, session_number, title, title_ar, description, description_ar, product_name, product_name_ar, product_category, experience_type, venue, venue_ar, city, country_code, session_date, session_end, cover_image_url, status, organizer_id, chef_selection_method, max_chefs, sample_delivery_address, sample_delivery_notes, notes, notes_ar, is_published, published_at, created_at, updated_at")
         .eq("id", id!)
         .single();
@@ -214,8 +215,7 @@ export function useChefsTableRequests() {
   return useQuery({
     queryKey: ["chefs-table-requests"],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("chefs_table_requests" as any)
+      const { data, error } = await untypedFrom("chefs_table_requests")
         .select("id, company_id, requested_by, request_number, title, title_ar, product_name, product_name_ar, product_category, experience_type, preferred_city, preferred_country_code, preferred_date_start, preferred_date_end, budget, currency, chef_count, status, admin_notes, reviewed_at, rejection_reason, created_at, updated_at")
         .order("created_at", { ascending: false });
       if (error) throw error;
@@ -228,8 +228,7 @@ export function useChefsTableInvitations(sessionId: string | undefined) {
   return useQuery({
     queryKey: ["chefs-table-invitations", sessionId],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("chefs_table_invitations" as any)
+      const { data, error } = await untypedFrom("chefs_table_invitations")
         .select("id, session_id, chef_id, invited_by, status, invitation_message, response_message, responded_at, confirmed_at, declined_reason, sample_shipped_at, sample_tracking_number, cooking_date, cooking_location, cooking_location_ar, created_at, updated_at")
         .eq("session_id", sessionId!);
       if (error) throw error;
@@ -243,8 +242,7 @@ export function useChefsTableEvaluations(sessionId: string | undefined) {
   return useQuery({
     queryKey: ["chefs-table-evaluations", sessionId],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("chefs_table_evaluations" as any)
+      const { data, error } = await untypedFrom("chefs_table_evaluations")
         .select("id, session_id, invitation_id, chef_id, taste_score, texture_score, aroma_score, versatility_score, value_score, presentation_score, overall_score, is_recommended, recommendation_level, review_title, review_title_ar, review_text, review_text_ar, pros, pros_ar, cons, cons_ar, usage_suggestions, usage_suggestions_ar, endorsement_text, endorsement_text_ar, allow_publish, status, submitted_at, created_at, updated_at")
         .eq("session_id", sessionId!);
       if (error) throw error;
@@ -258,8 +256,7 @@ export function useChefsTableMedia(sessionId: string | undefined) {
   return useQuery({
     queryKey: ["chefs-table-media", sessionId],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("chefs_table_media" as any)
+      const { data, error } = await untypedFrom("chefs_table_media")
         .select("id, session_id, evaluation_id, uploaded_by, media_type, media_url, thumbnail_url, title, title_ar, description, description_ar, sort_order, is_featured, created_at")
         .eq("session_id", sessionId!)
         .order("sort_order");
@@ -274,8 +271,7 @@ export function useChefsTableCriteriaPresets() {
   return useQuery({
     queryKey: ["chefs-table-criteria-presets"],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("chefs_table_criteria_presets" as any)
+      const { data, error } = await untypedFrom("chefs_table_criteria_presets")
         .select("id, preset_name, preset_name_ar, product_category, criteria, is_system, created_at");
       if (error) throw error;
       return (data || []) as unknown as ChefsTableCriteriaPreset[];
@@ -288,8 +284,7 @@ export function useMyChefInvitations() {
   return useQuery({
     queryKey: ["my-chef-invitations", user?.id],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("chefs_table_invitations" as any)
+      const { data, error } = await untypedFrom("chefs_table_invitations")
         .select("id, session_id, chef_id, invited_by, status, invitation_message, response_message, responded_at, confirmed_at, declined_reason, sample_shipped_at, cooking_date, cooking_location, cooking_location_ar, created_at, updated_at")
         .eq("chef_id", user!.id)
         .order("created_at", { ascending: false });
@@ -308,9 +303,8 @@ export function useCreateChefsTableRequest() {
 
   return useMutation({
     mutationFn: async (request: Partial<ChefsTableRequest>) => {
-      const { data, error } = await supabase
-        .from("chefs_table_requests" as any)
-        .insert({ ...request, requested_by: user?.id } as any)
+      const { data, error } = await untypedFrom("chefs_table_requests")
+        .insert({ ...request, requested_by: user?.id } as Record<string, unknown>)
         .select()
         .single();
       if (error) throw error;
@@ -327,9 +321,8 @@ export function useUpdateChefsTableSession() {
 
   return useMutation({
     mutationFn: async ({ id, ...updates }: Partial<ChefsTableSession> & { id: string }) => {
-      const { data, error } = await supabase
-        .from("chefs_table_sessions" as any)
-        .update(updates as any)
+      const { data, error } = await untypedFrom("chefs_table_sessions")
+        .update(updates as Record<string, unknown>)
         .eq("id", id)
         .select()
         .single();
@@ -360,8 +353,7 @@ export function useRespondToInvitation() {
         ...(declined_reason && { declined_reason }),
         ...(status === "accepted" && { confirmed_at: new Date().toISOString() }),
       };
-      const { data, error } = await supabase
-        .from("chefs_table_invitations" as any)
+      const { data, error } = await untypedFrom("chefs_table_invitations")
         .update(updates)
         .eq("id", id)
         .select()
@@ -382,10 +374,9 @@ export function useSubmitEvaluation() {
 
   return useMutation({
     mutationFn: async (evaluation: Partial<ChefsTableEvaluation> & { session_id: string; invitation_id: string }) => {
-      const { data, error } = await supabase
-        .from("chefs_table_evaluations" as any)
+      const { data, error } = await untypedFrom("chefs_table_evaluations")
         .upsert(
-          { ...evaluation, chef_id: user?.id, status: "submitted", submitted_at: new Date().toISOString() } as any,
+          { ...evaluation, chef_id: user?.id, status: "submitted", submitted_at: new Date().toISOString() } as Record<string, unknown>,
           { onConflict: "session_id,chef_id" }
         )
         .select()
@@ -405,9 +396,8 @@ export function useAddChefsTableMedia() {
 
   return useMutation({
     mutationFn: async (media: Partial<ChefsTableMedia>) => {
-      const { data, error } = await supabase
-        .from("chefs_table_media" as any)
-        .insert({ ...media, uploaded_by: user?.id } as any)
+      const { data, error } = await untypedFrom("chefs_table_media")
+        .insert({ ...media, uploaded_by: user?.id } as Record<string, unknown>)
         .select()
         .single();
       if (error) throw error;
