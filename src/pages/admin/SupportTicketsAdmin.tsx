@@ -52,8 +52,8 @@ import { TicketEscalationWidget } from "@/components/admin/TicketEscalationWidge
 import { SupportSatisfactionWidget } from "@/components/admin/SupportSatisfactionWidget";
 import { MessagingAdminOverview } from "@/components/admin/MessagingAdminOverview";
 import { SupportOverviewWidget } from "@/components/admin/SupportOverviewWidget";
-import {
 import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
+import {
   Ticket,
   Search,
   Send,
