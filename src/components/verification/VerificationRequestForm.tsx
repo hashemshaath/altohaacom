@@ -1,18 +1,19 @@
 import { useIsAr } from "@/hooks/useIsAr";
-import { useState, memo } from "react";
+import { useState, useMemo, memo } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useSubmitVerification, useMyVerificationRequests } from "@/hooks/useVerification";
 import { supabase } from "@/integrations/supabase/client";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { ShieldCheck, Upload, Loader2, CheckCircle, Clock, XCircle, AlertTriangle } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { FormField, FormErrorSummary, SubmitButton } from "@/components/form";
+import { useFormValidation, rules } from "@/hooks/useFormValidation";
 
 const documentTypes = [
   { value: "national_id", en: "National ID", ar: "بطاقة الهوية الوطنية" },
@@ -54,6 +55,15 @@ export const VerificationRequestForm = memo(function VerificationRequestForm() {
   const [uploading, setUploading] = useState(false);
   const [uploadedDocs, setUploadedDocs] = useState<Array<{ type: string; url: string; name: string }>>([]);
 
+  const fieldConfig = useMemo(() => ({
+    applicantName: { rules: [rules.required(isAr ? "الاسم الكامل" : "Full Name", "الاسم الكامل"), rules.minLength(3)] },
+  }), [isAr]);
+
+  const { errors, errorList, onBlur, onChange, validateAll, getError } = useFormValidation({
+    fields: fieldConfig,
+    isAr,
+  });
+
   const hasPending = myRequests?.some((r) => ["pending", "under_review", "ai_review"].includes(r.status));
 
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -61,7 +71,7 @@ export const VerificationRequestForm = memo(function VerificationRequestForm() {
     if (!file || !user) return;
 
     const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp", "application/pdf"];
-    const MAX_SIZE = 10 * 1024 * 1024; // 10MB
+    const MAX_SIZE = 10 * 1024 * 1024;
     if (!ALLOWED_TYPES.includes(file.type)) {
       toast({ variant: "destructive", title: language === "ar" ? "نوع ملف غير مدعوم — يُسمح بالصور و PDF فقط" : "Unsupported file type — only images and PDF allowed" });
       return;
@@ -84,13 +94,12 @@ export const VerificationRequestForm = memo(function VerificationRequestForm() {
       return;
     }
 
-    // Bucket is private — store path reference, admins can view via signed URLs
     setUploadedDocs((prev) => [...prev, { type: docType, url: path, name: file.name }]);
     setUploading(false);
   };
 
   const handleSubmit = () => {
-    if (!applicantName.trim()) return;
+    if (!validateAll({ applicantName })) return;
     submitMutation.mutate({
       entity_type: "user",
       verification_level: level,
@@ -98,6 +107,11 @@ export const VerificationRequestForm = memo(function VerificationRequestForm() {
       applicant_position: position,
       documents: uploadedDocs,
     });
+  };
+
+  const handleChange = (value: string) => {
+    setApplicantName(value);
+    onChange("applicantName");
   };
 
   return (
@@ -148,70 +162,78 @@ export const VerificationRequestForm = memo(function VerificationRequestForm() {
             </div>
           </CardHeader>
           <CardContent className="space-y-4">
+            <FormErrorSummary errors={errorList} />
+
             {/* Level Selection */}
             <div className="space-y-2">
-              <Label className="text-xs">{isAr ? "مستوى التوثيق" : "Verification Level"}</Label>
-              <div className="grid gap-2 sm:grid-cols-3">
-                {verificationLevels.map((vl) => (
-                  <button
-                    key={vl.value}
-                    type="button"
-                    onClick={() => setLevel(vl.value)}
-                    className={`rounded-xl border p-3 text-start transition-all ${
-                      level === vl.value
-                        ? "border-primary bg-primary/5 shadow-sm"
-                        : "hover:border-primary/30"
-                    }`}
-                  >
-                    <p className="text-sm font-medium">{isAr ? vl.ar : vl.en}</p>
-                    <p className="text-xs text-muted-foreground">{isAr ? vl.descAr : vl.desc}</p>
-                  </button>
-                ))}
-              </div>
+              <FormField label={isAr ? "مستوى التوثيق" : "Verification Level"}>
+                <div className="grid gap-2 sm:grid-cols-3">
+                  {verificationLevels.map((vl) => (
+                    <button
+                      key={vl.value}
+                      type="button"
+                      onClick={() => setLevel(vl.value)}
+                      className={`rounded-xl border p-3 text-start transition-all ${
+                        level === vl.value
+                          ? "border-primary bg-primary/5 shadow-sm"
+                          : "hover:border-primary/30"
+                      }`}
+                    >
+                      <p className="text-sm font-medium">{isAr ? vl.ar : vl.en}</p>
+                      <p className="text-xs text-muted-foreground">{isAr ? vl.descAr : vl.desc}</p>
+                    </button>
+                  ))}
+                </div>
+              </FormField>
             </div>
 
             <Separator />
 
             {/* Applicant Info */}
             <div className="grid gap-4 sm:grid-cols-2">
-              <div className="space-y-1.5">
-                <Label className="text-xs">{isAr ? "الاسم الكامل" : "Full Name"}</Label>
-                <Input value={applicantName} onChange={(e) => setApplicantName(e.target.value)} />
-              </div>
-              <div className="space-y-1.5">
-                <Label className="text-xs">{isAr ? "المنصب / الوظيفة" : "Position / Role"}</Label>
-                <Input value={position} onChange={(e) => setPosition(e.target.value)} />
-              </div>
+              <FormField label={isAr ? "الاسم الكامل" : "Full Name"} htmlFor="applicant-name" required error={getError("applicantName")}>
+                <Input
+                  id="applicant-name"
+                  value={applicantName}
+                  onChange={(e) => handleChange(e.target.value)}
+                  onBlur={() => onBlur("applicantName", applicantName)}
+                  state={errors.applicantName ? "error" : "default"}
+                />
+              </FormField>
+              <FormField label={isAr ? "المنصب / الوظيفة" : "Position / Role"} htmlFor="position">
+                <Input id="position" value={position} onChange={(e) => setPosition(e.target.value)} />
+              </FormField>
             </div>
 
             <Separator />
 
             {/* Document Upload */}
             <div className="space-y-3">
-              <Label className="text-xs">{isAr ? "المستندات المطلوبة" : "Supporting Documents"}</Label>
-              <div className="flex flex-wrap gap-2">
-                <Select value={docType} onValueChange={setDocType}>
-                  <SelectTrigger className="w-48">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {documentTypes.map((dt) => (
-                      <SelectItem key={dt.value} value={dt.value}>
-                        {isAr ? dt.ar : dt.en}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <label className="cursor-pointer">
-                  <Input type="file" className="hidden" accept="image/*,.pdf" onChange={handleUpload} />
-                  <Button variant="outline" size="sm" asChild disabled={uploading}>
-                    <span className="gap-2">
-                      {uploading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}
-                      {isAr ? "رفع" : "Upload"}
-                    </span>
-                  </Button>
-                </label>
-              </div>
+              <FormField label={isAr ? "المستندات المطلوبة" : "Supporting Documents"}>
+                <div className="flex flex-wrap gap-2">
+                  <Select value={docType} onValueChange={setDocType}>
+                    <SelectTrigger className="w-48">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {documentTypes.map((dt) => (
+                        <SelectItem key={dt.value} value={dt.value}>
+                          {isAr ? dt.ar : dt.en}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <label className="cursor-pointer">
+                    <Input type="file" className="hidden" accept="image/*,.pdf" onChange={handleUpload} />
+                    <Button variant="outline" size="sm" asChild disabled={uploading}>
+                      <span className="gap-2">
+                        {uploading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}
+                        {isAr ? "رفع" : "Upload"}
+                      </span>
+                    </Button>
+                  </label>
+                </div>
+              </FormField>
 
               {uploadedDocs.length > 0 && (
                 <div className="space-y-2">
@@ -226,14 +248,15 @@ export const VerificationRequestForm = memo(function VerificationRequestForm() {
               )}
             </div>
 
-            <Button
-              className="w-full gap-2"
+            <SubmitButton
+              loading={submitMutation.isPending}
+              loadingText={isAr ? "جاري التقديم..." : "Submitting..."}
+              icon={<ShieldCheck className="h-4 w-4" />}
+              className="w-full"
               onClick={handleSubmit}
-              disabled={!applicantName.trim() || submitMutation.isPending}
             >
-              {submitMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <ShieldCheck className="h-4 w-4" />}
               {isAr ? "تقديم الطلب" : "Submit Verification Request"}
-            </Button>
+            </SubmitButton>
           </CardContent>
         </Card>
       )}
