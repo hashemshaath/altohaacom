@@ -115,14 +115,8 @@ export function useHomepageDataPrefetch() {
           .order("total_points", { ascending: false })
           .limit(8),
 
-        // 11. stats (counts)
-        Promise.all([
-          supabase.from("profiles").select("id", { count: "exact", head: true }),
-          supabase.from("competitions").select("id", { count: "exact", head: true }),
-          supabase.from("culinary_entities").select("id", { count: "exact", head: true }),
-          supabase.from("exhibitions").select("id", { count: "exact", head: true }),
-          supabase.from("organizers").select("id", { count: "exact", head: true }),
-        ]),
+        // 11. stats (counts) — use RPC to avoid HEAD request aborts
+        supabase.rpc("get_platform_stats"),
       ]);
 
       if (cancelled) return;
