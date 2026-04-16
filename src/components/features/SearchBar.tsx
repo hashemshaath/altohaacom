@@ -286,7 +286,7 @@ export const SearchBar = memo(function SearchBar({
     [open, flatResults, selectedIndex, navigateToResult]
   );
 
-  const dropdownVisible = open && (isLoading || showRecents || hasResults || showEmpty);
+  const dropdownVisible = open && (isLoading || showRecents || hasResults || showEmpty || showError);
   const [dynamicTrending, setDynamicTrending] = useState<string[] | null>(null);
   useEffect(() => {
     if (!open || dynamicTrending) return;
