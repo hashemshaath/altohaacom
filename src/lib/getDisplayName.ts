@@ -48,5 +48,9 @@ export function getDisplayInitial(
   isAr: boolean
 ): string {
   const name = getDisplayName(profile, isAr);
-  return name ? name[0].toUpperCase() : "U";
+  if (!name) return "U";
+  const parts = name.trim().split(/\s+/);
+  const first = parts[0]?.[0]?.toUpperCase() || "";
+  const second = parts[1]?.[0]?.toUpperCase() || "";
+  return first + second || "U";
 }
