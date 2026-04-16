@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useEffect, lazy, Suspense, createContext, useContext } from "react";
 import { Link, useSearchParams } from "react-router-dom";
@@ -741,7 +742,7 @@ function PostRow({ data }: { data: PostResult }) {
   const isAr = useIsAr();
   return (
     <Link
-      to="/community"
+      to={ROUTES.community}
       className="group block rounded-xl px-4 py-3 -mx-2 transition-colors hover:bg-accent/40"
     >
       <div className="flex items-start gap-3">

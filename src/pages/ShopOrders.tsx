@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { useIsAr } from "@/hooks/useIsAr";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -63,7 +64,7 @@ export default function ShopOrders() {
 
       <main className="container flex-1 py-8 md:py-12">
         <Button variant="ghost" size="sm" asChild className="mb-4 -ms-2">
-          <Link to="/shop">
+          <Link to={ROUTES.shop}>
             <ArrowLeft className="me-1.5 h-4 w-4" />
             {isAr ? "المتجر" : "Shop"}
           </Link>
@@ -102,7 +103,7 @@ export default function ShopOrders() {
               {isAr ? "تصفح المتجر واطلب منتجاتك الأولى" : "Browse the shop and place your first order"}
             </p>
             <Button asChild className="mt-4">
-              <Link to="/shop">{isAr ? "تصفح المتجر" : "Browse Shop"}</Link>
+              <Link to={ROUTES.shop}>{isAr ? "تصفح المتجر" : "Browse Shop"}</Link>
             </Button>
           </div>
         ) : (

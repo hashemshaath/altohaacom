@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useEffect, useCallback, useRef, memo } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
@@ -442,7 +443,7 @@ export const CommunityFeed = memo(function CommunityFeed() {
             variant="ghost"
             size="icon"
             className="h-8 w-8 ms-auto rounded-full"
-            onClick={() => navigate("/community")}
+            onClick={() => navigate(ROUTES.community)}
             aria-label={isAr ? "مسح الفلتر" : "Clear filter"}
           >
             <X className="h-4 w-4" />

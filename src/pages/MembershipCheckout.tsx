@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useMemo } from "react";
 import { createMembershipInvoice } from "@/lib/membershipInvoice";
@@ -298,7 +299,7 @@ export default function MembershipCheckout() {
   };
 
   if (!user) {
-    navigate("/login");
+    navigate(ROUTES.login);
     return null;
   }
 
@@ -694,7 +695,7 @@ export default function MembershipCheckout() {
                   {!isDowngrade && (isAr ? " استمتع بجميع المميزات!" : " Enjoy all the benefits!")}
                 </p>
                 <div className="flex gap-3 pt-4">
-                  <Button variant="outline" onClick={() => navigate("/membership")}>
+                  <Button variant="outline" onClick={() => navigate(ROUTES.membership)}>
                     {isAr ? "عرض الخطط" : "View Plans"}
                   </Button>
                   <Button onClick={() => navigate("/profile?tab=membership")} className="gap-2">

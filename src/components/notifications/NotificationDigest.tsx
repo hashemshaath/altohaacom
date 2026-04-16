@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { useIsAr } from "@/hooks/useIsAr";
 /**
  * Smart notification digest summary widget for the dashboard.
@@ -87,7 +88,7 @@ export const NotificationDigest = memo(function NotificationDigest() {
               <p className="text-xs text-muted-foreground">{isAr ? "آخر ٢٤ ساعة" : "Last 24 hours"}</p>
             </div>
           </div>
-          <Button variant="ghost" size="sm" className="text-xs gap-1 h-7" onClick={() => navigate("/notifications")}>
+          <Button variant="ghost" size="sm" className="text-xs gap-1 h-7" onClick={() => navigate(ROUTES.notifications)}>
             {isAr ? "عرض الكل" : "View all"}
             <ChevronRight className="h-3 w-3" />
           </Button>

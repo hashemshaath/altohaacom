@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useLocation, Link } from "react-router-dom";
@@ -83,7 +84,7 @@ export const AdminBreadcrumb = memo(function AdminBreadcrumb() {
       aria-label="Breadcrumb"
     >
       <Link
-        to="/admin"
+        to={ROUTES.admin}
         className="flex items-center gap-1.5 rounded-xl px-2.5 py-1.5 hover:bg-muted/80 hover:text-foreground transition-all duration-200 group/bc active:scale-95"
       >
         <LayoutDashboard className="h-3 w-3 group-hover/bc:text-primary transition-colors" />
@@ -93,7 +94,7 @@ export const AdminBreadcrumb = memo(function AdminBreadcrumb() {
         <>
           <ChevronRight className={cn("h-3 w-3 text-border/60", isAr && "rotate-180")} />
           <Link
-            to="/admin/design"
+            to={ROUTES.adminDesign}
             className="rounded-xl px-2.5 py-1.5 hover:bg-muted/80 hover:text-foreground transition-all duration-200 active:scale-95"
           >
             {isAr ? parentLabel.ar : parentLabel.en}

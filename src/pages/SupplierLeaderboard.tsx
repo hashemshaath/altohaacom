@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { useIsAr } from "@/hooks/useIsAr";
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -158,7 +159,7 @@ export default function SupplierLeaderboard() {
                 className={`cursor-pointer rounded-xl transition-all ${
                   index < 3 ? "border-chart-4/30" : ""
                 }`}
-                onClick={() => navigate(`/pro-suppliers/${s.id}`)}
+                onClick={() => navigate(ROUTES.proSupplier(s.id))}
               >
                 <CardContent className="flex items-center gap-4 p-4">
                   <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-sm font-bold ${

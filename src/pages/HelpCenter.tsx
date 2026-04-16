@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { useState, useMemo } from "react";
 import { Search, BookOpen, HelpCircle, MessageSquare, ChevronRight, Ticket, Headphones } from "lucide-react";
 import { SEOHead } from "@/components/SEOHead";
@@ -253,7 +254,7 @@ export default function HelpCenter() {
                       </Link>
                     </Button>
                     <Button variant="outline" className="w-full justify-start gap-2" asChild>
-                      <Link to="/messages">
+                      <Link to={ROUTES.messages}>
                         <MessageSquare className="h-4 w-4" />
                         {language === "ar" ? "المراسلة المباشرة" : "Direct Messages"}
                       </Link>

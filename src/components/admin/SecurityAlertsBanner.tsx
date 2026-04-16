@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -74,7 +75,7 @@ export const SecurityAlertsBanner = memo(function SecurityAlertsBanner() {
           ))}
         </div>
         <Button variant="ghost" size="sm" asChild className="text-xs font-medium">
-          <Link to="/admin/security">
+          <Link to={ROUTES.adminSecurity}>
             {isAr ? "مركز الأمان" : "Security Center"}
             <ArrowRight className="ms-1 h-3 w-3" />
           </Link>

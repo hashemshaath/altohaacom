@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { Navigate, useLocation } from "react-router-dom";
@@ -27,8 +28,8 @@ export const AdminRoute = memo(function AdminRoute({ children }: { children: Rea
     );
   }
 
-  if (!user) return <Navigate to="/login" replace />;
-  if (!hasAdminAccess) return <Navigate to="/dashboard" replace />;
+  if (!user) return <Navigate to={ROUTES.login} replace />;
+  if (!hasAdminAccess) return <Navigate to={ROUTES.dashboard} replace />;
 
   // Check page-level access
   if (!canAccessPage(location.pathname)) {

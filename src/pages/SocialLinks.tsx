@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { sanitizeCss } from "@/utils/sanitize";
 import { useParams, useSearchParams, Link } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -561,7 +562,7 @@ export default function SocialLinks() {
         )}
         {!user && (
           <div className={`mt-3 transition-all duration-700 delay-600 ${animated ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}>
-            <Link to="/login" className="flex items-center justify-center gap-2 w-full py-2.5 rounded-2xl text-xs font-medium transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]" style={{ background: theme.card, border: `1px solid ${theme.border}`, color: theme.textMuted }}>
+            <Link to={ROUTES.login} className="flex items-center justify-center gap-2 w-full py-2.5 rounded-2xl text-xs font-medium transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]" style={{ background: theme.card, border: `1px solid ${theme.border}`, color: theme.textMuted }}>
               <LogIn className="h-3 w-3" />{tl("createPage", lang)}
             </Link>
           </div>

@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { useState, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -273,7 +274,7 @@ export default function MasterclassDetail() {
         {/* Hero */}
         <div className="bg-gradient-to-r from-primary/10 to-accent/10 py-12">
           <div className="container">
-            <Button variant="ghost" onClick={() => navigate("/masterclasses")} className="mb-4">
+            <Button variant="ghost" onClick={() => navigate(ROUTES.masterclasses)} className="mb-4">
               <ArrowLeft className="h-4 w-4 me-2" />
               {language === "ar" ? "العودة" : "Back"}
             </Button>
@@ -354,7 +355,7 @@ export default function MasterclassDetail() {
                       <Button
                         className="w-full"
                         size="lg"
-                        onClick={() => user ? enrollMutation.mutate() : navigate("/login")}
+                        onClick={() => user ? enrollMutation.mutate() : navigate(ROUTES.login)}
                         disabled={enrollMutation.isPending}
                       >
                         {enrollMutation.isPending

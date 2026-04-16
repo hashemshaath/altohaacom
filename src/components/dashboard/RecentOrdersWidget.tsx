@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { CACHE } from "@/lib/queryConfig";
 import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
@@ -84,7 +85,7 @@ export const RecentOrdersWidget = memo(function RecentOrdersWidget() {
             </Link>
           );
         })}
-        <Link to="/shop/orders">
+        <Link to={ROUTES.shopOrders}>
           <Button variant="ghost" size="sm" className="w-full text-xs text-muted-foreground gap-1.5 h-7">
             {isAr ? "عرض الكل" : "View All Orders"}
             <ArrowRight className="h-3 w-3 rtl:rotate-180" />

@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { memo } from "react";
 import { Navigate } from "react-router-dom";
 import { useHasFeature } from "@/hooks/useMembershipFeatures";
@@ -31,7 +32,7 @@ export const FeatureRouteGuard = memo(function FeatureRouteGuard({ feature, chil
     );
   }
 
-  if (!user) return <Navigate to="/login" replace />;
+  if (!user) return <Navigate to={ROUTES.login} replace />;
   
   if (!hasFeature) {
     if (redirectTo) return <Navigate to={redirectTo} replace />;

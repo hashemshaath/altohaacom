@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { CACHE } from "@/lib/queryConfig";
 import { useIsAr } from "@/hooks/useIsAr";
 import { useState, memo } from "react";
@@ -102,7 +103,7 @@ export const MessageSearchWidget = memo(function MessageSearchWidget() {
                   return (
                     <button
                       key={msg.id}
-                      onClick={() => navigate("/messages")}
+                      onClick={() => navigate(ROUTES.messages)}
                       className="w-full flex items-start gap-2 rounded-xl p-2 hover:bg-muted/50 transition-colors text-start group"
                     >
                       <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/10">
@@ -134,7 +135,7 @@ export const MessageSearchWidget = memo(function MessageSearchWidget() {
         )}
 
         {!query && (
-          <Button variant="ghost" size="sm" className="w-full text-xs gap-1.5" onClick={() => navigate("/messages")}>
+          <Button variant="ghost" size="sm" className="w-full text-xs gap-1.5" onClick={() => navigate(ROUTES.messages)}>
             <MessageSquare className="h-3.5 w-3.5" />
             {isAr ? "فتح الرسائل" : "Open Messages"}
             <ArrowRight className="h-3 w-3 rtl:rotate-180" />

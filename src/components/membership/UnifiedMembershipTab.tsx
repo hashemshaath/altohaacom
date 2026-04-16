@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { memo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -461,7 +462,7 @@ export const UnifiedMembershipTab = memo(function UnifiedMembershipTab({ profile
               </div>
               {!d.verificationStatus?.is_verified && (
                 <Button variant="outline" size="sm" asChild>
-                  <Link to="/verification">{isAr ? "توثيق" : "Verify"}</Link>
+                  <Link to={ROUTES.verification}>{isAr ? "توثيق" : "Verify"}</Link>
                 </Button>
               )}
             </div>

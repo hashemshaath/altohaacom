@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { useIsAr } from "@/hooks/useIsAr";
 import { useMemo, memo } from "react";
 import { useNotifications } from "@/hooks/useNotifications";
@@ -118,7 +119,7 @@ export const NotificationGroupWidget = memo(function NotificationGroupWidget() {
           <Card
             key={group.key}
             className={`cursor-pointer transition-all hover:shadow-md hover:-translate-y-0.5 ${group.unreadCount > 0 ? "border-s-[3px] border-s-primary" : ""}`}
-            onClick={() => navigate("/notifications")}
+            onClick={() => navigate(ROUTES.notifications)}
           >
             <CardContent className="p-3 flex items-center gap-3">
               <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${group.bg}`}>

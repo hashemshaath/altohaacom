@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { forwardRef, useState, useRef, useCallback } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
@@ -84,7 +85,7 @@ export const DesktopNav = forwardRef<HTMLElement, DesktopNavProps>(function Desk
         const active = isActive("/chefs-table");
         return (
           <Link
-            to="/chefs-table"
+            to={ROUTES.chefsTable}
             className={cn(
               "relative py-[20px] text-[0.9375rem] font-medium transition-colors duration-150 whitespace-nowrap",
               active ? "font-semibold" : ""

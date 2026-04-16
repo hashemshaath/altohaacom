@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { useIsAr } from "@/hooks/useIsAr";
 import { memo, useState, useCallback } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -223,13 +224,13 @@ export const ProfileReferralsTab = memo(function ProfileReferralsTab({ userId }:
           </div>
 
           <div className="flex gap-2 flex-wrap">
-            <Link to="/referrals">
+            <Link to={ROUTES.referrals}>
               <Button size="sm" className="gap-1.5">
                 <Gift className="h-3.5 w-3.5" />
                 {isAr ? "لوحة الإحالات الكاملة" : "Full Referral Dashboard"}
               </Button>
             </Link>
-            <Link to="/rewards">
+            <Link to={ROUTES.rewards}>
               <Button size="sm" variant="outline" className="gap-1.5">
                 <Trophy className="h-3.5 w-3.5" />
                 {isAr ? "المكافآت" : "Rewards"}

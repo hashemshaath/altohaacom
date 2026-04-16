@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { useIsAr } from "@/hooks/useIsAr";
 import { CACHE } from "@/lib/queryConfig";
 import React, { useState, useMemo } from "react";
@@ -150,7 +151,7 @@ export default function ProSuppliers() {
                 <Trophy className="h-3.5 w-3.5 text-chart-4" />
                 {isAr ? "ترتيب الموردين" : "Leaderboard"}
               </Button>
-              <Button variant="outline" size="sm" className="rounded-full gap-1.5" onClick={() => navigate("/for-companies")}>
+              <Button variant="outline" size="sm" className="rounded-full gap-1.5" onClick={() => navigate(ROUTES.forCompanies)}>
                 <Building2 className="h-3.5 w-3.5" />
                 {isAr ? "سجّل شركتك" : "Register Company"}
               </Button>
@@ -516,7 +517,7 @@ export default function ProSuppliers() {
                   : "Join the professional suppliers directory and gain more visibility, professional clients and targeted advertising"}
               </p>
               <div className="flex flex-wrap justify-center gap-3">
-                <Button variant="secondary" size="lg" className="gap-2 rounded-2xl py-6 px-8 font-bold shadow-xl transition-all hover:scale-105 active:scale-95" onClick={() => navigate("/for-companies")}>
+                <Button variant="secondary" size="lg" className="gap-2 rounded-2xl py-6 px-8 font-bold shadow-xl transition-all hover:scale-105 active:scale-95" onClick={() => navigate(ROUTES.forCompanies)}>
                   {isAr ? "سجّل شركتك" : "Register Your Company"}
                   <ArrowRight className="h-5 w-5" />
                 </Button>

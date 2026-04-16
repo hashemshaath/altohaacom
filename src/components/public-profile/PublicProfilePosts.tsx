@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { useIsAr } from "@/hooks/useIsAr";
 import { memo, type KeyboardEvent, type MouseEvent } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -104,7 +105,7 @@ export const PublicProfilePosts = memo(function PublicProfilePosts({ userId, isO
           {isAr ? "آخر المنشورات" : "Recent Posts"}
         </h3>
         <Button variant="ghost" size="sm" className="text-xs text-primary h-7 px-2" asChild>
-          <Link to="/community">
+          <Link to={ROUTES.community}>
             {isAr ? "الكل" : "View all"}
             <ArrowRight className="ms-1 h-3 w-3 rtl:rotate-180" />
           </Link>

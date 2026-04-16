@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -83,7 +84,7 @@ export const UpcomingEventsWidget = memo(function UpcomingEventsWidget() {
         })}
       </div>
       <Link
-        to="/exhibitions"
+        to={ROUTES.exhibitions}
         className="flex items-center justify-center gap-1.5 px-4 py-2 text-xs font-medium text-primary hover:bg-muted/30 transition-colors border-t border-border"
       >
         {isAr ? "عرض الكل" : "View all events"}

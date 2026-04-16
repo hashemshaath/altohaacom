@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { CACHE } from "@/lib/queryConfig";
 import { useIsAr } from "@/hooks/useIsAr";
 import { useState } from "react";
@@ -636,10 +637,10 @@ export default function Jobs() {
               <div className="space-y-3">
                 <h4 className="font-bold text-foreground text-sm">{isAr ? "روابط مفيدة" : "Useful Links"}</h4>
                 <div className="space-y-1.5 text-muted-foreground">
-                  <Link to="/for-companies" className="block hover:text-primary transition-colors">{isAr ? "للشركات" : "For Companies"}</Link>
+                  <Link to={ROUTES.forCompanies} className="block hover:text-primary transition-colors">{isAr ? "للشركات" : "For Companies"}</Link>
                   <Link to="/for-chefs" className="block hover:text-primary transition-colors">{isAr ? "للطهاة" : "For Chefs"}</Link>
-                  <Link to="/membership" className="block hover:text-primary transition-colors">{isAr ? "خطط العضوية" : "Membership"}</Link>
-                  <Link to="/competitions" className="block hover:text-primary transition-colors">{isAr ? "المسابقات" : "Competitions"}</Link>
+                  <Link to={ROUTES.membership} className="block hover:text-primary transition-colors">{isAr ? "خطط العضوية" : "Membership"}</Link>
+                  <Link to={ROUTES.competitions} className="block hover:text-primary transition-colors">{isAr ? "المسابقات" : "Competitions"}</Link>
                   <Link to="/help" className="block hover:text-primary transition-colors">{isAr ? "مركز المساعدة" : "Help Center"}</Link>
                 </div>
               </div>

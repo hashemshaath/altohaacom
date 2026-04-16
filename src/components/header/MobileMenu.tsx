@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { CACHE } from "@/lib/queryConfig";
 import { useIsAr } from "@/hooks/useIsAr";
 import React from "react";
@@ -210,7 +211,7 @@ export const MobileMenu = forwardRef<HTMLDivElement, MobileMenuProps>(function M
             }}
           >
             {user ? (
-              <Link to="/profile" onClick={closeMenu} className="flex items-center gap-3 min-w-0">
+              <Link to={ROUTES.profileDashboard} onClick={closeMenu} className="flex items-center gap-3 min-w-0">
                 <Avatar className="h-9 w-9" style={{ border: "2px solid rgba(192,91,46,0.2)" }}>
                   <AvatarImage src={profile?.avatar_url || undefined} alt={displayName} />
                   <AvatarFallback
@@ -254,7 +255,7 @@ export const MobileMenu = forwardRef<HTMLDivElement, MobileMenuProps>(function M
                     {label(link.labelEn, link.labelAr)}
                   </NavItem>
                 ))}
-                <NavItem to="/chefs-table" icon={Scale} active={isActive("/chefs-table")} onClose={closeMenu}>
+                <NavItem to={ROUTES.chefsTable} icon={Scale} active={isActive("/chefs-table")} onClose={closeMenu}>
                   {label("Chef's Table", "طاولة الشيف")}
                 </NavItem>
 
@@ -303,7 +304,7 @@ export const MobileMenu = forwardRef<HTMLDivElement, MobileMenuProps>(function M
                 </Section>
 
                 {isAdmin && (
-                  <NavItem to="/admin" icon={Shield} onClose={closeMenu}>
+                  <NavItem to={ROUTES.admin} icon={Shield} onClose={closeMenu}>
                     {t("adminPanel")}
                   </NavItem>
                 )}
@@ -344,7 +345,7 @@ export const MobileMenu = forwardRef<HTMLDivElement, MobileMenuProps>(function M
             ) : (
               <div className="space-y-3">
                 <Link
-                  to="/login"
+                  to={ROUTES.login}
                   onClick={closeMenu}
                   className="flex items-center justify-center w-full font-semibold transition-all active:scale-[0.98]"
                   style={{
@@ -358,7 +359,7 @@ export const MobileMenu = forwardRef<HTMLDivElement, MobileMenuProps>(function M
                   {t("signIn")}
                 </Link>
                 <Link
-                  to="/register"
+                  to={ROUTES.register}
                   onClick={closeMenu}
                   className="flex items-center justify-center w-full font-bold transition-all active:scale-[0.98]"
                   style={{

@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { useIsAr } from "@/hooks/useIsAr";
 import { useMemo } from "react";
 import { useAuth } from "@/contexts/AuthContext";
@@ -51,7 +52,7 @@ export default function Rewards() {
               </p>
             </div>
           </div>
-          <Link to="/referrals">
+          <Link to={ROUTES.referrals}>
             <Button variant="outline" className="gap-2">
               <Gift className="h-4 w-4" />
               {isAr ? "الإحالات" : "Referrals"}

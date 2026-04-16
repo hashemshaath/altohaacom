@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -64,7 +65,7 @@ export const UpcomingExhibitionsWidget = memo(function UpcomingExhibitionsWidget
           {isAr ? "الفعاليات القادمة" : "Upcoming Events"}
         </h3>
         <Button variant="ghost" size="sm" className="gap-1.5 text-xs h-8 font-semibold hover:bg-chart-3/5 hover:text-chart-3 transition-all rounded-xl" asChild>
-          <Link to="/exhibitions">
+          <Link to={ROUTES.exhibitions}>
             {isAr ? "عرض الكل" : "View All"}
             <ArrowRight className="h-3.5 w-3.5 rtl:rotate-180" />
           </Link>
@@ -131,7 +132,7 @@ export const UpcomingExhibitionsWidget = memo(function UpcomingExhibitionsWidget
               {isAr ? "لا توجد فعاليات قادمة" : "No upcoming events"}
             </p>
             <Button variant="outline" size="sm" className="mt-3" asChild>
-              <Link to="/exhibitions">
+              <Link to={ROUTES.exhibitions}>
                 {isAr ? "استكشف الفعاليات" : "Explore Events"}
               </Link>
             </Button>

@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { useState } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Navigate, Outlet, NavLink, useLocation } from "react-router-dom";
@@ -54,7 +55,7 @@ export default function CompanyPortalLayout() {
   }
 
   if (!companyId) {
-    return <Navigate to="/dashboard" replace />;
+    return <Navigate to={ROUTES.dashboard} replace />;
   }
 
   const allNavItems = [

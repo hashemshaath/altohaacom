@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { CACHE } from "@/lib/queryConfig";
 import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
@@ -48,7 +49,7 @@ export const DedupDashboardWidget = memo(function DedupDashboardWidget() {
           </div>
         </div>
         <Button variant="outline" size="sm" asChild>
-          <Link to="/admin/deduplication">
+          <Link to={ROUTES.adminDeduplication}>
             {isAr ? "فتح المركز" : "Open Center"}
             <ArrowRight className="ms-1.5 h-3.5 w-3.5" />
           </Link>
@@ -64,7 +65,7 @@ export const DedupDashboardWidget = memo(function DedupDashboardWidget() {
             </div>
           </div>
           <Button variant="default" size="sm" className="gap-1.5" asChild>
-            <Link to="/admin/deduplication">
+            <Link to={ROUTES.adminDeduplication}>
               <ScanSearch className="h-3.5 w-3.5" />
               {isAr ? "فحص شامل" : "Run Scan"}
             </Link>

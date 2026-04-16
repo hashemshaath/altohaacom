@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useAuth } from "@/contexts/AuthContext";
@@ -194,7 +195,7 @@ export const ProfileSummaryCard = memo(function ProfileSummaryCard() {
           )}
         </div>
 
-        <Link to="/profile">
+        <Link to={ROUTES.profileDashboard}>
           <Button variant="outline" size="sm" className="w-full h-8 gap-1.5 rounded-xl text-xs transition-all active:scale-95">
             {isAr ? "عرض الملف" : "View Profile"}
             <ArrowRight className="h-3 w-3 rtl:rotate-180" />

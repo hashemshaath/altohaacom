@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { useIsAr } from "@/hooks/useIsAr";
 import { useEffect, useState, memo } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -145,7 +146,7 @@ export const RecentActivityWidget = memo(function RecentActivityWidget() {
               <Activity className="h-6 w-6 text-muted-foreground/40" />
             </div>
             <p className="text-sm text-muted-foreground">{isAr ? "سجل الدخول لعرض نشاطك" : "Sign in to view your activity"}</p>
-            <Link to="/login" className="mt-2 inline-block text-sm text-primary hover:underline">{t("signIn")}</Link>
+            <Link to={ROUTES.login} className="mt-2 inline-block text-sm text-primary hover:underline">{t("signIn")}</Link>
           </div>
         </CardContent>
       </Card>

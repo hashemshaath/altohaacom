@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -108,7 +109,7 @@ export const ProfileInsightsWidget = memo(function ProfileInsightsWidget() {
             {isAr ? "تحليلات الملف" : "Profile Insights"}
           </CardTitle>
           <Button variant="ghost" size="sm" className="text-xs gap-1 h-7" asChild>
-            <Link to="/profile/analytics">
+            <Link to={ROUTES.profileAnalytics}>
               {isAr ? "تقرير كامل" : "Full Report"} <ExternalLink className="h-3 w-3" />
             </Link>
           </Button>

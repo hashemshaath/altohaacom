@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
@@ -220,7 +221,7 @@ export default function CreateCompetition() {
       <main className="flex-1 py-6 px-3 sm:px-4 md:px-6">
         <EventCreationGate eventType="competition">
         <div className="mx-auto max-w-2xl">
-          <Button variant="ghost" size="sm" onClick={() => navigate("/competitions")} className="mb-3 -ms-2">
+          <Button variant="ghost" size="sm" onClick={() => navigate(ROUTES.competitions)} className="mb-3 -ms-2">
             <ArrowLeft className="me-2 h-4 w-4" />
             {isAr ? "العودة للمسابقات" : "Back to Competitions"}
           </Button>

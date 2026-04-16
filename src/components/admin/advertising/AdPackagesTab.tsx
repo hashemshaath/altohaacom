@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { Link } from "react-router-dom";
@@ -37,7 +38,7 @@ export const AdPackagesTab = memo(function AdPackagesTab({ packages, onToggleAct
             </div>
           </div>
           <Button size="sm" variant="outline" className="h-7 text-xs rounded-xl gap-1" asChild>
-            <Link to="/advertise">
+            <Link to={ROUTES.advertise}>
               {isAr ? "معاينة" : "Preview"}
               <ExternalLink className="h-3 w-3" />
             </Link>

@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useAuth } from "@/contexts/AuthContext";
@@ -117,7 +118,7 @@ export const ProfileCompletionCard = memo(function ProfileCompletionCard() {
           </div>
 
           <Link
-            to="/profile"
+            to={ROUTES.profileDashboard}
             className="inline-flex items-center gap-1.5 text-xs font-bold text-primary hover:text-primary/80 transition-colors group/link"
           >
             {isAr ? "إكمال الملف" : "Complete now"}

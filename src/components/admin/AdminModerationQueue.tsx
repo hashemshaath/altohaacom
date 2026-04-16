@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -45,7 +46,7 @@ export const AdminModerationQueue = memo(function AdminModerationQueue() {
           )}
         </CardTitle>
         <Button variant="ghost" size="sm" asChild>
-          <Link to="/admin/moderation">
+          <Link to={ROUTES.adminModeration}>
             {isAr ? "المركز" : "Center"} <ArrowRight className="ms-1.5 h-3.5 w-3.5" />
           </Link>
         </Button>

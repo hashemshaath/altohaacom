@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { useIsAr } from "@/hooks/useIsAr";
 import { useMemo, memo } from "react";
 import { Card, CardContent } from "@/components/ui/card";
@@ -40,7 +41,7 @@ export const MasterclassCard = memo(function MasterclassCard({ mc, isEnrolled }:
   return (
     <Card
       className="group flex h-full flex-col overflow-hidden cursor-pointer border-border/40 bg-card/50 backdrop-blur-sm transition-all duration-500 hover:shadow-2xl hover:-translate-y-0.5 hover:border-primary/30 hover:bg-card"
-      onClick={() => navigate(`/masterclasses/${mc.id}`)}
+      onClick={() => navigate(ROUTES.masterclass(mc.id))}
     >
       <div className="relative aspect-video shrink-0 overflow-hidden bg-muted">
         {mc.cover_image_url ? (

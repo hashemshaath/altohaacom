@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -26,10 +27,10 @@ export default function Onboarding() {
 
   useEffect(() => {
     if (!loading && !user) {
-      navigate("/login");
+      navigate(ROUTES.login);
     }
     if (profile?.profile_completed) {
-      navigate("/dashboard");
+      navigate(ROUTES.dashboard);
     }
   }, [loading, user, profile, navigate]);
 

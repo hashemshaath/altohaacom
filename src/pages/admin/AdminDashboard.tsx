@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { useIsAr } from "@/hooks/useIsAr";
 import { useMemo, lazy, Suspense, useState } from "react";
 import { Link } from "react-router-dom";
@@ -699,7 +700,7 @@ export default function AdminDashboard() {
             <div className="flex items-center justify-between mb-2.5">
               <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{isAr ? "آخر الإجراءات" : "Recent actions"}</p>
               <Button variant="ghost" size="sm" className="text-[0.6875rem] h-6 px-2 text-muted-foreground" asChild>
-                <Link to="/admin/audit">{isAr ? "سجل التدقيق" : "Audit log"} <ArrowRight className="ms-1 h-3 w-3" /></Link>
+                <Link to={ROUTES.adminAudit}>{isAr ? "سجل التدقيق" : "Audit log"} <ArrowRight className="ms-1 h-3 w-3" /></Link>
               </Button>
             </div>
             {stats?.recentActions && stats.recentActions.length > 0 ? (

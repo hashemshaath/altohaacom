@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -185,7 +186,7 @@ export const ChefCareerWidget = memo(function ChefCareerWidget() {
         </div>
 
         {/* CTA */}
-        <Link to="/rankings">
+        <Link to={ROUTES.rankings}>
           <Button variant="ghost" size="sm" className="w-full h-7 gap-1.5 text-[0.6875rem] font-bold text-muted-foreground hover:text-primary">
             {isAr ? "عرض التصنيف العام" : "View Leaderboard"}
             <ArrowRight className="h-3 w-3 rtl:rotate-180" />

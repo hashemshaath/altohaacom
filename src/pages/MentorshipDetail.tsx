@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { useIsAr } from "@/hooks/useIsAr";
 import { useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
@@ -212,7 +213,7 @@ export default function MentorshipDetail() {
                         </DialogContent>
                       </Dialog>
                     ) : (
-                      <Link to="/login">
+                      <Link to={ROUTES.login}>
                         <Button variant="outline" className="w-full">
                           {isAr ? "سجل الدخول أولاً" : "Sign in to Enroll"}
                         </Button>

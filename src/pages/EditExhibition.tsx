@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useEffect, useCallback } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -194,7 +195,7 @@ export default function EditExhibition() {
               ? isAr ? "الفعالية غير موجودة" : "Event not found"
               : isAr ? "ليس لديك صلاحية تعديل هذه الفعالية" : "You don't have permission to edit this event"}
           </p>
-          <Button variant="outline" className="mt-4" onClick={() => navigate("/exhibitions")}>
+          <Button variant="outline" className="mt-4" onClick={() => navigate(ROUTES.exhibitions)}>
             <ArrowLeft className="me-2 h-4 w-4" />
             {isAr ? "العودة للفعاليات" : "Back to Events"}
           </Button>

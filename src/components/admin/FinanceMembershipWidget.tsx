@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -182,7 +183,7 @@ export const FinanceMembershipWidget = memo(function FinanceMembershipWidget() {
             </div>
             {isAr ? "العضويات" : "Memberships"}
           </CardTitle>
-          <Link to="/admin/memberships">
+          <Link to={ROUTES.adminMemberships}>
             <Badge variant="outline" className="text-xs gap-1 cursor-pointer hover:bg-accent">
               {isAr ? "عرض الكل" : "View All"}
               <ArrowRight className="h-2.5 w-2.5" />

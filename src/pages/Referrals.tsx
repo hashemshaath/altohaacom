@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { useIsAr } from "@/hooks/useIsAr";
 import { useEffect, useMemo } from "react";
 import { useAuth } from "@/contexts/AuthContext";
@@ -89,7 +90,7 @@ export default function Referrals() {
               </div>
             </div>
             <div className="flex items-center gap-3">
-              <Link to="/rewards">
+              <Link to={ROUTES.rewards}>
                 <Button variant="outline" className="gap-2 transition-all duration-300 hover:shadow-md hover:border-primary/30 hover:-translate-y-0.5">
                   <Trophy className="h-4 w-4" />
                   {isAr ? "المكافآت" : "Rewards"}

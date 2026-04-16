@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { CACHE } from "@/lib/queryConfig";
 import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
@@ -120,7 +121,7 @@ export const DataQualityDashboardWidget = memo(function DataQualityDashboardWidg
         </div>
 
         <Button variant="outline" size="sm" className="w-full gap-1.5" asChild>
-          <Link to="/admin/smart-import">
+          <Link to={ROUTES.adminSmartImport}>
             {isAr ? "تحسين البيانات" : "Improve Data"}
             <ArrowRight className="h-3.5 w-3.5" />
           </Link>

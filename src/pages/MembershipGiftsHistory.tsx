@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { useIsAr } from "@/hooks/useIsAr";
 import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -153,7 +154,7 @@ export default function MembershipGiftsHistory() {
     <div className="container max-w-3xl py-6 sm:py-10 space-y-6" dir={isAr ? "rtl" : "ltr"}>
       <div className="flex items-center justify-between gap-3">
         <div className="flex items-center gap-3">
-          <Link to="/membership">
+          <Link to={ROUTES.membership}>
             <Button variant="ghost" size="icon">
               <ArrowLeft className={`h-5 w-5 ${isAr ? "rotate-180" : ""}`} />
             </Button>

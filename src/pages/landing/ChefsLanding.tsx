@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { useIsAr } from "@/hooks/useIsAr";
 import { Link } from "react-router-dom";
 import {
@@ -52,13 +53,13 @@ export default function ChefsLanding() {
             </p>
             <div className="mt-6 flex gap-3 justify-center flex-wrap">
               <Button size="lg" className="gap-2" asChild>
-                <Link to="/register">
+                <Link to={ROUTES.register}>
                   {isAr ? "انضم مجاناً" : "Join Free"}
                   <ArrowRight className="h-4 w-4" />
                 </Link>
               </Button>
               <Button size="lg" variant="outline" asChild>
-                <Link to="/competitions">{isAr ? "تصفح المسابقات" : "Browse Competitions"}</Link>
+                <Link to={ROUTES.competitions}>{isAr ? "تصفح المسابقات" : "Browse Competitions"}</Link>
               </Button>
             </div>
           </div>
@@ -155,10 +156,10 @@ export default function ChefsLanding() {
             </p>
             <div className="flex flex-wrap justify-center gap-3">
               <Button size="lg" className="shadow-lg shadow-primary/20" asChild>
-                <Link to="/register">{isAr ? "سجل مجاناً" : "Sign Up Free"}<ArrowRight className="ms-2 h-4 w-4" /></Link>
+                <Link to={ROUTES.register}>{isAr ? "سجل مجاناً" : "Sign Up Free"}<ArrowRight className="ms-2 h-4 w-4" /></Link>
               </Button>
               <Button size="lg" variant="outline" asChild>
-                <Link to="/competitions">{isAr ? "تصفح المسابقات" : "Browse Competitions"}</Link>
+                <Link to={ROUTES.competitions}>{isAr ? "تصفح المسابقات" : "Browse Competitions"}</Link>
               </Button>
             </div>
             <div className="mt-6 flex flex-wrap items-center justify-center gap-5 text-xs text-muted-foreground">

@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { memo } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
@@ -463,7 +464,7 @@ export default function JobSearch() {
                         {isAr ? "تفعيل التنبيهات" : "Enable Alerts"}
                       </Button>
                     ) : (
-                      <Link to="/login" className="block">
+                      <Link to={ROUTES.login} className="block">
                         <Button size="sm" variant="outline" className="w-full rounded-xl text-xs gap-1.5 font-semibold">
                           {isAr ? "سجّل دخول لتفعيل" : "Sign in to enable"}
                         </Button>

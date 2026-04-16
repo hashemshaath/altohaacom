@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { useIsAr } from "@/hooks/useIsAr";
 import { forwardRef } from "react";
 import { useScrolled } from "@/hooks/useScrolled";
@@ -111,7 +112,7 @@ export const Header = forwardRef<HTMLElement>(function Header(_, ref) {
           <div className="flex items-center gap-1.5 ms-auto shrink-0">
             {headerCfg.showSearch !== false && (
               <Link
-                to="/search"
+                to={ROUTES.search}
                 aria-label={isAr ? "البحث" : "Search"}
                 className="flex items-center justify-center h-10 w-10 rounded-lg transition-colors duration-150 touch-manipulation"
                 style={{ color: "#6B6560" }}

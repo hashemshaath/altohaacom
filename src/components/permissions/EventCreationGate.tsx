@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useAuth } from "@/contexts/AuthContext";
@@ -86,7 +87,7 @@ export const EventCreationGate = memo(function EventCreationGate({ children, eve
             </div>
             {!isVerified && (
               <Button variant="outline" size="sm" asChild>
-                <Link to="/verify">
+                <Link to={ROUTES.verify}>
                   {isAr ? "توثيق" : "Verify"}
                   <ArrowRight className="ms-1 h-3 w-3" />
                 </Link>
@@ -112,7 +113,7 @@ export const EventCreationGate = memo(function EventCreationGate({ children, eve
             </div>
             {!hasProTier && (
               <Button variant="outline" size="sm" asChild>
-                <Link to="/profile" state={{ tab: "membership" }}>
+                <Link to={ROUTES.profileDashboard} state={{ tab: "membership" }}>
                   {isAr ? "ترقية" : "Upgrade"}
                   <ArrowRight className="ms-1 h-3 w-3" />
                 </Link>
