@@ -363,8 +363,9 @@ export const SearchBar = memo(function SearchBar({
                       setRecents(getRecentSearches());
                     }}
                     className={cn(
-                      "h-9 w-9 sm:h-7 sm:w-7 flex items-center justify-center rounded-full text-muted-foreground/60 hover:bg-muted/80 transition-opacity",
-                      isMobile ? "opacity-100" : "opacity-0 group-hover:opacity-100"
+                      "flex items-center justify-center rounded-full text-muted-foreground/60 hover:bg-muted/80 transition-opacity",
+                      // ≥44px touch target on mobile per Apple HIG / WCAG AA
+                      isMobile ? "h-11 w-11 opacity-100" : "h-7 w-7 opacity-0 group-hover:opacity-100"
                     )}
                   >
                     <X className="h-3.5 w-3.5" />
