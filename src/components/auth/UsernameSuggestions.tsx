@@ -65,7 +65,7 @@ export const UsernameSuggestions = memo(function UsernameSuggestions({ baseUsern
 
   return (
     <div className="space-y-1.5">
-      <p className="text-xs text-muted-foreground">
+      <p className="text-sm text-muted-foreground">
         {isAr ? "أسماء مستخدمين مقترحة:" : "Suggested usernames:"}
       </p>
       <div className="flex flex-wrap gap-1.5">

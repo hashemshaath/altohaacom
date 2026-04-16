@@ -22,7 +22,7 @@ export const Breadcrumbs = memo(function Breadcrumbs({ items, className }: Props
   const isAr = useIsAr();
 
   return (
-    <nav className={cn("flex items-center gap-1.5 text-xs text-muted-foreground animate-in fade-in-50 duration-300", className)} aria-label="Breadcrumb">
+    <nav className={cn("flex items-center gap-1.5 text-sm text-muted-foreground animate-in fade-in-50 duration-300", className)} aria-label="Breadcrumb">
       {items.map((item, i) => {
         const label = isAr && item.labelAr ? item.labelAr : item.label;
         const isLast = i === items.length - 1;

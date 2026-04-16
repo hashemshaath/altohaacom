@@ -126,7 +126,7 @@ export const ForgotPasswordDialog = memo(function ForgotPasswordDialog({ open, o
 
             {method === "email" ? (
               <div className="space-y-1.5">
-                <Label htmlFor="recoveryEmail" className="text-xs">
+                <Label htmlFor="recoveryEmail" className="text-sm">
                   {isAr ? "البريد الإلكتروني" : "Email Address"}
                 </Label>
                 <Input
@@ -143,7 +143,7 @@ export const ForgotPasswordDialog = memo(function ForgotPasswordDialog({ open, o
                   onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
                 />
                 {error && (
-                  <p className="flex items-center gap-1 text-xs text-destructive animate-in slide-in-from-top-1 duration-200">
+                  <p className="flex items-center gap-1 text-sm text-destructive animate-in slide-in-from-top-1 duration-200">
                     <AlertCircle className="h-3 w-3 shrink-0" />
                     {error}
                   </p>
@@ -163,7 +163,7 @@ export const ForgotPasswordDialog = memo(function ForgotPasswordDialog({ open, o
             {/* Inline submit error */}
             {submitError && (
               <div className="rounded-lg border border-destructive/30 bg-destructive/5 px-3 py-2 animate-in slide-in-from-top-1 duration-200">
-                <p className="flex items-center gap-1.5 text-xs text-destructive">
+                <p className="flex items-center gap-1.5 text-sm text-destructive">
                   <AlertCircle className="h-3.5 w-3.5 shrink-0" />
                   {submitError}
                 </p>
@@ -192,7 +192,7 @@ export const ForgotPasswordDialog = memo(function ForgotPasswordDialog({ open, o
               </p>
               <p className="font-mono text-sm text-primary">{emailValue}</p>
             </div>
-            <p className="text-xs text-muted-foreground text-center max-w-sm">
+            <p className="text-sm text-muted-foreground text-center max-w-sm">
               {isAr
                 ? "إذا كان هذا البريد مسجلاً لدينا، ستتلقى رابطاً لإعادة تعيين كلمة المرور خلال دقائق. تحقق أيضاً من مجلد الرسائل غير المرغوب فيها."
                 : "If this email is registered, you'll receive a password reset link within minutes. Also check your spam folder."}

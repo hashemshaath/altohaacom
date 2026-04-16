@@ -52,7 +52,7 @@ const DataListItem = memo(function DataListItem({ label, value, className, mono 
   if (variant === "inline") {
     return (
       <div className={cn("flex items-center gap-1.5", className)}>
-        <dt className="text-xs text-muted-foreground">{label}:</dt>
+        <dt className="text-sm text-muted-foreground">{label}:</dt>
         <dd className={cn("text-sm font-medium", mono && "font-mono")}>{value}</dd>
       </div>
     );
@@ -66,7 +66,7 @@ const DataListItem = memo(function DataListItem({ label, value, className, mono 
         className
       )}
     >
-      <dt className="text-xs text-muted-foreground">{label}</dt>
+      <dt className="text-sm text-muted-foreground">{label}</dt>
       <dd className={cn("text-sm font-medium", mono && "font-mono tabular-nums")}>{value || "—"}</dd>
     </div>
   );
