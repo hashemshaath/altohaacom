@@ -65,7 +65,7 @@ export const CommunitySearch = memo(function CommunitySearch() {
             .is("reply_to_post_id", null).order("created_at", { ascending: false }).limit(3) : { data: [] },
         // Recipes
         (activeFilter === "all" || activeFilter === "recipes") ?
-          supabase.from("recipes").select("id, title, title_ar, image_url")
+          supabase.from("recipes").select("id, title, title_ar, image_url, slug")
             .eq("is_published", true)
             .or(`title.ilike.${pattern},title_ar.ilike.${pattern}`).limit(3) : { data: [] },
         // Groups
@@ -92,6 +92,7 @@ export const CommunitySearch = memo(function CommunitySearch() {
         type: "recipe", id: r.id,
         title: (isAr && r.title_ar) ? r.title_ar : r.title,
         avatar: r.image_url,
+        slug: r.slug || undefined,
       }));
 
       (groupsRes.data || []).forEach((g) => all.push({
