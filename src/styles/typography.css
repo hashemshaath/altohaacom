@@ -1,5 +1,30 @@
 /* ═══════════════════════════════════════════════════════════════
-   ALTOHA TYPOGRAPHY SYSTEM — Responsive font scaling
+   TYPOGRAPHY POLICY — ALTOHA DESIGN SYSTEM
+   ───────────────────────────────────────────────────────────────
+   SINGLE SOURCE OF TRUTH for all typography rules in the project.
+   Do NOT duplicate this policy across component files.
+
+   • Minimum font size: 11px (0.6875rem) on desktop
+   • Minimum font size: 13px (0.8125rem) on mobile
+   • Do NOT use `text-xs` Tailwind class on body text —
+     only on badges and labels.
+
+   Scale:
+     display    48px   (text-display)
+     h1         36px   (text-h1)
+     h2         28px   (text-h2)
+     h3         22px   (text-h3)
+     h4         18px   (text-h4)
+     body-lg    18px   (text-body-lg)
+     body       16px   (text-body)
+     body-sm    14px   (text-body-sm)
+     caption    13px   (text-caption)
+     label      12px   (text-label)
+     overline   11px   (text-overline)
+
+   • IBM Plex Arabic required on all text.
+   • Token definitions live in tailwind.config.ts.
+   • Mobile responsive overrides are enforced below via @media.
    ═══════════════════════════════════════════════════════════════ */
 
 /* ── iOS Safari zoom prevention: inputs must be ≥16px ── */
