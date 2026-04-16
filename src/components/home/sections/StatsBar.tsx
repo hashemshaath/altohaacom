@@ -66,7 +66,7 @@ const StatsBar = memo(forwardRef<HTMLElement>(function StatsBar(_props, _ref) {
   ];
 
   return (
-    <section ref={ref} dir={isAr ? "rtl" : "ltr"} className="py-8 sm:py-12 md:py-16" aria-label={isAr ? "إحصائيات المنصة" : "Platform statistics"}>
+    <section ref={ref} dir={isAr ? "rtl" : "ltr"} className="py-10 sm:py-14 md:py-20 bg-gradient-to-b from-background to-muted/30" aria-label={isAr ? "إحصائيات المنصة" : "Platform statistics"}>
       <div className="container">
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
           {!stats
