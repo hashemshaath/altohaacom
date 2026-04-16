@@ -21,6 +21,7 @@ import { MobileBottomNav } from "@/components/mobile/MobileBottomNav";
 import { ScrollProgress } from "@/components/ui/scroll-progress";
 import { BackToTop } from "@/components/ui/back-to-top";
 import { safeLazy } from "@/lib/safeLazy";
+const NotFound = safeLazy(() => import("@/pages/NotFound"));
 const CommandPalette = safeLazy(() => import("@/components/search/CommandPalette").then(m => ({ default: m.CommandPalette })));
 const AnnouncementBanner = safeLazy(() => import("@/components/engagement/AnnouncementBanner").then(m => ({ default: m.AnnouncementBanner })));
 import { GoogleTrackingProvider } from "@/components/tracking/GoogleTrackingProvider";
@@ -107,8 +108,8 @@ function AppRoutes() {
                 {protectedRoutes}
                 {adminRoutes}
                 {companyRoutes}
-                {/* Catch-all: redirect unknown routes to home */}
-                <Route path="*" element={<Navigate to="/" replace />} />
+                {/* Catch-all: show 404 page */}
+                <Route path="*" element={<NotFound />} />
               </Routes>
             </PageTransition>
           </div>
