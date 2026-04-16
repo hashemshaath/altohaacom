@@ -1,3 +1,4 @@
+import { SafeImage } from "@/components/ui/SafeImage";
 import { ROUTES } from "@/config/routes";
 import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useMemo, forwardRef } from "react";
@@ -115,7 +116,7 @@ export const HomeTrendingContent = forwardRef<HTMLDivElement>(function HomeTrend
                   <Card className="overflow-hidden h-full border-border/40 rounded-2xl hover:shadow-lg transition-all duration-300 hover:-translate-y-0.5 active:scale-[0.98]">
                     <div className="relative aspect-[16/10] overflow-hidden">
                       {article.featured_image_url ? (
-                        <img src={article.featured_image_url} alt={article.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" decoding="async" />
+                        <SafeImage src={article.featured_image_url} alt={article.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                       ) : (
                         <div className="w-full h-full bg-muted flex items-center justify-center">
                           <TrendingUp className="h-8 w-8 text-muted-foreground/20" />

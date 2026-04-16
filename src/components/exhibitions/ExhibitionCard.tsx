@@ -1,3 +1,4 @@
+import { SafeImage } from "@/components/ui/SafeImage";
 import { ROUTES } from "@/config/routes";
 import { forwardRef, memo } from "react";
 import { Link } from "react-router-dom";
@@ -130,7 +131,6 @@ export const ExhibitionCard = memo(
                   src={exhibition.cover_image_url}
                   alt={title}
                   className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-                  loading="lazy"
                 />
               ) : (
                 <div className="flex h-full items-center justify-center bg-gradient-to-br from-primary/8 via-accent/5 to-muted">
@@ -253,7 +253,7 @@ export const ExhibitionCard = memo(
                   return (
                     <Badge key={s.id} variant="outline" className="gap-1 text-xs font-bold uppercase tracking-wider bg-chart-4/5 text-chart-4 border-chart-4/20 py-0.5 px-2">
                       {logo ? (
-                        <img src={logo} alt={name || ""} className="h-3 w-3 rounded-sm object-contain" loading="lazy" />
+                        <SafeImage src={logo} alt={name || ""} className="h-3 w-3 rounded-sm object-contain" />
                       ) : (
                         <Building className="h-2.5 w-2.5" />
                       )}

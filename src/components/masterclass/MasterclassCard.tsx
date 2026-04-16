@@ -1,3 +1,4 @@
+import { SafeImage } from "@/components/ui/SafeImage";
 import { ROUTES } from "@/config/routes";
 import { useIsAr } from "@/hooks/useIsAr";
 import { useMemo, memo } from "react";
@@ -49,7 +50,6 @@ export const MasterclassCard = memo(function MasterclassCard({ mc, isEnrolled }:
             src={mc.cover_image_url}
             alt={title}
             className="h-full w-full object-cover transition-transform duration-1000 group-hover:scale-110"
-            loading="lazy"
           />
         ) : (
           <div className="flex h-full items-center justify-center bg-gradient-to-br from-primary/10 to-chart-3/10">

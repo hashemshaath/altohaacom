@@ -1,3 +1,4 @@
+import { SafeImage } from "@/components/ui/SafeImage";
 import { memo } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -44,7 +45,7 @@ export const HeroSlideCardHeader = memo(function HeroSlideCardHeader({
         onClick={onPreview}
       >
         {slide.image_url && (
-          <img loading="lazy" decoding="async" src={slide.image_url} alt={slide.title} className="h-full w-full object-cover" />
+          <SafeImage src={slide.image_url} alt={slide.title} className="h-full w-full object-cover" />
         )}
         <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity bg-foreground/60 flex items-center justify-center">
           <Maximize2 className="h-4 w-4 text-background" />

@@ -1,3 +1,4 @@
+import { SafeImage } from "@/components/ui/SafeImage";
 import { useIsAr } from "@/hooks/useIsAr";
 import { memo, forwardRef, useCallback } from "react";
 import { Card, CardContent } from "@/components/ui/card";
@@ -67,8 +68,6 @@ export const SupplierProductCard = memo(forwardRef<HTMLDivElement, SupplierProdu
       >
         {product.image_url ? (
           <img
-            loading="lazy"
-            decoding="async"
             src={product.image_url}
             alt={`${title} - ${categoryLabel}`}
             className="h-full w-full object-contain p-6 transition-transform duration-500 will-change-transform group-hover:scale-105"

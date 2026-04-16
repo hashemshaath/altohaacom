@@ -1,3 +1,4 @@
+import { SafeImage } from "@/components/ui/SafeImage";
 import { useIsAr } from "@/hooks/useIsAr";
 import { memo, useState, useMemo, useEffect, forwardRef } from "react";
 import { Badge } from "@/components/ui/badge";
@@ -232,7 +233,7 @@ export const SupplierProductDetail = memo(forwardRef<HTMLDivElement, SupplierPro
         <div className="space-y-4">
           <div className="relative aspect-square overflow-hidden rounded-2xl bg-gradient-to-br from-muted/30 to-muted/10 border border-border/20">
             {product.image_url ? (
-              <img src={product.image_url} alt={`${title} - ${companyName || ""}`} className="h-full w-full object-contain p-8" loading="eager" />
+              <SafeImage src={product.image_url} alt={`${title} - ${companyName || ""}`} className="h-full w-full object-contain p-8" />
             ) : (
               <div className="flex h-full items-center justify-center"><Package className="h-20 w-20 text-muted-foreground/10" /></div>
             )}
@@ -714,7 +715,7 @@ export const SupplierProductDetail = memo(forwardRef<HTMLDivElement, SupplierPro
               return (
                 <Card key={rp.id} className="rounded-2xl overflow-hidden cursor-pointer hover:shadow-lg hover:-translate-y-0.5 transition-all group shadow-sm" onClick={() => onViewProduct?.(rp)}>
                   <div className="aspect-square bg-gradient-to-br from-muted/20 to-muted/5 overflow-hidden">
-                    {rp.image_url ? <img loading="lazy" src={rp.image_url} className="h-full w-full object-contain p-3 transition-transform duration-500 group-hover:scale-105" alt={rpTitle} /> : <div className="h-full flex items-center justify-center"><Package className="h-8 w-8 text-muted-foreground/15" /></div>}
+                    {rp.image_url ? <SafeImage src={rp.image_url} className="h-full w-full object-contain p-3 transition-transform duration-500 group-hover:scale-105" alt={rpTitle} /> : <div className="h-full flex items-center justify-center"><Package className="h-8 w-8 text-muted-foreground/15" /></div>}
                   </div>
                   <CardContent className="p-3">
                     <p className="font-semibold text-sm truncate text-foreground">{rpTitle}</p>

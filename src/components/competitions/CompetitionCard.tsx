@@ -1,3 +1,4 @@
+import { SafeImage } from "@/components/ui/SafeImage";
 import { ROUTES } from "@/config/routes";
 import { memo, forwardRef, useState, useCallback } from "react";
 import { getOptimizedUrl } from "@/components/ui/optimized-image";
@@ -127,7 +128,7 @@ export const CompetitionCard = memo(
                       </div>
                     </div>
                   )}
-                  <img src={getOptimizedUrl(competition.cover_image_url, 640)} alt={title} width={640} height={360} className={`h-full w-full object-cover transition-all duration-700 ease-out group-hover:scale-105 ${imgLoaded ? "opacity-100" : "opacity-0"}`} loading="lazy" decoding="async" onLoad={onImgLoad} />
+                  <SafeImage src={getOptimizedUrl(competition.cover_image_url, 640)} alt={title} width={640} height={360} className={`h-full w-full object-cover transition-all duration-700 ease-out group-hover:scale-105 ${imgLoaded ? "opacity-100" : "opacity-0"}`} onLoad={onImgLoad} />
                 </>
               ) : (
                 <div className="flex h-full items-center justify-center bg-gradient-to-br from-primary/8 via-muted to-accent/8">
@@ -297,7 +298,7 @@ export const FeaturedCompetitionCard = memo(function FeaturedCompetitionCard({
           {/* Image */}
           <div className="relative aspect-[16/9] w-full overflow-hidden md:aspect-auto md:w-2/5 lg:w-1/2">
             {competition.cover_image_url ? (
-              <img loading="lazy" decoding="async" src={getOptimizedUrl(competition.cover_image_url, 800)} alt={title} width={800} height={450} className="h-full w-full object-cover transition-transform duration-1000 group-hover:scale-[1.03]" />
+              <SafeImage src={getOptimizedUrl(competition.cover_image_url, 800)} alt={title} width={800} height={450} className="h-full w-full object-cover transition-transform duration-1000 group-hover:scale-[1.03]" />
             ) : (
               <div className="flex h-full min-h-[220px] items-center justify-center bg-gradient-to-br from-primary/8 via-muted/20 to-accent/8">
                 <Trophy className="h-20 w-20 text-primary/8" />
