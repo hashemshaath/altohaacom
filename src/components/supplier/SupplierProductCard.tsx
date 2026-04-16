@@ -56,10 +56,11 @@ export const SupplierProductCard = memo(forwardRef<HTMLDivElement, SupplierProdu
     <Card
       ref={ref}
       className={cn(
-        "group relative flex flex-col overflow-hidden rounded-2xl border-border/20 bg-card transition-all duration-300",
+        "group relative flex flex-col overflow-hidden rounded-2xl border-border/20 bg-card transition-all duration-300 cursor-pointer",
         "hover:shadow-xl hover:shadow-primary/5 hover:-translate-y-0.5 hover:border-primary/20",
         !isInStock && "opacity-70"
       )}
+      onClick={handleView}
     >
       {/* Image */}
       <div
