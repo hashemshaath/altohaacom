@@ -1,7 +1,6 @@
-import { CACHE } from "@/lib/queryConfig";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
+import { CACHE } from "@/lib/queryConfig";
 
 export interface GlobalEventRecord {
   id: string;
@@ -51,7 +50,7 @@ export function useGlobalEvents(filters?: { status?: string }) {
       }
 
       const { data, error } = await query;
-      if (error) throw handleSupabaseError(error);
+      if (error) throw error;
       return (data || []) as GlobalEventRecord[];
     },
     ...CACHE.default,
@@ -67,7 +66,7 @@ export function useCreateGlobalEvent() {
         .insert(event as any)
         .select()
         .single();
-      if (error) throw handleSupabaseError(error);
+      if (error) throw error;
       return data as GlobalEventRecord;
     },
     onSuccess: () => {
@@ -87,7 +86,7 @@ export function useUpdateGlobalEvent() {
         .eq("id", id)
         .select()
         .single();
-      if (error) throw handleSupabaseError(error);
+      if (error) throw error;
       return data as GlobalEventRecord;
     },
     onSuccess: () => {
@@ -105,7 +104,7 @@ export function useDeleteGlobalEvent() {
         .from("global_events")
         .delete()
         .eq("id", id);
-      if (error) throw handleSupabaseError(error);
+      if (error) throw error;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-global-events"] });

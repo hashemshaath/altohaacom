@@ -2,7 +2,6 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/i18n/LanguageContext";
-import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any -- dynamic JSON settings from DB
 export type SiteSettingsMap = Record<string, Record<string, any>>;
@@ -19,7 +18,7 @@ export function useSiteSettings() {
       const { data, error } = await supabase
         .from("site_settings")
         .select("key, value, category");
-      if (error) throw handleSupabaseError(error);
+      if (error) throw error;
       const map: SiteSettingsMap = {};
       (data || []).forEach((row) => {
         try {
@@ -42,7 +41,7 @@ export function useSiteSettings() {
           category: category || "general",
           updated_at: new Date().toISOString(),
         }, { onConflict: "key" });
-      if (error) throw handleSupabaseError(error);
+      if (error) throw error;
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["site-settings"] });

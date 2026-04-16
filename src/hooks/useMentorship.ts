@@ -1,9 +1,8 @@
-import { CACHE } from "@/lib/queryConfig";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { CACHE } from "@/lib/queryConfig";
 import { QUERY_LIMIT_LARGE } from "@/lib/constants";
-import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 export interface MentorshipProgram {
   id: string;
@@ -113,7 +112,7 @@ export function useMentorshipPrograms(statusFilter?: string) {
         .order("created_at", { ascending: false });
       if (statusFilter) q = q.eq("status", statusFilter);
       const { data, error } = await q;
-      if (error) throw handleSupabaseError(error);
+      if (error) throw error;
       return (data || []) as MentorshipProgram[];
     },
     ...CACHE.short,
@@ -130,7 +129,7 @@ export function useMentorshipProgram(id: string | undefined) {
         .select("id, title, title_ar, description, description_ar, category, duration_weeks, max_matches, status, requirements, requirements_ar, cover_image_url, country_code, created_by, created_at, updated_at")
         .eq("id", id)
         .maybeSingle();
-      if (error) throw handleSupabaseError(error);
+      if (error) throw error;
       return data as MentorshipProgram | null;
     },
     enabled: !!id,
@@ -149,7 +148,7 @@ export function useMyMentorshipMatches() {
         .select("id, program_id, mentor_id, mentee_id, status, mentor_notes, mentee_notes, matched_at, started_at, completed_at, created_at")
         .or(`mentor_id.eq.${user.id},mentee_id.eq.${user.id}`)
         .order("created_at", { ascending: false });
-      if (error) throw handleSupabaseError(error);
+      if (error) throw error;
       if (!data || data.length === 0) return [] as MentorshipMatch[];
 
       // Fetch profiles
@@ -181,7 +180,7 @@ export function useMentorshipMatchDetails(matchId: string | undefined) {
         .select("id, program_id, mentor_id, mentee_id, status, mentor_notes, mentee_notes, matched_at, started_at, completed_at, created_at")
         .eq("id", matchId)
         .maybeSingle();
-      if (error) throw handleSupabaseError(error);
+      if (error) throw error;
       if (!data) return null;
 
       // Fetch profiles separately for reliability
@@ -211,7 +210,7 @@ export function useMentorshipSessions(matchId: string | undefined) {
         .select("id, match_id, title, title_ar, description, description_ar, scheduled_at, duration_minutes, status, meeting_url, mentor_feedback, mentee_feedback, mentor_rating, mentee_rating, created_at")
         .eq("match_id", matchId)
         .order("scheduled_at", { ascending: true });
-      if (error) throw handleSupabaseError(error);
+      if (error) throw error;
       return (data || []) as MentorshipSession[];
     },
     enabled: !!matchId,
@@ -229,7 +228,7 @@ export function useMentorshipGoals(matchId: string | undefined) {
         .select("id, match_id, title, title_ar, description, target_date, status, progress, completed_at, created_by, created_at")
         .eq("match_id", matchId)
         .order("created_at", { ascending: true });
-      if (error) throw handleSupabaseError(error);
+      if (error) throw error;
       return (data || []) as MentorshipGoal[];
     },
     enabled: !!matchId,
@@ -250,7 +249,7 @@ export function useMyMentorApplication() {
         .order("created_at", { ascending: false })
         .limit(1)
         .maybeSingle();
-      if (error) throw handleSupabaseError(error);
+      if (error) throw error;
       return data as MentorApplication | null;
     },
     enabled: !!user?.id,
@@ -267,7 +266,7 @@ export function useApplyAsMentor() {
         user_id: user.id,
         ...data,
       });
-      if (error) throw handleSupabaseError(error);
+      if (error) throw error;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["myMentorApplication"] });
@@ -288,7 +287,7 @@ export function useMyEnrollment(programId: string | undefined) {
         .eq("program_id", programId)
         .eq("user_id", user.id)
         .maybeSingle();
-      if (error) throw handleSupabaseError(error);
+      if (error) throw error;
       return data as MenteeEnrollment | null;
     },
     enabled: !!user?.id && !!programId,
@@ -305,7 +304,7 @@ export function useEnrollAsMentee() {
         user_id: user.id,
         ...data,
       });
-      if (error) throw handleSupabaseError(error);
+      if (error) throw error;
     },
     onSuccess: (_, vars) => {
       queryClient.invalidateQueries({ queryKey: ["myEnrollment", vars.program_id] });
@@ -323,7 +322,7 @@ export function useCreateSession(matchId: string) {
         match_id: matchId,
         ...data,
       });
-      if (error) throw handleSupabaseError(error);
+      if (error) throw error;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["mentorshipSessions", matchId] });
@@ -345,7 +344,7 @@ export function useUpdateSessionFeedback(matchId: string) {
         update.mentee_rating = rating;
       }
       const { error } = await supabase.from("mentorship_sessions").update(update).eq("id", sessionId);
-      if (error) throw handleSupabaseError(error);
+      if (error) throw error;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["mentorshipSessions", matchId] });
@@ -358,7 +357,7 @@ export function useCompleteSession(matchId: string) {
   return useMutation({
     mutationFn: async (sessionId: string) => {
       const { error } = await supabase.from("mentorship_sessions").update({ status: "completed" }).eq("id", sessionId);
-      if (error) throw handleSupabaseError(error);
+      if (error) throw error;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["mentorshipSessions", matchId] });
@@ -377,7 +376,7 @@ export function useCreateGoal(matchId: string) {
         created_by: user?.id,
         ...data,
       });
-      if (error) throw handleSupabaseError(error);
+      if (error) throw error;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["mentorshipGoals", matchId] });
@@ -396,7 +395,7 @@ export function useUpdateGoalProgress(matchId: string) {
         update.completed_at = new Date().toISOString();
       }
       const { error } = await supabase.from("mentorship_goals").update(update).eq("id", goalId);
-      if (error) throw handleSupabaseError(error);
+      if (error) throw error;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["mentorshipGoals", matchId] });
@@ -413,7 +412,7 @@ export function useAllMentorApplications() {
         .from("mentor_applications")
         .select("id, user_id, program_id, expertise, bio, bio_ar, years_experience, status, reviewed_by, reviewed_at, created_at")
         .order("created_at", { ascending: false });
-      if (error) throw handleSupabaseError(error);
+      if (error) throw error;
       // Fetch profiles for each application
       const userIds = (data || []).map(a => a.user_id);
       const { data: profiles } = await supabase
@@ -437,7 +436,7 @@ export function useAllMentorshipMatches() {
         .from("mentorship_matches")
         .select("id, program_id, mentor_id, mentee_id, status, mentor_notes, mentee_notes, matched_at, started_at, completed_at, created_at")
         .order("created_at", { ascending: false });
-      if (error) throw handleSupabaseError(error);
+      if (error) throw error;
       // Fetch profiles
       const allIds = [...new Set((data || []).flatMap(m => [m.mentor_id, m.mentee_id]))];
       const { data: profiles } = await supabase
@@ -462,7 +461,7 @@ export function useAllMenteeEnrollments() {
         .from("mentee_enrollments")
         .select("id, program_id, user_id, status, goals_description, experience_level, preferred_language, created_at")
         .order("created_at", { ascending: false });
-      if (error) throw handleSupabaseError(error);
+      if (error) throw error;
       const userIds = (data || []).map(e => e.user_id);
       const { data: profiles } = await supabase
         .from("profiles")
@@ -486,7 +485,7 @@ export function useReviewApplication() {
         .from("mentor_applications")
         .update({ status, reviewed_by: user?.id, reviewed_at: new Date().toISOString() })
         .eq("id", id);
-      if (error) throw handleSupabaseError(error);
+      if (error) throw error;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["allMentorApplications"] });
@@ -502,7 +501,7 @@ export function useCreateMatch() {
         ...data,
         matched_at: new Date().toISOString(),
       });
-      if (error) throw handleSupabaseError(error);
+      if (error) throw error;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["allMentorshipMatches"] });
@@ -521,7 +520,7 @@ export function useCreateProgram() {
         created_by: user?.id,
         ...data,
       });
-      if (error) throw handleSupabaseError(error);
+      if (error) throw error;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["mentorshipPrograms"] });
@@ -534,7 +533,7 @@ export function useUpdateProgram() {
   return useMutation({
     mutationFn: async ({ id, ...data }: Partial<MentorshipProgram> & { id: string }) => {
       const { error } = await supabase.from("mentorship_programs").update(data).eq("id", id);
-      if (error) throw handleSupabaseError(error);
+      if (error) throw error;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["mentorshipPrograms"] });

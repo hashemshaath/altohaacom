@@ -3,7 +3,6 @@ import { useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import type { Database } from "@/integrations/supabase/types";
-import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 type NotificationChannel = Database["public"]["Enums"]["notification_channel"];
 
@@ -24,7 +23,7 @@ async function fetchPreferences(userId: string): Promise<NotificationPreference[
     .from("notification_preferences")
     .select("id, channel, enabled, quiet_hours_start, quiet_hours_end, digest_frequency, muted_types")
     .eq("user_id", userId);
-  if (error) throw handleSupabaseError(error);
+  if (error) throw error;
 
   const existingChannels = new Set(data?.map((p) => p.channel) || []);
   const allPreferences: NotificationPreference[] = [...(data as NotificationPreference[] || [])];
@@ -65,10 +64,10 @@ export function useNotificationPreferencesData() {
       const existing = prefs.find((p) => p.channel === channel);
       if (existing && !existing.id.startsWith("new_")) {
         const { error } = await supabase.from("notification_preferences").update({ enabled }).eq("id", existing.id).eq("user_id", user?.id);
-        if (error) throw handleSupabaseError(error);
+        if (error) throw error;
       } else {
         const { error } = await supabase.from("notification_preferences").insert({ user_id: user?.id, channel, enabled });
-        if (error) throw handleSupabaseError(error);
+        if (error) throw error;
       }
     },
     onMutate: async ({ channel, enabled }) => {

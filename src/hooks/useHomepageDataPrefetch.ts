@@ -115,8 +115,14 @@ export function useHomepageDataPrefetch() {
           .order("total_points", { ascending: false })
           .limit(8),
 
-        // 11. stats (counts) — use RPC to avoid HEAD request aborts
-        supabase.rpc("get_platform_stats"),
+        // 11. stats (counts)
+        Promise.all([
+          supabase.from("profiles").select("id", { count: "exact", head: true }),
+          supabase.from("competitions").select("id", { count: "exact", head: true }),
+          supabase.from("culinary_entities").select("id", { count: "exact", head: true }),
+          supabase.from("exhibitions").select("id", { count: "exact", head: true }),
+          supabase.from("organizers").select("id", { count: "exact", head: true }),
+        ]),
       ]);
 
       if (cancelled) return;
@@ -125,7 +131,7 @@ export function useHomepageDataPrefetch() {
       const getData = <T,>(index: number): T | null => {
         const r = results[index];
         if (r.status !== "fulfilled") return null;
-        const val = r.value as { data?: T };
+        const val = r.value as any;
         return val?.data ?? null;
       };
 
@@ -206,19 +212,18 @@ export function useHomepageDataPrefetch() {
       const newUsersData = getData<any[]>(9);
       if (newUsersData) seed(["newly-joined-users", 12], newUsersData);
 
-      // 11. Stats (from RPC)
+      // 11. Stats
       const statsResult = results[11];
       if (statsResult.status === "fulfilled") {
-        const rpcData = (statsResult.value as any)?.data;
-        if (rpcData) {
-          seed(["home-stats"], {
-            members: rpcData.members ?? 0,
-            competitions: rpcData.competitions ?? 0,
-            entities: rpcData.entities ?? 0,
-            exhibitions: rpcData.exhibitions ?? 0,
-            organizers: rpcData.organizers ?? 0,
-          });
-        }
+        const statsArr = statsResult.value as any[];
+        const getCount = (r: { count: number | null }) => r?.count ?? 0;
+        seed(["home-stats"], {
+          members: getCount(statsArr[0]),
+          competitions: getCount(statsArr[1]),
+          entities: getCount(statsArr[2]),
+          exhibitions: getCount(statsArr[3]),
+          organizers: getCount(statsArr[4]),
+        });
       }
     };
 

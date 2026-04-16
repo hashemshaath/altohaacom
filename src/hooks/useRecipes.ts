@@ -1,10 +1,8 @@
-import { CACHE } from "@/lib/queryConfig";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { CACHE } from "@/lib/queryConfig";
 import { QUERY_LIMIT_LARGE } from "@/lib/constants";
-import type { Json } from "@/integrations/supabase/types";
-import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 export interface RecipeIngredient {
   name: string;
@@ -85,7 +83,7 @@ export function useRecipes(filters?: {
       if (filters?.tag) q = q.contains("tags", [filters.tag]);
 
       const { data, error } = await q;
-      if (error) throw handleSupabaseError(error);
+      if (error) throw error;
 
       const recipes = data || [];
       const authorIds = [...new Set(recipes.map(r => r.author_id))];
@@ -131,7 +129,7 @@ export function useRecipeBySlug(slug: string | undefined) {
         .select("id, title, title_ar, slug, description, description_ar, image_url, gallery_urls, video_url, ingredients, steps, prep_time_minutes, cook_time_minutes, servings, difficulty, category, cuisine, country_code, tags, calories, protein_g, carbs_g, fat_g, fiber_g, is_published, save_count, share_count, author_id, source_url, recipe_number, created_at, updated_at")
         .eq("slug", slug)
         .maybeSingle();
-      if (error) throw handleSupabaseError(error);
+      if (error) throw error;
       if (!data) return null;
 
       const [profileRes, ratingsRes] = await Promise.all([
@@ -177,12 +175,12 @@ export function useRateRecipe() {
           .from("recipe_ratings")
           .update({ rating, review })
           .eq("id", existing.id);
-        if (error) throw handleSupabaseError(error);
+        if (error) throw error;
       } else {
         const { error } = await supabase
           .from("recipe_ratings")
           .insert({ recipe_id: recipeId, user_id: user.id, rating, review });
-        if (error) throw handleSupabaseError(error);
+        if (error) throw error;
       }
     },
     onSuccess: () => {
@@ -229,12 +227,12 @@ export function useCreateRecipe() {
           ...recipe,
           author_id: user.id,
           slug,
-          ingredients: recipe.ingredients as Json,
-          steps: recipe.steps as Json,
+          ingredients: recipe.ingredients as any,
+          steps: recipe.steps as any,
         })
         .select()
         .single();
-      if (error) throw handleSupabaseError(error);
+      if (error) throw error;
       return data;
     },
     onSuccess: () => {

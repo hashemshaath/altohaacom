@@ -1,8 +1,7 @@
-import { CACHE } from "@/lib/queryConfig";
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
-import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
+import { CACHE } from "@/lib/queryConfig";
 
 /**
  * Checks if the current user is a supervisor (full platform admin).
@@ -16,7 +15,7 @@ export function useIsAdmin() {
     queryFn: async () => {
       if (!user?.id) return false;
       const { data, error } = await supabase.rpc("is_admin", { p_user_id: user.id });
-      if (error) throw handleSupabaseError(error);
+      if (error) throw error;
       return data as boolean;
     },
     enabled: !!user?.id,
@@ -24,7 +23,7 @@ export function useIsAdmin() {
   });
 }
 
-function useAdminStats() {
+export function useAdminStats() {
   const { data: isAdmin } = useIsAdmin();
 
   return useQuery({

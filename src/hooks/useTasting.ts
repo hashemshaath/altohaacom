@@ -1,8 +1,8 @@
-import { CACHE } from "@/lib/queryConfig";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
-import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
+import { toast } from "sonner";
+import { CACHE } from "@/lib/queryConfig";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const untypedFrom = (table: string) => supabase.from(table as any) as any;
@@ -132,7 +132,7 @@ export function useTastingSessions() {
       const { data, error } = await untypedFrom("tasting_sessions")
         .select(SESSION_COLS)
         .order("created_at", { ascending: false });
-      if (error) throw handleSupabaseError(error);
+      if (error) throw error;
       return (data || []) as unknown as TastingSession[];
     },
   });
@@ -146,7 +146,7 @@ export function useTastingSession(id: string | undefined) {
         .select(SESSION_COLS)
         .eq("id", id!)
         .single();
-      if (error) throw handleSupabaseError(error);
+      if (error) throw error;
       return data as unknown as TastingSession;
     },
     enabled: !!id,
@@ -162,7 +162,7 @@ export function useTastingCriteria(sessionId: string | undefined) {
         .select(CRITERIA_COLS)
         .eq("session_id", sessionId!)
         .order("sort_order");
-      if (error) throw handleSupabaseError(error);
+      if (error) throw error;
       return (data || []) as unknown as TastingCriterion[];
     },
     enabled: !!sessionId,
@@ -177,7 +177,7 @@ export function useTastingEntries(sessionId: string | undefined) {
         .select(ENTRY_COLS)
         .eq("session_id", sessionId!)
         .order("sort_order");
-      if (error) throw handleSupabaseError(error);
+      if (error) throw error;
       return (data || []) as unknown as TastingEntry[];
     },
     enabled: !!sessionId,
@@ -191,7 +191,7 @@ export function useTastingScores(sessionId: string | undefined) {
       const { data, error } = await untypedFrom("tasting_scores")
         .select(SCORE_COLS)
         .eq("session_id", sessionId!);
-      if (error) throw handleSupabaseError(error);
+      if (error) throw error;
       return (data || []) as unknown as TastingScore[];
     },
     enabled: !!sessionId,
@@ -204,20 +204,20 @@ export function useCriteriaPresets() {
     queryFn: async () => {
       const { data, error } = await untypedFrom("tasting_criteria_presets")
         .select("id, preset_name, preset_name_ar, category, criteria, is_system");
-      if (error) throw handleSupabaseError(error);
+      if (error) throw error;
       return (data || []) as unknown as CriteriaPreset[];
     },
   });
 }
 
-function useTastingJudges(sessionId: string | undefined) {
+export function useTastingJudges(sessionId: string | undefined) {
   return useQuery({
     queryKey: ["tasting-judges", sessionId],
     queryFn: async () => {
       const { data, error } = await untypedFrom("tasting_judges")
         .select("id, session_id, judge_id, assigned_at, has_completed, completed_at")
         .eq("session_id", sessionId!);
-      if (error) throw handleSupabaseError(error);
+      if (error) throw error;
       return (data || []) as unknown as TastingJudge[];
     },
     enabled: !!sessionId,
@@ -236,7 +236,7 @@ export function useCreateTastingSession() {
         .insert({ ...session, organizer_id: user?.id } as Record<string, unknown>)
         .select()
         .single();
-      if (error) throw handleSupabaseError(error);
+      if (error) throw error;
       return data as unknown as TastingSession;
     },
     onSuccess: () => {
@@ -255,7 +255,7 @@ export function useUpdateTastingSession() {
         .eq("id", id)
         .select()
         .single();
-      if (error) throw handleSupabaseError(error);
+      if (error) throw error;
       return data as unknown as TastingSession;
     },
     onSuccess: (data) => {
@@ -265,7 +265,7 @@ export function useUpdateTastingSession() {
   });
 }
 
-function useDeleteTastingSession() {
+export function useDeleteTastingSession() {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -273,7 +273,7 @@ function useDeleteTastingSession() {
       const { error } = await untypedFrom("tasting_sessions")
         .delete()
         .eq("id", id);
-      if (error) throw handleSupabaseError(error);
+      if (error) throw error;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["tasting-sessions"] });
@@ -302,7 +302,7 @@ export function useSubmitScore() {
         )
         .select()
         .single();
-      if (error) throw handleSupabaseError(error);
+      if (error) throw error;
       return data;
     },
     onSuccess: (_, vars) => {
@@ -320,7 +320,7 @@ export function useAddTastingEntry() {
         .insert(entry as Record<string, unknown>)
         .select()
         .single();
-      if (error) throw handleSupabaseError(error);
+      if (error) throw error;
       return data;
     },
     onSuccess: (_, vars) => {
@@ -329,7 +329,7 @@ export function useAddTastingEntry() {
   });
 }
 
-function useUpdateTastingEntry() {
+export function useUpdateTastingEntry() {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -339,7 +339,7 @@ function useUpdateTastingEntry() {
         .eq("id", id)
         .select()
         .single();
-      if (error) throw handleSupabaseError(error);
+      if (error) throw error;
       return data as unknown as TastingEntry;
     },
     onSuccess: (data) => {
@@ -356,7 +356,7 @@ export function useDeleteTastingEntry() {
       const { error } = await untypedFrom("tasting_entries")
         .delete()
         .eq("id", id);
-      if (error) throw handleSupabaseError(error);
+      if (error) throw error;
       return sessionId;
     },
     onSuccess: (sessionId) => {
@@ -373,7 +373,7 @@ export function useAddTastingCriteria() {
       const { data, error } = await untypedFrom("tasting_criteria")
         .insert(criteria as Record<string, unknown>[])
         .select();
-      if (error) throw handleSupabaseError(error);
+      if (error) throw error;
       return data;
     },
     onSuccess: (_, vars) => {
@@ -391,7 +391,7 @@ export function useDeleteTastingCriterion() {
       const { error } = await untypedFrom("tasting_criteria")
         .delete()
         .eq("id", id);
-      if (error) throw handleSupabaseError(error);
+      if (error) throw error;
       return sessionId;
     },
     onSuccess: (sessionId) => {

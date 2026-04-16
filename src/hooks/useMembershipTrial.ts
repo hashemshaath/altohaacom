@@ -1,10 +1,9 @@
-import { CACHE } from "@/lib/queryConfig";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
+import { CACHE } from "@/lib/queryConfig";
 import { MS_PER_DAY } from "@/lib/constants";
-import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 export interface TrialInfo {
   trialTier: string | null;
@@ -57,8 +56,8 @@ export function useStartTrial() {
         p_tier: tier,
         p_duration_days: durationDays,
       });
-      if (error) throw handleSupabaseError(error);
-      const result = data as { success?: boolean; error?: string } | null;
+      if (error) throw error;
+      const result = data as any;
       if (!result?.success) throw new Error(result?.error || "Failed to start trial");
       return result;
     },

@@ -12,13 +12,12 @@ import { useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { flushOfflineQueue, queueOfflineAction } from "@/lib/offlineCache";
 import { useToast } from "@/hooks/use-toast";
-import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 /**
  * Queue a mutation for later replay when the user is offline.
  * Call this from your mutation's `onError` when `!navigator.onLine`.
  */
-function enqueueOfflineMutation(
+export function enqueueOfflineMutation(
   table: string,
   type: "insert" | "update" | "upsert" | "delete",
   payload: Record<string, unknown>,
@@ -53,29 +52,27 @@ export function useOfflineMutationManager() {
             const table = action.table;
             const payload = action.payload;
 
-            // Cast to `any` because table name is dynamic from the queue
-            const db = supabase as any;
             switch (action.type) {
               case "insert": {
-                const { error } = await db.from(table).insert(payload);
-                if (error) throw handleSupabaseError(error);
+                const { error } = await supabase.from(table).insert(payload as never);
+                if (error) throw error;
                 break;
               }
               case "update": {
                 const id = payload.id as string;
                 const { id: _, ...rest } = payload;
-                const { error } = await db.from(table).update(rest).eq("id", id);
-                if (error) throw handleSupabaseError(error);
+                const { error } = await supabase.from(table).update(rest as never).eq("id", id);
+                if (error) throw error;
                 break;
               }
               case "upsert": {
-                const { error } = await db.from(table).upsert(payload);
-                if (error) throw handleSupabaseError(error);
+                const { error } = await supabase.from(table).upsert(payload as never);
+                if (error) throw error;
                 break;
               }
               case "delete": {
-                const { error } = await db.from(table).delete().eq("id", payload.id as string);
-                if (error) throw handleSupabaseError(error);
+                const { error } = await supabase.from(table).delete().eq("id", payload.id as string);
+                if (error) throw error;
                 break;
               }
             }

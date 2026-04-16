@@ -1,8 +1,7 @@
-import { CACHE } from "@/lib/queryConfig";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
-import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
+import { CACHE } from "@/lib/queryConfig";
 
 // ─── Types ──────────────────────────────────
 
@@ -139,7 +138,7 @@ export function useChefScheduleEvents(chefId?: string, dateRange?: { start: stri
       }
 
       const { data, error } = await query;
-      if (error) throw handleSupabaseError(error);
+      if (error) throw error;
       return (data || []) as ChefScheduleEvent[];
     },
     enabled: !!chefId || !dateRange,
@@ -147,7 +146,7 @@ export function useChefScheduleEvents(chefId?: string, dateRange?: { start: stri
   });
 }
 
-function useChefScheduleSettings(chefId?: string) {
+export function useChefScheduleSettings(chefId?: string) {
   return useQuery({
     queryKey: ["chef-schedule-settings", chefId],
     queryFn: async () => {
@@ -157,7 +156,7 @@ function useChefScheduleSettings(chefId?: string) {
         .select("id, chef_id, share_with_management, share_publicly, default_visibility, show_availability_on_profile, auto_sync_competitions, auto_sync_chefs_table, auto_sync_exhibitions, working_hours_start, working_hours_end, working_days, unavailable_message, unavailable_message_ar, created_at, updated_at")
         .eq("chef_id", chefId!)
         .maybeSingle();
-      if (error) throw handleSupabaseError(error);
+      if (error) throw error;
       return data as ChefScheduleSettings | null;
     },
     enabled: !!chefId,
@@ -183,7 +182,7 @@ export function usePublicChefSchedule(chefId?: string) {
         .gte("end_date", now.toISOString())
         .lte("start_date", threeMonthsLater.toISOString())
         .order("start_date", { ascending: true });
-      if (error) throw handleSupabaseError(error);
+      if (error) throw error;
       return (data || []) as Partial<ChefScheduleEvent>[];
     },
     enabled: !!chefId,
@@ -204,7 +203,7 @@ export function useCreateScheduleEvent() {
         .insert({ ...event, chef_id: event.chef_id || user?.id, created_by: user?.id } as any)
         .select()
         .single();
-      if (error) throw handleSupabaseError(error);
+      if (error) throw error;
       return data as ChefScheduleEvent;
     },
     onSuccess: (data) => {
@@ -227,7 +226,7 @@ export function useUpdateScheduleEvent() {
         .eq("id", id)
         .select()
         .single();
-      if (error) throw handleSupabaseError(error);
+      if (error) throw error;
       return data as ChefScheduleEvent;
     },
     onSuccess: () => {
@@ -247,7 +246,7 @@ export function useDeleteScheduleEvent() {
         .from("chef_schedule_events")
         .delete()
         .eq("id", id);
-      if (error) throw handleSupabaseError(error);
+      if (error) throw error;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["chef-schedule"] });
@@ -256,7 +255,7 @@ export function useDeleteScheduleEvent() {
   });
 }
 
-function useSaveScheduleSettings() {
+export function useSaveScheduleSettings() {
   const queryClient = useQueryClient();
   const { user } = useAuth();
 
@@ -276,13 +275,13 @@ function useSaveScheduleSettings() {
           .from("chef_schedule_settings")
           .update(settings)
           .eq("chef_id", chefId);
-        if (error) throw handleSupabaseError(error);
+        if (error) throw error;
       } else {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any -- non-schema table
         const { error } = await supabase
           .from("chef_schedule_settings")
           .insert({ ...settings, chef_id: chefId });
-        if (error) throw handleSupabaseError(error);
+        if (error) throw error;
       }
     },
     onSuccess: () => {
@@ -293,7 +292,7 @@ function useSaveScheduleSettings() {
 
 // ─── Helpers ────────────────────────────────
 
-function getEventColor(eventType: ScheduleEventType): string {
+export function getEventColor(eventType: ScheduleEventType): string {
   return EVENT_TYPE_CONFIG[eventType]?.color || EVENT_TYPE_CONFIG.other.color;
 }
 

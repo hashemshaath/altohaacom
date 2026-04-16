@@ -1,7 +1,6 @@
-import { CACHE } from "@/lib/queryConfig";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
+import { CACHE } from "@/lib/queryConfig";
 
 export interface AuthHeroSlide {
   id: string;
@@ -25,7 +24,7 @@ export function useAuthHeroSlides(pageType: "individual" | "company" = "individu
         .eq("is_active", true)
         .in("page_type", [pageType, "both"])
         .order("sort_order", { ascending: true });
-      if (error) throw handleSupabaseError(error);
+      if (error) throw error;
       return (data || []) as AuthHeroSlide[];
     },
     ...CACHE.long,

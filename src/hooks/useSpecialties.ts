@@ -1,7 +1,6 @@
-import { CACHE } from "@/lib/queryConfig";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
+import { CACHE } from "@/lib/queryConfig";
 
 export function useApprovedSpecialties() {
   return useQuery({
@@ -13,14 +12,14 @@ export function useApprovedSpecialties() {
         .eq("is_approved", true)
         .eq("is_active", true)
         .order("name");
-      if (error) throw handleSupabaseError(error);
+      if (error) throw error;
       return data || [];
     },
     ...CACHE.static,
   });
 }
 
-function useAllSpecialties() {
+export function useAllSpecialties() {
   return useQuery({
     queryKey: ["specialties", "all"],
     queryFn: async () => {
@@ -28,7 +27,7 @@ function useAllSpecialties() {
         .from("specialties")
         .select("id, name, name_ar, slug, category, is_approved, is_active, created_by, approved_by, approved_at, created_at")
         .order("created_at", { ascending: false });
-      if (error) throw handleSupabaseError(error);
+      if (error) throw error;
       return data || [];
     },
   });
@@ -43,14 +42,14 @@ export function useUserSpecialties(userId: string | undefined) {
         .from("user_specialties")
         .select("id, specialty_id, specialties(id, name, name_ar, slug)")
         .eq("user_id", userId);
-      if (error) throw handleSupabaseError(error);
+      if (error) throw error;
       return data || [];
     },
     enabled: !!userId,
   });
 }
 
-function useApproveSpecialty() {
+export function useApproveSpecialty() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async ({ id, approvedBy }: { id: string; approvedBy: string }) => {
@@ -58,18 +57,18 @@ function useApproveSpecialty() {
         .from("specialties")
         .update({ is_approved: true, approved_by: approvedBy, approved_at: new Date().toISOString() })
         .eq("id", id);
-      if (error) throw handleSupabaseError(error);
+      if (error) throw error;
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["specialties"] }),
   });
 }
 
-function useCreateSpecialty() {
+export function useCreateSpecialty() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (specialty: { name: string; name_ar?: string; slug: string; category?: string; created_by?: string; is_approved?: boolean }) => {
       const { data, error } = await supabase.from("specialties").insert(specialty).select().single();
-      if (error) throw handleSupabaseError(error);
+      if (error) throw error;
       return data;
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["specialties"] }),

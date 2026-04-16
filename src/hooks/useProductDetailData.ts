@@ -1,7 +1,6 @@
-import { CACHE } from "@/lib/queryConfig";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
+import { CACHE } from "@/lib/queryConfig";
 
 export interface ProductQA {
   id: string;
@@ -41,7 +40,7 @@ export function useProductQA(catalogItemId: string | undefined) {
         .eq("catalog_item_id", catalogItemId!)
         .eq("is_visible", true)
         .order("helpful_count", { ascending: false });
-      if (error) throw handleSupabaseError(error);
+      if (error) throw error;
       return (data || []) as unknown as ProductQA[];
     },
     ...CACHE.medium,
@@ -67,7 +66,7 @@ export function useProductTrustBadges(companyId: string | undefined, catalogItem
       }
 
       const { data, error } = await query;
-      if (error) throw handleSupabaseError(error);
+      if (error) throw error;
       return (data || []) as unknown as ProductTrustBadge[];
     },
     ...CACHE.medium,

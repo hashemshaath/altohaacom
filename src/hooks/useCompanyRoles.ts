@@ -1,7 +1,6 @@
-import { CACHE } from "@/lib/queryConfig";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
+import { CACHE } from "@/lib/queryConfig";
 
 export const COMPANY_ROLES = [
   { value: "sponsor", label: "Sponsor", labelAr: "راعي", color: "bg-chart-4/10 text-chart-4 border-chart-4/20" },
@@ -30,7 +29,7 @@ export function useCompanyRoles(companyId: string | null) {
         .select("id, company_id, role, is_active, assigned_at")
         .eq("company_id", companyId)
         .order("assigned_at", { ascending: false });
-      if (error) throw handleSupabaseError(error);
+      if (error) throw error;
       return (data || []) as CompanyRoleAssignment[];
     },
     enabled: !!companyId,
@@ -43,7 +42,7 @@ export function useActiveCompanyRoles(companyId: string | null) {
   return roles.filter(r => r.is_active).map(r => r.role);
 }
 
-function useCompanyHasRole(companyId: string | null, role: string) {
+export function useCompanyHasRole(companyId: string | null, role: string) {
   const activeRoles = useActiveCompanyRoles(companyId);
   return activeRoles.includes(role);
 }
@@ -59,7 +58,7 @@ export function useAssignCompanyRole(companyId: string | null) {
         role,
         is_active: true,
       });
-      if (error) throw handleSupabaseError(error);
+      if (error) throw error;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["companyRoles", companyId] });
@@ -76,7 +75,7 @@ export function useToggleCompanyRole() {
         .from("company_role_assignments")
         .update({ is_active })
         .eq("id", id);
-      if (error) throw handleSupabaseError(error);
+      if (error) throw error;
       return companyId;
     },
     onSuccess: (_data, variables) => {
@@ -94,7 +93,7 @@ export function useRemoveCompanyRole() {
         .from("company_role_assignments")
         .delete()
         .eq("id", id);
-      if (error) throw handleSupabaseError(error);
+      if (error) throw error;
       return companyId;
     },
     onSuccess: (_data, variables) => {

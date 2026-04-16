@@ -1,9 +1,8 @@
-import { CACHE } from "@/lib/queryConfig";
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
-import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
+import { CACHE } from "@/lib/queryConfig";
 
 type AccountType = Database["public"]["Enums"]["account_type"];
 
@@ -19,7 +18,7 @@ export function useAccountType() {
         .select("account_type")
         .eq("user_id", user.id)
         .single();
-      if (error) throw handleSupabaseError(error);
+      if (error) throw error;
       return (data?.account_type as AccountType) || "professional";
     },
     enabled: !!user?.id,

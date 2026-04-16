@@ -1,9 +1,8 @@
-import { CACHE } from "@/lib/queryConfig";
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
-import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
+import { CACHE } from "@/lib/queryConfig";
 
 type AppRole = Database["public"]["Enums"]["app_role"];
 
@@ -18,7 +17,7 @@ export function usePermissions() {
         .select("id, code, name, name_ar, description, description_ar, category, created_at")
         .order("category")
         .order("code");
-      if (error) throw handleSupabaseError(error);
+      if (error) throw error;
       return data;
     },
     ...CACHE.long,
@@ -34,14 +33,14 @@ export function useRolePermissions(role?: AppRole) {
         .select("*, permissions(*)");
       if (role) query = query.eq("role", role);
       const { data, error } = await query;
-      if (error) throw handleSupabaseError(error);
+      if (error) throw error;
       return data;
     },
     ...CACHE.medium,
   });
 }
 
-function useUserPermissions() {
+export function useUserPermissions() {
   const { user } = useAuth();
 
   return useQuery({
@@ -90,7 +89,7 @@ function useUserPermissions() {
   });
 }
 
-function useHasPermission(permissionCode: string) {
+export function useHasPermission(permissionCode: string) {
   const { data: permissions = [] } = useUserPermissions();
   return permissions.includes(permissionCode);
 }
@@ -99,7 +98,7 @@ function useHasPermission(permissionCode: string) {
  * Check multiple permissions at once.
  * Returns an object keyed by permission code → boolean.
  */
-function useHasPermissions(codes: string[]) {
+export function useHasPermissions(codes: string[]) {
   const { data: permissions = [] } = useUserPermissions();
   return codes.reduce<Record<string, boolean>>((acc, code) => {
     acc[code] = permissions.includes(code);
@@ -109,7 +108,7 @@ function useHasPermissions(codes: string[]) {
 
 // ── Competition Roles ────────────────────────────────────
 
-function useCompetitionRoles(competitionId?: string) {
+export function useCompetitionRoles(competitionId?: string) {
   return useQuery({
     queryKey: ["competitionRoles", competitionId],
     queryFn: async () => {
@@ -119,14 +118,14 @@ function useCompetitionRoles(competitionId?: string) {
         .select("*, profiles:user_id(full_name, username, avatar_url, account_number)")
         .eq("competition_id", competitionId)
         .eq("status", "active");
-      if (error) throw handleSupabaseError(error);
+      if (error) throw error;
       return data;
     },
     enabled: !!competitionId,
   });
 }
 
-function useUserCompetitionRoles(competitionId?: string) {
+export function useUserCompetitionRoles(competitionId?: string) {
   const { user } = useAuth();
 
   return useQuery({
@@ -139,7 +138,7 @@ function useUserCompetitionRoles(competitionId?: string) {
         .eq("competition_id", competitionId)
         .eq("user_id", user.id)
         .eq("status", "active");
-      if (error) throw handleSupabaseError(error);
+      if (error) throw error;
       return data?.map((r) => r.role) || [];
     },
     enabled: !!user?.id && !!competitionId,
@@ -148,7 +147,7 @@ function useUserCompetitionRoles(competitionId?: string) {
 
 // ── User Titles ──────────────────────────────────────────
 
-function useUserTitles(userId?: string) {
+export function useUserTitles(userId?: string) {
   return useQuery({
     queryKey: ["userTitles", userId],
     queryFn: async () => {
@@ -158,7 +157,7 @@ function useUserTitles(userId?: string) {
         .select("id, user_id, title, title_ar, title_type, issuing_body, issuing_body_ar, issued_date, expiry_date, is_verified, verified_by, verified_at, establishment_id, sort_order, created_at, updated_at")
         .eq("user_id", userId)
         .order("sort_order");
-      if (error) throw handleSupabaseError(error);
+      if (error) throw error;
       return data;
     },
     enabled: !!userId,
@@ -167,7 +166,7 @@ function useUserTitles(userId?: string) {
 
 // ── User Affiliations ────────────────────────────────────
 
-function useUserAffiliations(userId?: string) {
+export function useUserAffiliations(userId?: string) {
   return useQuery({
     queryKey: ["userAffiliations", userId],
     queryFn: async () => {
@@ -177,7 +176,7 @@ function useUserAffiliations(userId?: string) {
         .select("*, establishments(*), companies(name, name_ar, logo_url)")
         .eq("user_id", userId)
         .order("is_current", { ascending: false });
-      if (error) throw handleSupabaseError(error);
+      if (error) throw error;
       return data;
     },
     enabled: !!userId,

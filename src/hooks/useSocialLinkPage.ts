@@ -1,9 +1,8 @@
-import { CACHE } from "@/lib/queryConfig";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
-import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
+import { CACHE } from "@/lib/queryConfig";
 
 export function useSocialLinkPage(userId?: string) {
   return useQuery({
@@ -14,7 +13,7 @@ export function useSocialLinkPage(userId?: string) {
         .select("id, user_id, page_title, page_title_ar, bio, bio_ar, theme, is_published, created_at, updated_at, background_color, background_image_url, button_color, button_style, text_color, show_avatar, show_social_icons, font_family, custom_css")
         .eq("user_id", userId!)
         .maybeSingle();
-      if (error) throw handleSupabaseError(error);
+      if (error) throw error;
       return data;
     },
     enabled: !!userId,
@@ -31,7 +30,7 @@ export function useSocialLinkItems(pageId?: string) {
         .select("id, page_id, user_id, title, title_ar, url, icon, link_type, sort_order, is_active, click_count, created_at, page_tab, thumbnail_url, scheduled_start, scheduled_end, ab_enabled, ab_variant_title, ab_variant_title_ar, ab_variant_icon, ab_variant_click_count")
         .eq("page_id", pageId!)
         .order("sort_order", { ascending: true });
-      if (error) throw handleSupabaseError(error);
+      if (error) throw error;
       return data || [];
     },
     enabled: !!pageId,
@@ -65,21 +64,18 @@ export function useSocialLinkPageByUsername(username?: string) {
         .maybeSingle();
       if (pgErr) throw pgErr;
 
-      let items: any[] = [];
-      if (page) {
-        const { data: linkItems } = await supabase
-          .from("social_link_items")
-          .select("id, title, title_ar, url, icon, link_type, sort_order, is_active, click_count, thumbnail_url, scheduled_start, scheduled_end, page_tab, ab_enabled, ab_variant_title, ab_variant_title_ar, ab_variant_icon, ab_variant_click_count")
-          .eq("page_id", page.id)
-          .eq("is_active", true)
-          .order("sort_order", { ascending: true });
-        items = linkItems || [];
-      }
+      const items = page ? await supabase
+        .from("social_link_items")
+        .select("id, title, title_ar, url, icon, link_type, sort_order, is_active, click_count, thumbnail_url, scheduled_start, scheduled_end, page_tab, ab_enabled, ab_variant_title, ab_variant_title_ar, ab_variant_icon, ab_variant_click_count")
+        .eq("page_id", page.id)
+        .eq("is_active", true)
+        .order("sort_order", { ascending: true })
+        .then(r => r.data || []) : [];
 
       return { profile, page, items };
     },
     enabled: !!username,
-    ...CACHE.realtime,
+    staleTime: 30_000,
     refetchInterval: false, // static page, no need to poll
     gcTime: 10 * 60_000,
   });
@@ -107,7 +103,7 @@ export function useUpsertSocialLinkPage() {
           .eq("id", existing.id)
           .select()
           .single();
-        if (error) throw handleSupabaseError(error);
+        if (error) throw error;
         return data;
       } else {
         const { data, error } = await supabase
@@ -115,7 +111,7 @@ export function useUpsertSocialLinkPage() {
           .insert({ ...values, user_id: user.id })
           .select()
           .single();
-        if (error) throw handleSupabaseError(error);
+        if (error) throw error;
         return data;
       }
     },
@@ -142,7 +138,7 @@ export function useManageSocialLinkItems() {
         .insert({ ...item, user_id: user.id })
         .select()
         .single();
-      if (error) throw handleSupabaseError(error);
+      if (error) throw error;
       return data;
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: ["social-link-items"] }),
@@ -156,7 +152,7 @@ export function useManageSocialLinkItems() {
         .eq("id", id)
         .select()
         .single();
-      if (error) throw handleSupabaseError(error);
+      if (error) throw error;
       return data;
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: ["social-link-items"] }),
@@ -165,7 +161,7 @@ export function useManageSocialLinkItems() {
   const deleteItem = useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase.from("social_link_items").delete().eq("id", id);
-      if (error) throw handleSupabaseError(error);
+      if (error) throw error;
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: ["social-link-items"] }),
   });
@@ -182,7 +178,7 @@ export function useManageSocialLinkItems() {
   return { addItem, updateItem, deleteItem, reorderItems };
 }
 
-function useRecordLinkClick() {
+export function useRecordLinkClick() {
   return useMutation({
     mutationFn: async (itemId: string) => {
       await supabase.rpc("increment_field" as any, { table_name: "social_link_items", field_name: "click_count", row_id: itemId });

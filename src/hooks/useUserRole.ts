@@ -1,9 +1,8 @@
-import { CACHE } from "@/lib/queryConfig";
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
-import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
+import { CACHE } from "@/lib/queryConfig";
 
 type AppRole = Database["public"]["Enums"]["app_role"];
 
@@ -20,7 +19,7 @@ export function useUserRoles() {
         .select("role")
         .eq("user_id", user.id);
       
-      if (error) throw handleSupabaseError(error);
+      if (error) throw error;
       return data?.map(r => r.role) || [];
     },
     enabled: !!user?.id,
@@ -28,19 +27,19 @@ export function useUserRoles() {
   });
 }
 
-function useHasRole(role: AppRole) {
+export function useHasRole(role: AppRole) {
   const { data: roles = [] } = useUserRoles();
   return roles.includes(role);
 }
 
-function useIsJudge() {
+export function useIsJudge() {
   return useHasRole("judge");
 }
 
-function useIsOrganizer() {
+export function useIsOrganizer() {
   const { data: roles = [] } = useUserRoles();
   return roles.includes("organizer") || roles.includes("supervisor");
 }
 
 // Re-export permission hooks for convenience
-;
+export { useHasPermission, useUserPermissions } from "./usePermissions";

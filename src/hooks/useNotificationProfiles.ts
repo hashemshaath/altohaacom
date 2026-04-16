@@ -34,18 +34,18 @@ export function useNotificationProfiles(notifications: Array<{ metadata?: unknow
 
     if (userIds.size === 0) return;
 
+    // Only fetch ones we haven't fetched before
     const missing = Array.from(userIds).filter((id) => !fetchedRef.current.has(id));
     if (missing.length === 0) return;
 
+    // Mark as fetched immediately to avoid duplicate requests
     missing.forEach((id) => fetchedRef.current.add(id));
 
-    const fetchProfiles = async () => {
-      try {
-        const { data } = await supabase
-          .from("profiles")
-          .select("user_id, full_name, username, avatar_url")
-          .in("user_id", missing);
-
+    supabase
+      .from("profiles")
+      .select("user_id, full_name, username, avatar_url")
+      .in("user_id", missing)
+      .then(({ data }) => {
         if (cancelled) return;
         if (data?.length) {
           setProfiles((prev) => {
@@ -54,12 +54,10 @@ export function useNotificationProfiles(notifications: Array<{ metadata?: unknow
             return next;
           });
         }
-      } catch {
+      }, () => {
+        // Remove from fetched so retry is possible
         missing.forEach((id) => fetchedRef.current.delete(id));
-      }
-    };
-
-    fetchProfiles();
+      });
 
     return () => { cancelled = true; };
   }, [notifications]);

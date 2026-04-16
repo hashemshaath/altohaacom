@@ -1,8 +1,7 @@
-import { CACHE } from "@/lib/queryConfig";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
-import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
+import { CACHE } from "@/lib/queryConfig";
 
 export interface Recipe {
   id: string;
@@ -106,7 +105,7 @@ export function useRecipesData(): UseRecipesDataReturn {
         servings: input.servings ? parseInt(input.servings) : null,
         ingredients, steps,
       });
-      if (error) throw handleSupabaseError(error);
+      if (error) throw error;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["community-recipes"] });

@@ -1,4 +1,3 @@
-import { CACHE } from "@/lib/queryConfig";
 import { useState, useEffect, useRef } from "react";
 import { useVisibleRefetchInterval } from "@/hooks/useVisibleRefetchInterval";
 import { useSearchParams } from "react-router-dom";
@@ -10,14 +9,8 @@ import { useRealtimeMessages } from "@/hooks/useRealtimeMessages";
 import { usePresence } from "@/hooks/usePresence";
 import { useToast } from "@/hooks/use-toast";
 import { uploadMessageAttachment } from "@/utils/storageUtils";
+import { CACHE } from "@/lib/queryConfig";
 import { REFETCH_INTERVAL_FAST } from "@/lib/constants";
-import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
-
-export interface MessageMetadata {
-  reactions?: Record<string, string[]>;
-  location?: { lat: number; lng: number; label: string };
-  [key: string]: unknown;
-}
 
 export interface Message {
   id: string;
@@ -33,9 +26,8 @@ export interface Message {
   category: string;
   is_starred: boolean;
   is_archived: boolean;
-  is_pinned: boolean;
   reply_to_id: string | null;
-  metadata: MessageMetadata;
+  metadata: Record<string, any>;
 }
 
 export interface ConversationPartner {
@@ -56,15 +48,15 @@ export interface ConversationPartner {
 
 export type MessageFilter = "all" | "unread" | "starred" | "approval" | "archived";
 
-const MAX_FILE_SIZE = 20 * 1024 * 1024;
-const ALLOWED_TYPES = {
+export const MAX_FILE_SIZE = 20 * 1024 * 1024;
+export const ALLOWED_TYPES = {
   image: ["image/jpeg", "image/png", "image/gif", "image/webp", "image/svg+xml"],
   audio: ["audio/mpeg", "audio/wav", "audio/ogg", "audio/mp4"],
   video: ["video/mp4", "video/webm", "video/quicktime"],
   file: ["application/pdf", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "text/plain", "application/zip"],
 };
 
-function getMessageTypeFromMime(mime: string): string {
+export function getMessageTypeFromMime(mime: string): string {
   if (ALLOWED_TYPES.image.includes(mime)) return "image";
   if (ALLOWED_TYPES.audio.includes(mime)) return "audio";
   if (ALLOWED_TYPES.video.includes(mime)) return "video";
@@ -236,7 +228,7 @@ export function useMessagesData() {
         })
         .select()
         .single();
-      if (error) throw handleSupabaseError(error);
+      if (error) throw error;
 
       try {
         await supabase.from("notifications").insert([{
@@ -264,7 +256,7 @@ export function useMessagesData() {
   const toggleStarMutation = useMutation({
     mutationFn: async ({ msgId, starred }: { msgId: string; starred: boolean }) => {
       const { error } = await supabase.from("messages").update({ is_starred: starred }).eq("id", msgId);
-      if (error) throw handleSupabaseError(error);
+      if (error) throw error;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["messages"] });
@@ -275,7 +267,7 @@ export function useMessagesData() {
   const archiveMutation = useMutation({
     mutationFn: async (msgId: string) => {
       const { error } = await supabase.from("messages").update({ is_archived: true }).eq("id", msgId);
-      if (error) throw handleSupabaseError(error);
+      if (error) throw error;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["messages"] });
@@ -291,15 +283,14 @@ export function useMessagesData() {
     if (existing) {
       setSelectedPartner(existing);
     } else {
-      const fetchPartner = async () => {
-        const { data } = await supabase
-          .from("profiles")
-          .select("user_id, username, full_name, full_name_ar, display_name, display_name_ar, avatar_url")
-          .eq("user_id", initialUserId)
-          .single();
-        if (!cancelled && data) setSelectedPartner({ ...data, unread_count: 0, has_approval: false, is_starred: false });
-      };
-      fetchPartner();
+      supabase
+        .from("profiles")
+        .select("user_id, username, full_name, full_name_ar, display_name, display_name_ar, avatar_url")
+        .eq("user_id", initialUserId)
+        .single()
+        .then(({ data }) => {
+          if (!cancelled && data) setSelectedPartner({ ...data, unread_count: 0, has_approval: false, is_starred: false });
+        });
     }
     return () => { cancelled = true; };
   }, [initialUserId, conversations, selectedPartner]);
@@ -389,7 +380,7 @@ export function useMessagesData() {
     if (categoryFilter === "unread") return c.unread_count > 0;
     if (categoryFilter === "starred") return c.is_starred;
     if (categoryFilter === "approval") return c.has_approval;
-    if (categoryFilter === "archived") return ('is_archived' in c && c.is_archived);
+    if (categoryFilter === "archived") return (c as any).is_archived;
     return true;
   });
 
@@ -398,7 +389,7 @@ export function useMessagesData() {
     unread: conversations?.filter((c) => c.unread_count > 0).length || 0,
     starred: conversations?.filter((c) => c.is_starred).length || 0,
     approval: conversations?.filter((c) => c.has_approval).length || 0,
-    archived: conversations?.filter((c) => ('is_archived' in c && c.is_archived)).length || 0,
+    archived: conversations?.filter((c) => (c as any).is_archived).length || 0,
   };
 
   return {

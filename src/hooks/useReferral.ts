@@ -1,9 +1,8 @@
-import { CACHE } from "@/lib/queryConfig";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
-import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
+import { CACHE } from "@/lib/queryConfig";
 
 export function useReferralCode() {
   const { user } = useAuth();
@@ -17,7 +16,7 @@ export function useReferralCode() {
         .select("id, code, user_id, is_active, total_clicks, total_invites_sent, total_conversions, total_points_earned, custom_slug, created_at, updated_at")
         .eq("user_id", user.id)
         .maybeSingle();
-      if (error) throw handleSupabaseError(error);
+      if (error) throw error;
       // Auto-create if missing — use DB function for guaranteed uniqueness
       if (!data) {
         const { data: generated } = await supabase.rpc("generate_referral_code");
@@ -83,7 +82,7 @@ export function useReferralInvitations() {
         .eq("referrer_id", user.id)
         .order("created_at", { ascending: false })
         .limit(50);
-      if (error) throw handleSupabaseError(error);
+      if (error) throw error;
       return data || [];
     },
     enabled: !!user,
@@ -109,7 +108,7 @@ export function useSendInvitation() {
         platform: channel,
         status: "sent",
       });
-      if (error) throw handleSupabaseError(error);
+      if (error) throw error;
 
       // Send email if email channel with a recipient address
       if (email && (channel === "email")) {
@@ -162,7 +161,7 @@ export function useReferralMilestones() {
         .select("id, name, name_ar, description, description_ar, required_referrals, reward_type, reward_value, reward_description, reward_description_ar, badge_icon, sort_order, is_active")
         .eq("is_active", true)
         .order("sort_order");
-      if (error) throw handleSupabaseError(error);
+      if (error) throw error;
       return data || [];
     },
   });
@@ -179,7 +178,7 @@ export function useUserMilestones() {
         .from("user_milestone_achievements")
         .select("id, user_id, milestone_id, achieved_at, reward_claimed, reward_claimed_at")
         .eq("user_id", user.id);
-      if (error) throw handleSupabaseError(error);
+      if (error) throw error;
       return data || [];
     },
     enabled: !!user,

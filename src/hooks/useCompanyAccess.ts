@@ -1,8 +1,7 @@
-import { CACHE } from "@/lib/queryConfig";
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
-import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
+import { CACHE } from "@/lib/queryConfig";
 
 export function useCompanyAccess() {
   const { user } = useAuth();
@@ -40,7 +39,7 @@ export function useCompanyProfile(companyId: string | null) {
         .eq("id", companyId)
         .maybeSingle();
 
-      if (error) throw handleSupabaseError(error);
+      if (error) throw error;
       return data;
     },
     enabled: !!companyId,

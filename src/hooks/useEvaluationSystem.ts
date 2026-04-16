@@ -1,7 +1,6 @@
-import { CACHE } from "@/lib/queryConfig";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
+import { CACHE } from "@/lib/queryConfig";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const untypedFrom = (table: string) => supabase.from(table as any) as any;
@@ -101,13 +100,13 @@ export function useEvaluationDomains() {
         .select("id, name, name_ar, slug, description, description_ar, icon, is_active, sort_order, created_at")
         .eq("is_active", true)
         .order("sort_order");
-      if (error) throw handleSupabaseError(error);
+      if (error) throw error;
       return (data || []) as unknown as EvaluationDomain[];
     },
   });
 }
 
-function useEvaluationCriteriaCategories(domainId?: string, productCategory?: string) {
+export function useEvaluationCriteriaCategories(domainId?: string, productCategory?: string) {
   return useQuery({
     queryKey: ["evaluation-criteria-categories", domainId, productCategory],
     queryFn: async () => {
@@ -118,7 +117,7 @@ function useEvaluationCriteriaCategories(domainId?: string, productCategory?: st
       if (domainId) query = query.eq("domain_id", domainId);
       if (productCategory) query = query.or(`product_category.eq.${productCategory},product_category.is.null`);
       const { data, error } = await query;
-      if (error) throw handleSupabaseError(error);
+      if (error) throw error;
       return (data || []) as unknown as EvaluationCriteriaCategory[];
     },
     enabled: !!domainId,
@@ -126,7 +125,7 @@ function useEvaluationCriteriaCategories(domainId?: string, productCategory?: st
   });
 }
 
-function useEvaluationCriteria(categoryId?: string) {
+export function useEvaluationCriteria(categoryId?: string) {
   return useQuery({
     queryKey: ["evaluation-criteria", categoryId],
     queryFn: async () => {
@@ -136,7 +135,7 @@ function useEvaluationCriteria(categoryId?: string) {
         .order("sort_order");
       if (categoryId) query = query.eq("category_id", categoryId);
       const { data, error } = await query;
-      if (error) throw handleSupabaseError(error);
+      if (error) throw error;
       return (data || []) as unknown as EvaluationCriterion[];
     },
   });
@@ -184,7 +183,7 @@ export function useEvaluationCriteriaByDomain(domainSlug: string, productCategor
   });
 }
 
-function useEvaluationScores(entityId?: string, domainSlug?: string) {
+export function useEvaluationScores(entityId?: string, domainSlug?: string) {
   return useQuery({
     queryKey: ["evaluation-scores", entityId, domainSlug],
     queryFn: async () => {
@@ -193,14 +192,14 @@ function useEvaluationScores(entityId?: string, domainSlug?: string) {
         .eq("entity_id", entityId!);
       if (domainSlug) query = query.eq("domain_slug", domainSlug);
       const { data, error } = await query;
-      if (error) throw handleSupabaseError(error);
+      if (error) throw error;
       return (data || []) as unknown as EvaluationScore[];
     },
     enabled: !!entityId,
   });
 }
 
-function useEvaluationReports(domainSlug?: string) {
+export function useEvaluationReports(domainSlug?: string) {
   return useQuery({
     queryKey: ["evaluation-reports", domainSlug],
     queryFn: async () => {
@@ -209,7 +208,7 @@ function useEvaluationReports(domainSlug?: string) {
         .order("created_at", { ascending: false });
       if (domainSlug) query = query.eq("domain_slug", domainSlug);
       const { data, error } = await query;
-      if (error) throw handleSupabaseError(error);
+      if (error) throw error;
       return (data || []) as unknown as EvaluationReport[];
     },
   });
@@ -225,7 +224,7 @@ export function useUpsertEvaluationScore() {
         .upsert(score as Record<string, unknown>, { onConflict: "entity_id,evaluator_id,subject_id,criterion_id" })
         .select()
         .single();
-      if (error) throw handleSupabaseError(error);
+      if (error) throw error;
       return data as unknown as EvaluationScore;
     },
     onSuccess: (_, vars) => {
@@ -242,7 +241,7 @@ export function useCreateCriterion() {
         .insert(criterion as Record<string, unknown>)
         .select()
         .single();
-      if (error) throw handleSupabaseError(error);
+      if (error) throw error;
       return data as unknown as EvaluationCriterion;
     },
     onSuccess: () => {
@@ -261,7 +260,7 @@ export function useUpdateCriterion() {
         .eq("id", id)
         .select()
         .single();
-      if (error) throw handleSupabaseError(error);
+      if (error) throw error;
       return data as unknown as EvaluationCriterion;
     },
     onSuccess: () => {
@@ -278,7 +277,7 @@ export function useDeleteCriterion() {
       const { error } = await untypedFrom("evaluation_criteria")
         .update({ is_active: false } as Record<string, unknown>)
         .eq("id", id);
-      if (error) throw handleSupabaseError(error);
+      if (error) throw error;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["evaluation-criteria"] });
@@ -295,7 +294,7 @@ export function useCreateCriteriaCategory() {
         .insert(category as Record<string, unknown>)
         .select()
         .single();
-      if (error) throw handleSupabaseError(error);
+      if (error) throw error;
       return data as unknown as EvaluationCriteriaCategory;
     },
     onSuccess: () => {

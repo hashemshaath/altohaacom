@@ -1,10 +1,9 @@
-import { CACHE } from "@/lib/queryConfig";
 import { useCallback } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
-import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
+import { CACHE } from "@/lib/queryConfig";
 
 export function useOrganizerFollows() {
   const { user } = useAuth();
@@ -17,7 +16,7 @@ export function useOrganizerFollows() {
         .from("organizer_follows")
         .select("organizer_id")
         .eq("user_id", user.id);
-      if (error) throw handleSupabaseError(error);
+      if (error) throw error;
       return data.map(r => r.organizer_id);
     },
     enabled: !!user?.id,
@@ -32,7 +31,7 @@ export function useOrganizerFollows() {
       const { error } = await supabase
         .from("organizer_follows")
         .insert({ user_id: user.id, organizer_id: organizerId });
-      if (error) throw handleSupabaseError(error);
+      if (error) throw error;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["organizer-follows"] });
@@ -47,7 +46,7 @@ export function useOrganizerFollows() {
         .delete()
         .eq("user_id", user.id)
         .eq("organizer_id", organizerId);
-      if (error) throw handleSupabaseError(error);
+      if (error) throw error;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["organizer-follows"] });

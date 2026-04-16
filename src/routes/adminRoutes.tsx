@@ -47,6 +47,7 @@ const MarketingAutomationAdmin = lazy(() => import("@/pages/admin/MarketingAutom
 const CostCenterAdmin = lazy(() => import("@/pages/admin/CostCenterAdmin"));
 const ChefScheduleAdmin = lazy(() => import("@/pages/admin/ChefScheduleAdmin"));
 const GlobalEventsAdmin = lazy(() => import("@/pages/admin/GlobalEventsAdmin"));
+const JudgesAdmin = lazy(() => import("@/pages/admin/JudgesAdmin"));
 const SmartImportAdmin = lazy(() => import("@/pages/admin/SmartImportAdmin"));
 const LoyaltyAdmin = lazy(() => import("@/pages/admin/LoyaltyAdmin"));
 const SecurityAdmin = lazy(() => import("@/pages/admin/SecurityAdmin"));
@@ -97,6 +98,7 @@ export const adminRoutes = (
     <Route path="global-events" element={<GlobalEventsAdmin />} />
     <Route path="chefs-table" element={<ChefsTableAdmin />} />
     <Route path="chef-schedule" element={<ChefScheduleAdmin />} />
+    <Route path="judges" element={<JudgesAdmin />} />
 
     {/* Content & Media */}
     <Route path="articles" element={<ArticlesAdmin />} />
