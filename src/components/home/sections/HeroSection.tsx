@@ -9,7 +9,7 @@ import { CACHE } from "@/lib/queryConfig";
 import chefsTableHero from "@/assets/chefs-table-hero.jpg";
 import entitiesHero from "@/assets/entities-hero.jpg";
 import jobsHero from "@/assets/jobs-hero.jpg";
-import { SearchBarLazy as SearchBar } from "@/components/features/SearchBarLazy";
+
 
 /* ─── Config ─── */
 const AUTOPLAY_MS = 5000;
@@ -229,11 +229,6 @@ export function HeroSection() {
                     {secondaryLabel}
                   </Link>
                 </div>
-                {isActive && (
-                  <div className="hero-slide__search">
-                    <SearchBar />
-                  </div>
-                )}
               </div>
             </div>
           </div>
