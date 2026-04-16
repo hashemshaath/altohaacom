@@ -162,12 +162,12 @@ export const HomeMasterclasses = memo(forwardRef<HTMLElement>(function HomeMaste
 
             return (
               <Link key={mc.id} to={ROUTES.masterclass(mc.id)} className="group block snap-start shrink-0 w-[64vw] sm:w-[40vw] md:w-[30vw] lg:w-[22vw] xl:w-[18vw] touch-manipulation">
-                <Card className="h-full overflow-hidden border-border/40 rounded-2xl transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5 hover:border-primary/20 active:scale-[0.98]">
-                  <div className="relative aspect-[16/10] overflow-hidden bg-muted">
+                <Card className="card-flex overflow-hidden border-border/40 rounded-2xl transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5 hover:border-primary/20 active:scale-[0.98]">
+                  <div className="card-image-wrap" style={{ aspectRatio: "16 / 10" }}>
                     {mc.cover_image_url ? (
-                      <SafeImage src={mc.cover_image_url} alt={title} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                      <SafeImage src={mc.cover_image_url} alt={title} width={400} height={250} className="card-image transition-transform duration-500 group-hover:scale-105" />
                     ) : (
-                      <div className="flex h-full items-center justify-center bg-gradient-to-br from-primary/10 to-accent/5">
+                      <div className="card-image flex items-center justify-center bg-gradient-to-br from-primary/10 to-accent/5">
                         <GraduationCap className="h-10 w-10 text-primary/30" />
                       </div>
                     )}
@@ -191,15 +191,15 @@ export const HomeMasterclasses = memo(forwardRef<HTMLElement>(function HomeMaste
                       </div>
                     )}
                   </div>
-                  <CardContent className="p-3">
+                  <CardContent className="card-body-grow flex flex-col p-3">
                     <div className="mb-1.5">
                       {mc.category && <Badge variant="outline" className="text-xs mb-1">{(() => {
                         const cl = MC_CAT_LABELS[mc.category.toLowerCase()];
                         return cl ? (isAr ? cl.ar : cl.en) : mc.category;
                       })()}</Badge>}
-                      <h3 className="line-clamp-2 typo-card-title text-foreground group-hover:text-primary transition-colors leading-snug">{title}</h3>
+                      <h3 className="clamp-2 typo-card-title text-foreground group-hover:text-primary transition-colors leading-snug">{title}</h3>
                     </div>
-                    <div className="flex items-center gap-3 typo-card-meta text-muted-foreground">
+                    <div className="card-cta-bottom flex items-center gap-3 typo-card-meta text-muted-foreground">
                       {mc.duration_hours && (
                         <span className="flex items-center gap-1">
                           <Clock className="h-3 w-3 text-primary/50" />
