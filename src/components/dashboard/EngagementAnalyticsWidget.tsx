@@ -31,7 +31,7 @@ export const EngagementAnalyticsWidget = memo(function EngagementAnalyticsWidget
   const { user } = useAuth();
   const isAr = useIsAr();
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading , isError } = useQuery({
     queryKey: ["engagement-analytics", user?.id],
     queryFn: async () => {
       if (!user) return null;

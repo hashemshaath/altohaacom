@@ -34,7 +34,7 @@ export const GlobalSearchWidget = memo(function GlobalSearchWidget() {
 
   const debouncedQuery = useDebounce(query, 300);
 
-  const { data: results = [], isFetching } = useQuery({
+  const { data: results = [], isFetching , isError , isLoading } = useQuery({
     queryKey: ["global-search", debouncedQuery],
     queryFn: async () => {
       if (!debouncedQuery || debouncedQuery.length < 2) return [];

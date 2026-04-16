@@ -16,7 +16,7 @@ export const AchievementsChallengesWidget = memo(function AchievementsChallenges
   const { user } = useAuth();
   const isAr = useIsAr();
 
-  const { data } = useQuery({
+  const { data , isError , isLoading } = useQuery({
     queryKey: ["dashboard-challenges-widget", user?.id],
     queryFn: async () => {
       if (!user?.id) return null;

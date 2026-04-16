@@ -15,7 +15,7 @@ export const FanSuggestedFollowsWidget = memo(function FanSuggestedFollowsWidget
   const isAr = useIsAr();
   const [followingIds, setFollowingIds] = useState<Set<string>>(new Set());
 
-  const { data: suggestions = [] } = useQuery({
+  const { data: suggestions = [] , isError , isLoading } = useQuery({
     queryKey: ["fan-suggested-follows", user?.id],
     queryFn: async () => {
       if (!user) return [];

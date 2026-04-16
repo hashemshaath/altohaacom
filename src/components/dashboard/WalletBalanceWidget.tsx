@@ -16,7 +16,7 @@ export const WalletBalanceWidget = memo(function WalletBalanceWidget() {
   const { user } = useAuth();
   const isAr = useIsAr();
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading , isError } = useQuery({
     queryKey: ["wallet-balance-widget", user?.id],
     queryFn: async () => {
       if (!user) return null;

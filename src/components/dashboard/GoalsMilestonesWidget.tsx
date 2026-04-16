@@ -22,7 +22,7 @@ export const GoalsMilestonesWidget = memo(function GoalsMilestonesWidget() {
   const { user } = useAuth();
   const isAr = useIsAr();
 
-  const { data: milestones } = useQuery({
+  const { data: milestones , isError , isLoading } = useQuery({
     queryKey: ["goals-milestones", user?.id],
     queryFn: async () => {
       if (!user) return null;

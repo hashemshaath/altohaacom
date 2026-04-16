@@ -17,7 +17,7 @@ export const JobAvailabilityWidget = memo(function JobAvailabilityWidget() {
   const { toast } = useToast();
   const qc = useQueryClient();
 
-  const { data: profile } = useQuery({
+  const { data: profile , isError , isLoading } = useQuery({
     queryKey: ["job-availability-widget", user?.id],
     queryFn: async () => {
       const { data } = await supabase

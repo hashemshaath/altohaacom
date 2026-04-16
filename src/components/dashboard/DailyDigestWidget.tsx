@@ -15,7 +15,7 @@ export const DailyDigestWidget = memo(function DailyDigestWidget() {
   const { user } = useAuth();
   const isAr = useIsAr();
 
-  const { data: digest, isLoading } = useQuery({
+  const { data: digest, isLoading , isError } = useQuery({
     queryKey: ["daily-digest", user?.id],
     queryFn: async () => {
       if (!user) return null;

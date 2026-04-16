@@ -28,7 +28,7 @@ export const QuickActionsWidget = memo(function QuickActionsWidget() {
   const { user } = useAuth();
   const isAr = useIsAr();
 
-  const { data: pending } = useQuery({
+  const { data: pending , isError , isLoading } = useQuery({
     queryKey: ["quick-actions-pending", user?.id],
     queryFn: async () => {
       if (!user) return { unreadMessages: 0, pendingRegs: 0, newPosts: 0 };

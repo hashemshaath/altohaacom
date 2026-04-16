@@ -23,7 +23,7 @@ export const ActivityHeatmapWidget = memo(function ActivityHeatmapWidget() {
   const { user } = useAuth();
   const isAr = useIsAr();
 
-  const { data } = useQuery({
+  const { data , isError , isLoading } = useQuery({
     queryKey: ["activity-heatmap", user?.id],
     queryFn: async () => {
       if (!user) return null;

@@ -17,7 +17,7 @@ export const ProgressReportWidget = memo(function ProgressReportWidget() {
   const isAr = useIsAr();
   const { data: pointsBalance } = usePointsBalance();
 
-  const { data } = useQuery({
+  const { data , isError , isLoading } = useQuery({
     queryKey: ["progress-report", user?.id],
     queryFn: async () => {
       if (!user) return null;

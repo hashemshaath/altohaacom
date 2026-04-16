@@ -42,7 +42,7 @@ export const QuickStatsWidget = memo(function QuickStatsWidget() {
   const isAr = useIsAr();
   const { isProfessional } = useAccountType();
 
-  const { data: stats, isLoading } = useQuery({
+  const { data: stats, isLoading , isError } = useQuery({
     queryKey: ["user-quick-stats-v2", user?.id],
     queryFn: async () => {
       if (!user) return null;

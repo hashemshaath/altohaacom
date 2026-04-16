@@ -12,7 +12,7 @@ import { CACHE } from "@/lib/queryConfig";
 export const FanTrendingWidget = memo(function FanTrendingWidget() {
   const isAr = useIsAr();
 
-  const { data: trendingPosts = [] } = useQuery({
+  const { data: trendingPosts = [] , isError , isLoading } = useQuery({
     queryKey: ["fan-trending-posts"],
     queryFn: async () => {
       const { data } = await supabase
