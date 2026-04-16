@@ -17,7 +17,7 @@
 import { useState, useEffect, useRef, useCallback, useMemo, memo } from "react";
 import { createPortal } from "react-dom";
 import { useNavigate } from "react-router-dom";
-import { Search, X, Clock, TrendingUp, Loader2, FileQuestion } from "lucide-react";
+import { Search, X, Clock, TrendingUp, Loader2, FileQuestion, WifiOff, RefreshCw } from "lucide-react";
 import { useIsAr } from "@/hooks/useIsAr";
 import { useGlobalSearch } from "@/hooks/useGlobalSearch";
 import { fetchTrendingTags } from "@/services/searchService";
