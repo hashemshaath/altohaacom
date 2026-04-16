@@ -81,7 +81,7 @@ const CompetitionsSection = memo(forwardRef<HTMLElement>(function CompetitionsSe
 
   const isLoading = loadingComps || loadingExhibs;
 
-  if (isError) return null;
+  if (errorComps || errorExhibs) return null;
 
   if (!isLoading && allEvents.length === 0) return null;
 
