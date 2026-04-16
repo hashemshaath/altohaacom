@@ -26,7 +26,6 @@ export const DesktopNav = forwardRef<HTMLElement, DesktopNavProps>(function Desk
     location.pathname === path || (path !== "/" && location.pathname.startsWith(path + "/"));
   const label = (en: string, ar: string) => (isAr ? ar : en);
 
-  // Split moreLinks into 3 columns for mega dropdown
   const colSize = Math.ceil(moreLinks.length / 3);
   const col1 = moreLinks.slice(0, colSize);
   const col2 = moreLinks.slice(colSize, colSize * 2);
@@ -34,7 +33,6 @@ export const DesktopNav = forwardRef<HTMLElement, DesktopNavProps>(function Desk
 
   const anyMoreActive = moreLinks.some((l) => isActive(l.to));
 
-  // Hover-triggered mega dropdown
   const [megaOpen, setMegaOpen] = useState(false);
   const closeTimer = useRef<ReturnType<typeof setTimeout>>();
 
@@ -61,11 +59,20 @@ export const DesktopNav = forwardRef<HTMLElement, DesktopNavProps>(function Desk
             key={link.to}
             to={link.to}
             className={cn(
-              "relative text-[14px] font-medium transition-colors duration-150 whitespace-nowrap",
-              active
-                ? "text-[var(--color-primary)] font-semibold"
-                : "text-[var(--color-body)] hover:text-[var(--color-primary)]"
+              "relative py-[20px] text-[0.9375rem] font-medium transition-colors duration-150 whitespace-nowrap",
+              active ? "font-semibold" : ""
             )}
+            style={{
+              color: active ? "#1C1C1A" : "#6B6560",
+              borderBottom: active ? "2px solid #C05B2E" : "2px solid transparent",
+              marginBottom: "-1px",
+            }}
+            onMouseEnter={(e) => {
+              if (!active) e.currentTarget.style.color = "#1C1C1A";
+            }}
+            onMouseLeave={(e) => {
+              if (!active) e.currentTarget.style.color = "#6B6560";
+            }}
           >
             {label(link.labelEn, link.labelAr)}
           </Link>
@@ -73,19 +80,33 @@ export const DesktopNav = forwardRef<HTMLElement, DesktopNavProps>(function Desk
       })}
 
       {/* Chef's Table */}
-      <Link
-        to="/chefs-table"
-        className={cn(
-          "relative text-[14px] font-medium transition-colors duration-150 whitespace-nowrap",
-          isActive("/chefs-table")
-            ? "text-[var(--color-primary)] font-semibold"
-            : "text-[var(--color-body)] hover:text-[var(--color-primary)]"
-        )}
-      >
-        {label("Chef's Table", "طاولة الشيف")}
-      </Link>
+      {(() => {
+        const active = isActive("/chefs-table");
+        return (
+          <Link
+            to="/chefs-table"
+            className={cn(
+              "relative py-[20px] text-[0.9375rem] font-medium transition-colors duration-150 whitespace-nowrap",
+              active ? "font-semibold" : ""
+            )}
+            style={{
+              color: active ? "#1C1C1A" : "#6B6560",
+              borderBottom: active ? "2px solid #C05B2E" : "2px solid transparent",
+              marginBottom: "-1px",
+            }}
+            onMouseEnter={(e) => {
+              if (!active) e.currentTarget.style.color = "#1C1C1A";
+            }}
+            onMouseLeave={(e) => {
+              if (!active) e.currentTarget.style.color = "#6B6560";
+            }}
+          >
+            {label("Chef's Table", "طاولة الشيف")}
+          </Link>
+        );
+      })()}
 
-      {/* Explore with mega dropdown */}
+      {/* Explore mega dropdown */}
       <div
         className="relative"
         onMouseEnter={openMega}
@@ -93,11 +114,14 @@ export const DesktopNav = forwardRef<HTMLElement, DesktopNavProps>(function Desk
       >
         <button
           className={cn(
-            "flex items-center gap-1.5 text-[14px] font-medium transition-colors duration-150 whitespace-nowrap",
-            anyMoreActive || megaOpen
-              ? "text-[var(--color-primary)]"
-              : "text-[var(--color-body)] hover:text-[var(--color-primary)]"
+            "flex items-center gap-1.5 py-[20px] text-[0.9375rem] font-medium transition-colors duration-150 whitespace-nowrap",
+            (anyMoreActive || megaOpen) ? "font-semibold" : ""
           )}
+          style={{
+            color: (anyMoreActive || megaOpen) ? "#1C1C1A" : "#6B6560",
+            borderBottom: anyMoreActive ? "2px solid #C05B2E" : "2px solid transparent",
+            marginBottom: "-1px",
+          }}
           aria-expanded={megaOpen}
           aria-haspopup="true"
         >
@@ -124,12 +148,17 @@ export const DesktopNav = forwardRef<HTMLElement, DesktopNavProps>(function Desk
           onMouseLeave={closeMega}
         >
           <div
-            className="w-[680px] rounded-b-[16px] border border-[var(--color-border-light)] border-t-0 bg-[var(--bg-background)] p-6"
+            className="w-[680px] rounded-xl p-6"
             style={{
-              boxShadow: "0 8px 32px rgba(0,0,0,0.10)",
+              background: "#FEFCF8",
+              border: "1px solid rgba(28,28,26,0.1)",
+              boxShadow: "0 8px 32px rgba(28,28,26,0.12)",
             }}
           >
-            <p className="text-xs font-semibold uppercase tracking-[0.08em] text-[var(--color-subtle)] mb-4">
+            <p
+              className="text-label font-semibold uppercase tracking-[0.08em] mb-4"
+              style={{ color: "#9E9890" }}
+            >
               {label("Explore the Platform", "اكتشف المنصة")}
             </p>
             <div className="grid grid-cols-3 gap-x-3 gap-y-1">
@@ -142,35 +171,32 @@ export const DesktopNav = forwardRef<HTMLElement, DesktopNavProps>(function Desk
                       <Link
                         key={link.to}
                         to={link.to}
-                        className={cn(
-                          "flex items-center gap-3 rounded-[var(--radius-sm)] px-3 py-2.5 transition-all duration-150 group/item",
-                          active
-                            ? "bg-[var(--bg-purple-wash)]"
-                            : "hover:bg-[var(--bg-surface)]"
-                        )}
+                        className="flex items-center gap-3 rounded-lg px-3 py-2.5 transition-all duration-150 group/item"
+                        style={{
+                          background: active ? "rgba(192,91,46,0.06)" : "transparent",
+                        }}
+                        onMouseEnter={(e) => {
+                          if (!active) e.currentTarget.style.background = "#F5F0E8";
+                        }}
+                        onMouseLeave={(e) => {
+                          if (!active) e.currentTarget.style.background = "transparent";
+                        }}
                       >
                         <div
-                          className={cn(
-                            "flex h-10 w-10 shrink-0 items-center justify-center rounded-full transition-colors",
-                            active
-                              ? "bg-[var(--color-primary-light)] text-[var(--color-primary)]"
-                              : "bg-[var(--bg-purple-wash)] text-[var(--color-muted)] group-hover/item:text-[var(--color-primary)]"
-                          )}
+                          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg transition-colors"
+                          style={{
+                            background: active ? "rgba(192,91,46,0.1)" : "#F5F0E8",
+                            color: active ? "#C05B2E" : "#9E9890",
+                          }}
                         >
-                          <Icon className="h-[18px] w-[18px]" />
+                          <Icon className="h-[16px] w-[16px]" />
                         </div>
-                        <div className="min-w-0">
-                          <span
-                            className={cn(
-                              "block text-[14px] font-semibold transition-colors",
-                              active
-                                ? "text-[var(--color-primary)]"
-                                : "text-[var(--color-heading)] group-hover/item:text-[var(--color-primary)]"
-                            )}
-                          >
-                            {label(link.labelEn, link.labelAr)}
-                          </span>
-                        </div>
+                        <span
+                          className="text-[0.875rem] font-medium transition-colors"
+                          style={{ color: active ? "#C05B2E" : "#1C1C1A" }}
+                        >
+                          {label(link.labelEn, link.labelAr)}
+                        </span>
                       </Link>
                     );
                   })}
