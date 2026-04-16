@@ -310,7 +310,7 @@ export function HeroSection() {
                 className={cn(!isFirstRender && "animate-[heroFadeUp_0.7s_ease-out_forwards]")}
               >
                 <h1
-                  className="text-[2rem] lg:text-[3rem] font-bold leading-[1.15] tracking-[-0.02em]"
+                  className="text-[1.75rem] sm:text-[2rem] lg:text-[2.75rem] xl:text-[3.25rem] font-bold leading-[1.12] tracking-[-0.025em]"
                   style={{ color: "#1C1C1A" }}
                 >
                   {isAr ? slide.title_ar || slide.title : slide.title}
@@ -332,7 +332,7 @@ export function HeroSection() {
               )}
 
               {/* CTA Buttons */}
-              <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start pt-2">
+              <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start pt-1">
                 {slide.link_url && (
                   <Link
                     to={slide.link_url}
@@ -366,7 +366,7 @@ export function HeroSection() {
               </div>
 
               {/* Trust Stats */}
-              <div className="pt-4">
+              <div className="pt-2">
                 <TrustStats isAr={isAr} />
               </div>
             </div>
