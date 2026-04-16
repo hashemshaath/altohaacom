@@ -249,6 +249,8 @@ export function useGlobalSearch() {
     results: displayResults,
     totalResults,
     isLoading,
+    error: error as Error | null,
+    refetch,
     preloadPopular,
   };
 }
