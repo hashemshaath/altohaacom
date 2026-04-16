@@ -3,15 +3,15 @@ import { useLocation, Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNotifications } from "@/hooks/useNotifications";
 import { cn } from "@/lib/utils";
-import { Home, Compass, Users, Bell, User } from "lucide-react";
+import { Home, Compass, Users, Plus, User } from "lucide-react";
 import { memo, useEffect, useRef, useState, useCallback } from "react";
 import { subscribeScroll } from "@/lib/scrollManager";
 
 const navItems = [
   { to: "/", icon: Home, labelEn: "Home", labelAr: "الرئيسية", exact: true },
-  { to: "/competitions", icon: Compass, labelEn: "Explore", labelAr: "اكتشاف" },
-  { to: "/community", icon: Users, labelEn: "Community", labelAr: "مجتمع" },
-  { to: "/notifications", icon: Bell, labelEn: "Alerts", labelAr: "إشعارات", badge: true },
+  { to: "/recipes", icon: Compass, labelEn: "Explore", labelAr: "استكشاف" },
+  { to: "/competitions", icon: null, labelEn: "", labelAr: "", cta: true },
+  { to: "/community", icon: Users, labelEn: "Community", labelAr: "المجتمع" },
   { to: "/profile", icon: User, labelEn: "Account", labelAr: "حسابي", authFallback: "/auth" },
 ];
 
@@ -25,7 +25,6 @@ export const MobileBottomNav = memo(function MobileBottomNav() {
   const [visible, setVisible] = useState(true);
   const prevY = useRef(0);
   const visRef = useRef(true);
-  
 
   useEffect(() => {
     return subscribeScroll((y) => {
@@ -50,29 +49,53 @@ export const MobileBottomNav = memo(function MobileBottomNav() {
   return (
     <nav
       className={cn(
-        "fixed bottom-0 inset-x-0 z-50 md:hidden transition-transform duration-300 will-change-transform",
-        "bg-white/92 dark:bg-[rgba(17,24,39,0.92)]",
-        "border-t border-[rgba(229,231,235,0.8)] dark:border-[rgba(55,65,81,0.8)]",
+        "fixed bottom-0 inset-x-0 z-50 md:hidden transition-transform duration-300 will-change-transform mobile-bottom-nav",
         visible ? "translate-y-0" : "translate-y-full"
       )}
       style={{
-        height: "calc(56px + env(safe-area-inset-bottom, 0px))",
+        height: "calc(64px + env(safe-area-inset-bottom, 0px))",
         paddingBottom: "env(safe-area-inset-bottom, 0px)",
-        backdropFilter: "blur(24px) saturate(180%)",
-        WebkitBackdropFilter: "blur(24px) saturate(180%)",
-        boxShadow: "0 -1px 0 rgba(0,0,0,0.05)",
+        background: "#FEFCF8",
+        borderTop: "1px solid rgba(28,28,26,0.1)",
       }}
       role="navigation"
       aria-label="Mobile navigation"
     >
-      <div className="flex items-stretch h-14" role="menubar">
+      <div className="flex items-stretch h-16" role="menubar">
         {navItems.map((item) => {
           const isActive = item.exact
             ? location.pathname === item.to
             : location.pathname.startsWith(item.to);
-          const Icon = item.icon;
           const href = item.authFallback && !user ? item.authFallback : item.to;
-          const showBadge = item.badge && unreadCount > 0;
+
+          /* ── Center CTA button ── */
+          if (item.cta) {
+            return (
+              <Link
+                key="cta"
+                to={item.to}
+                onClick={vibrate}
+                role="menuitem"
+                aria-label={isAr ? "إجراء رئيسي" : "Main action"}
+                className="relative flex flex-1 items-center justify-center select-none touch-manipulation active:scale-[0.92] -webkit-tap-highlight-color-transparent"
+                style={{ WebkitTapHighlightColor: "transparent" }}
+              >
+                <span
+                  className="flex items-center justify-center rounded-full shadow-md"
+                  style={{
+                    width: 48,
+                    height: 48,
+                    background: "#C05B2E",
+                    marginTop: -12,
+                  }}
+                >
+                  <Plus className="h-6 w-6" style={{ color: "#FEFCF8" }} strokeWidth={2.5} />
+                </span>
+              </Link>
+            );
+          }
+
+          const Icon = item.icon!;
 
           return (
             <Link
@@ -83,56 +106,38 @@ export const MobileBottomNav = memo(function MobileBottomNav() {
               aria-current={isActive ? "page" : undefined}
               aria-label={isAr ? item.labelAr : item.labelEn}
               className={cn(
-                "relative flex flex-1 flex-col items-center justify-center gap-[3px] select-none touch-manipulation",
+                "relative flex flex-1 flex-col items-center justify-center gap-1 select-none touch-manipulation",
                 "transition-all duration-150 ease-out",
                 "active:scale-[0.88]",
                 "-webkit-tap-highlight-color-transparent"
               )}
               style={{ WebkitTapHighlightColor: "transparent" }}
             >
-              {/* Active pill behind icon */}
+              {/* Active dot indicator above icon */}
               {isActive && (
                 <span
-                  className="absolute top-[6px] h-7 w-7 rounded-lg"
-                  style={{ background: "var(--bg-purple-wash)" }}
+                  className="absolute top-1.5 rounded-full"
+                  style={{ width: 4, height: 4, background: "#C05B2E" }}
                   aria-hidden="true"
                 />
               )}
 
-              {/* Icon wrapper */}
-              <span className="relative z-[1] flex items-center justify-center h-[22px] w-[22px]">
+              {/* Icon */}
+              <span className="relative z-[1] flex items-center justify-center" style={{ width: 24, height: 24 }}>
                 <Icon
-                  className="h-[22px] w-[22px] transition-colors duration-150"
-                  style={{ color: isActive ? "var(--color-primary)" : "#9CA3AF" }}
-                  strokeWidth={isActive ? 2.4 : 1.8}
+                  className="transition-colors duration-150"
+                  style={{ color: isActive ? "#C05B2E" : "#9E9890", width: 24, height: 24 }}
+                  strokeWidth={isActive ? 2.2 : 1.8}
                 />
-
-                {/* Notification badge */}
-                {showBadge && (
-                  <span
-                    className="absolute -top-1.5 -end-2 flex items-center justify-center rounded-full text-primary-foreground"
-                    style={{
-                      minWidth: 16,
-                      height: 16,
-                      fontSize: 9,
-                      fontWeight: 700,
-                      background: "var(--color-error)",
-                      border: "2px solid white",
-                      padding: "0 3px",
-                      lineHeight: 1,
-                    }}
-                  >
-                    {unreadCount > 9 ? "9+" : unreadCount}
-                  </span>
-                )}
               </span>
 
               {/* Label */}
               <span
-                className="text-xs leading-none transition-colors duration-150"
+                className="leading-none transition-colors duration-150"
                 style={{
-                  color: isActive ? "var(--color-primary)" : "#9CA3AF",
-                  fontWeight: isActive ? 600 : 500,
+                  fontSize: "0.625rem",
+                  fontWeight: 500,
+                  color: isActive ? "#C05B2E" : "#9E9890",
                 }}
               >
                 {isAr ? item.labelAr : item.labelEn}
