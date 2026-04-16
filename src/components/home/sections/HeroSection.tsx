@@ -280,12 +280,15 @@ export function HeroSection() {
   return (
     <section
       className="relative overflow-hidden"
-      style={{ background: "#F5F0E8" }}
+      style={{ background: "linear-gradient(180deg, #F5F0E8 0%, #EDE7DB 100%)" }}
       dir={isAr ? "rtl" : "ltr"}
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
       {...swipe}
     >
+      {/* Subtle decorative circles */}
+      <div className="absolute -top-32 -start-32 w-96 h-96 rounded-full opacity-[0.07]" style={{ background: "radial-gradient(circle, #C05B2E 0%, transparent 70%)" }} />
+      <div className="absolute -bottom-24 -end-24 w-72 h-72 rounded-full opacity-[0.05]" style={{ background: "radial-gradient(circle, #C05B2E 0%, transparent 70%)" }} />
       <div className="min-h-[520px] lg:min-h-[600px] lg:h-[75vh] max-h-[780px]">
         <div className="container h-full">
           <div className="grid grid-cols-1 lg:grid-cols-[50fr_50fr] gap-6 lg:gap-14 h-full items-center">
