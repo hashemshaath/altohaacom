@@ -50,7 +50,7 @@ export default function EvaluationReport() {
         .select("id, session_date, venue, venue_ar, city, country, organizer_id, domain_slug, product_name, product_name_ar, product_category, brand_name, brand_name_ar, manufacturer, manufacturer_ar, report_token, report_published, status, created_at")
         .eq("report_token", token)
         .eq("report_published", true)
-        .single();
+        .maybeSingle();
       if (error) throw handleSupabaseError(error);
       return data as any;
     },
@@ -83,7 +83,7 @@ export default function EvaluationReport() {
   const { data: company } = useQuery({
     queryKey: ["public-company", session?.company_id],
     queryFn: async () => {
-      const { data } = await supabase.from("companies").select("name, name_ar, logo_url, country_code").eq("id", session.company_id).single();
+      const { data } = await supabase.from("companies").select("name, name_ar, logo_url, country_code").eq("id", session.company_id).maybeSingle();
       return data;
     },
     enabled: !!session?.company_id,

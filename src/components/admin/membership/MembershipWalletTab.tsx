@@ -124,7 +124,7 @@ const MembershipWalletTab = memo(function MembershipWalletTab() {
           .from("user_wallets")
           .select("id, points_balance")
           .eq("user_id", adjustDialog.userId)
-          .single();
+          .maybeSingle();
 
         if (!wallet) throw new Error("Wallet not found");
         const newBalance = (wallet.points_balance || 0) + amount;
@@ -148,7 +148,7 @@ const MembershipWalletTab = memo(function MembershipWalletTab() {
           .from("user_wallets")
           .select("id, balance")
           .eq("user_id", adjustDialog.userId)
-          .single();
+          .maybeSingle();
 
         if (!wallet) throw new Error("Wallet not found");
         const sign = adjustDialog.type === "credit" ? 1 : -1;

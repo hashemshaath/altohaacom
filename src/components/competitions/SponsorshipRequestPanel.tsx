@@ -133,7 +133,7 @@ export const SponsorshipRequestPanel = memo(function SponsorshipRequestPanel({ l
           .from("requirement_sponsorship_requests")
           .select("requested_by, title")
           .eq("id", id)
-          .single();
+          .maybeSingle();
         if (req?.requested_by && req.requested_by !== user.id) {
           sendNotification({
             userId: req.requested_by,

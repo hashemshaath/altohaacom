@@ -33,7 +33,7 @@ export const AutoIssueCertificates = memo(function AutoIssueCertificates({ compe
         .from("competitions")
         .select("id, title, title_ar, competition_start, competition_end, venue, venue_ar, status, country_code, organizer_id")
         .eq("id", competitionId)
-        .single();
+        .maybeSingle();
       if (error) throw handleSupabaseError(error);
       return data;
     },

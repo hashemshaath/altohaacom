@@ -182,7 +182,7 @@ export function useCostEstimate(id: string | undefined) {
       const { data, error } = await untypedFrom("cost_estimates")
         .select(ESTIMATE_COLS)
         .eq("id", id!)
-        .single();
+        .maybeSingle();
       if (error) throw error;
       return data as unknown as CostEstimate;
     },
@@ -336,7 +336,7 @@ export function useSubmitForApproval() {
 
   return useMutation({
     mutationFn: async ({ estimateId, comments }: { estimateId: string; comments?: string }) => {
-      const { data: raw } = await untypedFrom("cost_estimates").select("estimate_number, title").eq("id", estimateId).single();
+      const { data: raw } = await untypedFrom("cost_estimates").select("estimate_number, title").eq("id", estimateId).maybeSingle();
       const est = raw as unknown as EstimateNotifyFields | null;
 
       await untypedFrom("cost_estimates")
@@ -384,7 +384,7 @@ export function useDuplicateCostEstimate() {
   return useMutation({
     mutationFn: async (sourceId: string) => {
       const { data: source, error: srcErr } = await untypedFrom("cost_estimates")
-        .select(ESTIMATE_COLS).eq("id", sourceId).single();
+        .select(ESTIMATE_COLS).eq("id", sourceId).maybeSingle();
       if (srcErr) throw srcErr;
       const src = source as unknown as CostEstimate;
 
@@ -418,7 +418,7 @@ export function useApproveCostEstimate() {
 
   return useMutation({
     mutationFn: async ({ estimateId, comments }: { estimateId: string; comments?: string }) => {
-      const { data: raw } = await untypedFrom("cost_estimates").select("estimate_number, title, prepared_by").eq("id", estimateId).single();
+      const { data: raw } = await untypedFrom("cost_estimates").select("estimate_number, title, prepared_by").eq("id", estimateId).maybeSingle();
       const est = raw as unknown as EstimateNotifyFields | null;
 
       await untypedFrom("cost_estimates")
@@ -455,7 +455,7 @@ export function useRejectCostEstimate() {
 
   return useMutation({
     mutationFn: async ({ estimateId, reason, comments }: { estimateId: string; reason: string; comments?: string }) => {
-      const { data: raw } = await untypedFrom("cost_estimates").select("estimate_number, title, prepared_by").eq("id", estimateId).single();
+      const { data: raw } = await untypedFrom("cost_estimates").select("estimate_number, title, prepared_by").eq("id", estimateId).maybeSingle();
       const est = raw as unknown as EstimateNotifyFields | null;
 
       await untypedFrom("cost_estimates")
@@ -495,7 +495,7 @@ export function useConvertToInvoice() {
       const { data: estimate, error: estErr } = await untypedFrom("cost_estimates")
         .select(ESTIMATE_COLS)
         .eq("id", estimateId)
-        .single();
+        .maybeSingle();
       if (estErr) throw estErr;
       const est = estimate as unknown as CostEstimate;
 
@@ -534,7 +534,7 @@ export function useConvertToInvoice() {
           notes: `Generated from estimate ${est.estimate_number}`,
         } as Record<string, unknown>)
         .select()
-        .single();
+        .maybeSingle();
       if (invErr) throw invErr;
       const inv = invoice as unknown as InvoiceResult;
 

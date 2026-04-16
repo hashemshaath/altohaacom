@@ -78,7 +78,7 @@ export const ChefsTableInvoiceGenerator = memo(function ChefsTableInvoiceGenerat
           due_date: new Date(Date.now() + 30 * MS_PER_DAY).toISOString(),
         } as any)
         .select()
-        .single();
+        .maybeSingle();
       if (error) throw handleSupabaseError(error);
 
       // Update session with cost and invoice

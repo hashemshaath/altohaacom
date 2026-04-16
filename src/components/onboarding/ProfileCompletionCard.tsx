@@ -32,7 +32,7 @@ export const ProfileCompletionCard = memo(function ProfileCompletionCard() {
         .from("profiles")
         .select("avatar_url, bio, location, country_code, specialization, job_title, instagram, twitter, linkedin, profile_completed")
         .eq("user_id", user.id)
-        .single();
+        .maybeSingle();
       return data;
     },
     enabled: !!user,

@@ -24,7 +24,7 @@ export const JobAvailabilityWidget = memo(function JobAvailabilityWidget() {
         .from("profiles")
         .select("is_open_to_work, job_availability_visibility")
         .eq("user_id", user!.id)
-        .single();
+        .maybeSingle();
       return data;
     },
     enabled: !!user?.id,

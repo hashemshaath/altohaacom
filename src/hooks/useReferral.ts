@@ -32,7 +32,7 @@ export function useReferralCode() {
             .from("referral_codes")
             .select("id, code, user_id, is_active, total_clicks, total_invites_sent, total_conversions, total_points_earned, custom_slug, created_at, updated_at")
             .eq("user_id", user.id)
-            .single();
+            .maybeSingle();
           if (existing) return existing;
           throw insertErr;
         }
@@ -55,7 +55,7 @@ export function useReferralStats() {
       const [invRes, convRes, clicksRes] = await Promise.all([
         supabase.from("referral_invitations").select("id, channel, platform, status, sent_at", { count: "exact" }).eq("referrer_id", user.id),
         supabase.from("referral_conversions").select("id, points_awarded_referrer, converted_at", { count: "exact" }).eq("referrer_id", user.id),
-        supabase.from("referral_codes").select("total_clicks, total_invites_sent, total_conversions, total_points_earned").eq("user_id", user.id).single(),
+        supabase.from("referral_codes").select("total_clicks, total_invites_sent, total_conversions, total_points_earned").eq("user_id", user.id).maybeSingle(),
       ]);
       return {
         invitations: invRes.data || [],
@@ -114,8 +114,8 @@ export function useSendInvitation() {
       if (email && (channel === "email")) {
         // Get referrer name & referral code
         const [profileRes, codeRes] = await Promise.all([
-          supabase.from("profiles").select("full_name, username").eq("user_id", user.id).single(),
-          supabase.from("referral_codes").select("code").eq("id", referralCodeId).single(),
+          supabase.from("profiles").select("full_name, username").eq("user_id", user.id).maybeSingle(),
+          supabase.from("referral_codes").select("code").eq("id", referralCodeId).maybeSingle(),
         ]);
 
         const referrerName = profileRes.data?.full_name || profileRes.data?.username || "A friend";

@@ -17,7 +17,7 @@ export function useAccountType() {
         .from("profiles")
         .select("account_type")
         .eq("user_id", user.id)
-        .single();
+        .maybeSingle();
       if (error) throw error;
       return (data?.account_type as AccountType) || "professional";
     },

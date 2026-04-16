@@ -73,7 +73,7 @@ export const UserDetailsSidePanel = memo(function UserDetailsSidePanel({ userId,
     queryFn: async () => {
       if (!userId) return null;
       const [profileRes, rolesRes, walletRes, actionsRes, certsRes] = await Promise.all([
-        supabase.from("profiles").select("id, user_id, full_name, full_name_ar, display_name, username, email, phone, avatar_url, cover_image_url, bio, account_type, account_status, account_number, country_code, city, nationality, gender, date_of_birth, specialization, experience_level, membership_tier, membership_status, is_verified, verification_level, created_at, last_login_at, suspended_at, suspended_reason, profile_completed, view_count, loyalty_points, wallet_balance").eq("user_id", userId).single(),
+        supabase.from("profiles").select("id, user_id, full_name, full_name_ar, display_name, username, email, phone, avatar_url, cover_image_url, bio, account_type, account_status, account_number, country_code, city, nationality, gender, date_of_birth, specialization, experience_level, membership_tier, membership_status, is_verified, verification_level, created_at, last_login_at, suspended_at, suspended_reason, profile_completed, view_count, loyalty_points, wallet_balance").eq("user_id", userId).maybeSingle(),
         supabase.from("user_roles").select("role").eq("user_id", userId).limit(QUERY_LIMIT_LARGE),
         supabase.from("user_wallets").select("balance, points_balance, wallet_number").eq("user_id", userId).maybeSingle(),
         supabase.from("admin_actions").select("action_type, details, created_at, admin_id").eq("target_user_id", userId).order("created_at", { ascending: false }).limit(15),

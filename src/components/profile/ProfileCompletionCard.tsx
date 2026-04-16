@@ -27,7 +27,7 @@ export const ProfileCompletionCard = memo(function ProfileCompletionCard() {
         .from("profiles")
       .select("full_name, avatar_url, bio, specialization, country_code, username, profile_completed, job_title, phone")
         .eq("user_id", user.id)
-        .single();
+        .maybeSingle();
       if (!profile) return null;
 
       const fields = [

@@ -235,7 +235,7 @@ export const RegistrationForm = memo(function RegistrationForm({
           notes: notes.trim() || null,
         })
         .select("id")
-        .single();
+        .maybeSingle();
 
       if (error) throw handleSupabaseError(error);
 

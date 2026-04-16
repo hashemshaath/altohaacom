@@ -36,7 +36,7 @@ export const ChefCareerWidget = memo(function ChefCareerWidget() {
         supabase.from("user_badges").select("id").eq("user_id", user.id),
         supabase.from("recipes").select("id", { count: "exact", head: true }).eq("author_id", user.id),
         supabase.from("posts").select("id", { count: "exact", head: true }).eq("author_id", user.id),
-        supabase.from("profiles").select("loyalty_points, years_of_experience").eq("user_id", user.id).single(),
+        supabase.from("profiles").select("loyalty_points, years_of_experience").eq("user_id", user.id).maybeSingle(),
         supabase.from("leaderboard_scores" as any).select("total_points, rank").eq("user_id", user.id).order("total_points", { ascending: false }).limit(1),
       ]);
 

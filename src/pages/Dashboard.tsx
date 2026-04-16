@@ -91,7 +91,7 @@ export default function Dashboard() {
         .from("profiles")
         .select("full_name, full_name_ar, username, profile_completed, avatar_url, account_type, membership_tier, loyalty_points")
         .eq("user_id", user.id)
-        .single();
+        .maybeSingle();
       return data;
     },
     enabled: !!user,

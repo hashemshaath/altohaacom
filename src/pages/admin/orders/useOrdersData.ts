@@ -69,7 +69,7 @@ export function useOrdersData() {
       if (!selectedOrder) return null;
       const { data, error } = await supabase.from("company_orders")
         .select("*, companies:company_id (id, name, name_ar, logo_url, email, phone)")
-        .eq("id", selectedOrder).single();
+        .eq("id", selectedOrder).maybeSingle();
       if (error) throw handleSupabaseError(error);
       return data;
     },
@@ -119,7 +119,7 @@ export function useOrdersData() {
       if (!selectedShopOrder) return null;
       const { data, error } = await supabase.from("shop_orders")
         .select("*, shop_order_items(*, shop_products(title, title_ar, image_url))")
-        .eq("id", selectedShopOrder).single();
+        .eq("id", selectedShopOrder).maybeSingle();
       if (error) throw handleSupabaseError(error);
       return data;
     },

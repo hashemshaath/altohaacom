@@ -50,7 +50,7 @@ export const GroupChatView = memo(function GroupChatView({ groupId, onBack }: Gr
   const { data: group } = useQuery({
     queryKey: ["chatGroup", groupId],
     queryFn: async () => {
-      const { data } = await supabase.from("chat_groups").select("id, name, name_ar, avatar_url, created_by, created_at, updated_at").eq("id", groupId).single();
+      const { data } = await supabase.from("chat_groups").select("id, name, name_ar, avatar_url, created_by, created_at, updated_at").eq("id", groupId).maybeSingle();
       return data;
     },
   });

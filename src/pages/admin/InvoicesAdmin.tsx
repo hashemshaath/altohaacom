@@ -118,7 +118,7 @@ export default function InvoicesAdmin() {
         .from("invoices")
         .select(`*, companies:company_id (id, name, name_ar, email, phone, address)`)
         .eq("id", selectedInvoice)
-        .single();
+        .maybeSingle();
       if (error) throw handleSupabaseError(error);
       return data;
     },

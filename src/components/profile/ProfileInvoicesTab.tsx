@@ -85,7 +85,7 @@ export const ProfileInvoicesTab = memo(function ProfileInvoicesTab({ userId }: P
         .from("invoices")
         .select("*, companies:company_id (id, name, name_ar, email, phone, address)")
         .eq("id", selectedInvoiceId)
-        .single();
+        .maybeSingle();
       if (error) throw handleSupabaseError(error);
       return data;
     },

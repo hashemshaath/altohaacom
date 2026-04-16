@@ -52,7 +52,7 @@ export function useEntityQRCode(entityType: QREntityType, entityId: string | und
           created_by: user.id,
         })
         .select()
-        .single();
+        .maybeSingle();
 
       if (error) throw error;
       return newQR;

@@ -61,7 +61,7 @@ export const CompetitionKnowledgeTab = memo(function CompetitionKnowledgeTab({ c
         .from("competitions")
         .select("rules_summary, rules_summary_ar, scoring_notes, scoring_notes_ar, title, title_ar")
         .eq("id", competitionId)
-        .single();
+        .maybeSingle();
       if (error) throw handleSupabaseError(error);
       return data;
     },

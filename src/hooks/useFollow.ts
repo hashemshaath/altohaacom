@@ -50,7 +50,7 @@ export function useFollowPrivacy(targetUserId: string | undefined) {
         .from("profiles")
         .select("follow_privacy")
         .eq("user_id", targetUserId)
-        .single();
+        .maybeSingle();
       return (data?.follow_privacy as string) || "public";
     },
     enabled: !!targetUserId,
@@ -96,7 +96,7 @@ export function useToggleFollow(targetUserId: string | undefined) {
           .from("profiles")
           .select("follow_privacy")
           .eq("user_id", targetUserId)
-          .single();
+          .maybeSingle();
 
         const privacy = targetProfile?.follow_privacy || "public";
 
@@ -215,7 +215,7 @@ export function useFollowRecommendations() {
       // Get current user's following list + their own profile
       const [followingRes, profileRes] = await Promise.all([
         supabase.from("user_follows").select("following_id").eq("follower_id", user.id).limit(QUERY_LIMIT_LARGE),
-        supabase.from("profiles").select("specialization, country_code").eq("user_id", user.id).single(),
+        supabase.from("profiles").select("specialization, country_code").eq("user_id", user.id).maybeSingle(),
       ]);
 
       const followingIds = new Set((followingRes.data || []).map(f => f.following_id));
@@ -282,7 +282,7 @@ export function useIncomingFollowRequests() {
         .from("follow_requests")
         .select("id, requester_id, target_id, status")
         .eq("id", requestId)
-        .single();
+        .maybeSingle();
       
       if (!request) throw new Error("Request not found");
 

@@ -34,7 +34,7 @@ export const CommunityStories = memo(function CommunityStories() {
         .from("profiles")
         .select("avatar_url, display_name, full_name")
         .eq("user_id", user.id)
-        .single();
+        .maybeSingle();
       return data;
     },
     enabled: !!user,

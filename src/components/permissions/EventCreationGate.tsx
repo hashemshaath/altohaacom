@@ -29,7 +29,7 @@ export const EventCreationGate = memo(function EventCreationGate({ children, eve
         .from("profiles")
         .select("membership_tier, membership_status, is_verified")
         .eq("user_id", user!.id)
-        .single();
+        .maybeSingle();
       return data;
     },
   });

@@ -36,7 +36,7 @@ export const NetworkTab = memo(function NetworkTab() {
   const { data: myProfile } = useQuery({
     queryKey: ["myFollowPrivacy", user?.id],
     queryFn: async () => {
-      const { data } = await supabase.from("profiles").select("follow_privacy").eq("user_id", user!.id).single();
+      const { data } = await supabase.from("profiles").select("follow_privacy").eq("user_id", user!.id).maybeSingle();
       return data;
     },
     enabled: !!user?.id,

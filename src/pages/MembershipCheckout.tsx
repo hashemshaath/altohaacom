@@ -66,7 +66,7 @@ export default function MembershipCheckout() {
         .from("profiles")
         .select("membership_tier, membership_status, membership_expires_at, membership_started_at, full_name, email")
         .eq("user_id", user.id)
-        .single();
+        .maybeSingle();
       return data;
     },
     enabled: !!user?.id,

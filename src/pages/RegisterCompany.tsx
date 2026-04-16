@@ -166,7 +166,7 @@ export default function RegisterCompany() {
           created_by: user.id,
         })
         .select("id, company_number")
-        .single();
+        .maybeSingle();
 
       if (companyError) throw companyError;
 

@@ -92,7 +92,7 @@ export default function CreateExhibition() {
           edition_year: data.editionYear ? parseInt(data.editionYear) : null,
         })
         .select()
-        .single();
+        .maybeSingle();
 
       if (error) throw handleSupabaseError(error);
       return exhibition;

@@ -23,7 +23,7 @@ export default function BioAnalytics() {
         .select("id, page_title")
         .eq("user_id", user!.id)
         .limit(1)
-        .single();
+        .maybeSingle();
       return data;
     },
     enabled: !!user?.id,

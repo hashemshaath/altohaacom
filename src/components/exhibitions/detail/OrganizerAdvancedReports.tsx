@@ -30,7 +30,7 @@ export default memo(function OrganizerAdvancedReports({ exhibitionId, exhibition
         supabase.from("exhibition_booths").select("id, status, category, price, currency, assigned_to, hall, size_sqm").eq("exhibition_id", exhibitionId),
         supabase.from("exhibition_reviews").select("id, rating, created_at").eq("exhibition_id", exhibitionId),
         supabase.from("exhibition_followers").select("id, created_at").eq("exhibition_id", exhibitionId),
-        supabase.from("exhibitions").select("view_count, start_date, end_date, created_at").eq("id", exhibitionId).single(),
+        supabase.from("exhibitions").select("view_count, start_date, end_date, created_at").eq("id", exhibitionId).maybeSingle(),
       ]);
 
       const tickets = ticketsRes.data || [];

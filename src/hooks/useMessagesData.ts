@@ -228,7 +228,7 @@ export function useMessagesData() {
           metadata: payload.metadata || {},
         })
         .select()
-        .single();
+        .maybeSingle();
       if (error) throw error;
 
       try {
@@ -288,7 +288,7 @@ export function useMessagesData() {
         .from("profiles")
         .select("user_id, username, full_name, full_name_ar, display_name, display_name_ar, avatar_url")
         .eq("user_id", initialUserId)
-        .single()
+        .maybeSingle()
         .then(({ data }) => {
           if (!cancelled && data) setSelectedPartner({ ...data, unread_count: 0, has_approval: false, is_starred: false });
         });

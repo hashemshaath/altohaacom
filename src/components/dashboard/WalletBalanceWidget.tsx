@@ -24,7 +24,7 @@ export const WalletBalanceWidget = memo(function WalletBalanceWidget() {
         .from("user_wallets")
         .select("balance, currency, points_balance")
         .eq("user_id", user.id)
-        .single();
+        .maybeSingle();
 
       // Recent points earned (last 7 days)
       const weekAgo = new Date(Date.now() - MS_PER_WEEK).toISOString();

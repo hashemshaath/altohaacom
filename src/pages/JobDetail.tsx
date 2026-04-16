@@ -53,7 +53,7 @@ export default function JobDetail() {
         .from("job_postings")
         .select("*, companies(name, name_ar, logo_url, slug)")
         .eq("id", id!)
-        .single();
+        .maybeSingle();
       if (error) throw handleSupabaseError(error);
       return data;
     },

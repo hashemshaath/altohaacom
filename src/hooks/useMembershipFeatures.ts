@@ -82,7 +82,7 @@ export function useUserMembershipTier(userId?: string) {
         .from("profiles")
         .select("membership_tier")
         .eq("user_id", userId)
-        .single();
+        .maybeSingle();
       return data?.membership_tier || "basic";
     },
     enabled: !!userId,

@@ -26,7 +26,7 @@ export const OrganizerCard = React.forwardRef<HTMLDivElement, OrganizerCardProps
           .from("exhibitions")
           .select("organizer_entity_id, organizer_company_id, organizer_user_id, organizer_type, organizer_name, organizer_name_ar, organizer_logo_url, title, title_ar")
           .eq("id", exhibitionId!)
-          .single();
+          .maybeSingle();
         if (error) throw handleSupabaseError(error);
         return data;
       },
@@ -71,7 +71,7 @@ export const OrganizerCard = React.forwardRef<HTMLDivElement, OrganizerCardProps
           .from("profiles")
           .select("user_id, full_name, avatar_url, username, specialization, is_verified")
           .eq("user_id", effectiveUserId)
-          .single();
+          .maybeSingle();
         if (error) throw handleSupabaseError(error);
         return data;
       },

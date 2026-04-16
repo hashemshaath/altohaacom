@@ -422,7 +422,7 @@ const MembershipMembersTab = memo(function MembershipMembersTab() {
     mutationFn: async ({ userIds, tier, reason }: { userIds: string[]; tier: MembershipTier; reason: string }) => {
       for (const userId of userIds) {
         const { data: currentProfile } = await supabase
-          .from("profiles").select("membership_tier").eq("user_id", userId).single();
+          .from("profiles").select("membership_tier").eq("user_id", userId).maybeSingle();
 
         await supabase.from("profiles").update({
           membership_tier: tier,

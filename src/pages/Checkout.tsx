@@ -107,7 +107,7 @@ export default function Checkout() {
           notes: address.notes || null,
         })
         .select("id, order_number")
-        .single();
+        .maybeSingle();
 
       if (orderError) throw orderError;
 

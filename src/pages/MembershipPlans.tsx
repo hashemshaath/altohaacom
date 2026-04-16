@@ -94,7 +94,7 @@ export default function MembershipPlans() {
         .from("profiles")
         .select("membership_tier")
         .eq("user_id", user.id)
-        .single();
+        .maybeSingle();
       return data?.membership_tier || "basic";
     },
     enabled: !!user?.id,

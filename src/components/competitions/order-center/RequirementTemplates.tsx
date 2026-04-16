@@ -81,7 +81,7 @@ export const RequirementTemplates = forwardRef<HTMLDivElement, Props>(function R
         .from("competitions")
         .select("id, title, title_ar, competition_types(name, name_ar)")
         .eq("id", competitionId)
-        .single();
+        .maybeSingle();
       if (error) throw handleSupabaseError(error);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any -- nested join
       return data as any;
@@ -266,7 +266,7 @@ export const RequirementTemplates = forwardRef<HTMLDivElement, Props>(function R
           description: template.description || null,
         })
         .select("id")
-        .single();
+        .maybeSingle();
       if (listError) throw listError;
 
       const items = (template.items || []).map((item, idx) => ({

@@ -33,7 +33,7 @@ export function useEstablishment(id?: string) {
         .from("establishments")
         .select("id, name, name_ar, type, description, description_ar, country_code, city, city_ar, address, address_ar, phone, email, website, cuisine_type, cuisine_type_ar, star_rating, logo_url, cover_image_url, is_active, is_verified, establishment_number, created_by, created_at, updated_at")
         .eq("id", id!)
-        .single();
+        .maybeSingle();
       if (error) throw error;
       return data;
     },

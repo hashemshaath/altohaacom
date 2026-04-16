@@ -54,7 +54,7 @@ export const CartSheet = memo(function CartSheet({ open, onOpenChange, cart }: C
         .select("id, code, discount_type, discount_value, min_order_amount, max_uses, used_count, valid_until, is_active")
         .eq("code", cart.discountCode.trim().toUpperCase())
         .eq("is_active", true)
-        .single();
+        .maybeSingle();
 
       if (error || !data) {
         toast({ title: isAr ? "رمز خصم غير صالح" : "Invalid discount code", variant: "destructive" });
@@ -108,7 +108,7 @@ export const CartSheet = memo(function CartSheet({ open, onOpenChange, cart }: C
           payment_status: "pending",
         })
         .select("id, order_number")
-        .single();
+        .maybeSingle();
 
       if (orderError) throw orderError;
 

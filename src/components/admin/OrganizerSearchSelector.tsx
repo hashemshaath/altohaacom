@@ -276,7 +276,7 @@ export const OrganizerSearchSelector = memo(function OrganizerSearchSelector({ v
         status: "pending" as Database["public"]["Enums"]["entity_status"],
         scope: "local" as Database["public"]["Enums"]["entity_scope"],
         is_visible: false,
-      }).select("id, name, name_ar, country").single();
+      }).select("id, name, name_ar, country").maybeSingle();
 
       if (error) throw handleSupabaseError(error);
       if (data) {

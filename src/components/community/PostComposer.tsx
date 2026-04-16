@@ -88,7 +88,7 @@ export const PostComposer = memo(function PostComposer({ onPosted, replyToPostId
         .from("profiles")
         .select("full_name, full_name_ar, display_name, display_name_ar, avatar_url, username")
         .eq("user_id", user.id)
-        .single();
+        .maybeSingle();
       return data;
     },
     enabled: !!user,

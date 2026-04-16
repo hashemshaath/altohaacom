@@ -15,7 +15,7 @@ export function useVerificationStatus() {
         .from("profiles")
         .select("is_verified, verification_level, verified_at, verification_badge")
         .eq("user_id", user!.id)
-        .single();
+        .maybeSingle();
       return data;
     },
   });
@@ -81,7 +81,7 @@ export function useSubmitVerification() {
           status: "pending",
         })
         .select()
-        .single();
+        .maybeSingle();
       if (error) throw error;
       return data;
     },
@@ -188,7 +188,7 @@ export function useReviewVerification() {
         .from("verification_requests")
         .select("user_id, company_id, culinary_entity_id, entity_type, verification_level")
         .eq("id", payload.request_id)
-        .single();
+        .maybeSingle();
 
       if (fetchErr) throw fetchErr;
 
