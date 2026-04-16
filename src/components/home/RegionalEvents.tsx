@@ -33,7 +33,7 @@ export function RegionalEvents() {
     queryFn: async () => {
       const { data } = await supabase
         .from("competitions")
-        .select("id, title, title_ar, cover_image_url, status, competition_start, city, country, country_code, is_virtual")
+        .select("id, title, title_ar, slug, cover_image_url, status, competition_start, city, country, country_code, is_virtual")
         .in("status", ["registration_open", "upcoming", "in_progress"])
         .order("competition_start", { ascending: true })
         .limit(itemCount);
