@@ -346,7 +346,10 @@ export function HeroSection() {
         }
         @media (max-width: 768px) {
           .hero-slide__content { padding: 0 24px; }
-          .hero-slide__content-wrap { padding-bottom: 16vh; }
+          /* Leave room for dots above the 64px mobile bottom nav */
+          .hero-slide__content-wrap {
+            padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px) + 56px);
+          }
         }
 
         .hero-slide__overline {
