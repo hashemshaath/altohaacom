@@ -286,12 +286,12 @@ export function HeroSection() {
       onMouseLeave={() => setIsPaused(false)}
       {...swipe}
     >
-      <div className="h-[85vh] lg:h-screen max-h-[900px] min-h-[600px]">
+      <div className="min-h-[520px] lg:min-h-[600px] lg:h-[75vh] max-h-[780px]">
         <div className="container h-full">
-          <div className="grid grid-cols-1 lg:grid-cols-[55fr_45fr] gap-6 lg:gap-10 h-full items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-[50fr_50fr] gap-6 lg:gap-14 h-full items-center">
 
             {/* ── Text column ── */}
-            <div className="order-2 lg:order-1 text-center lg:text-start space-y-5 py-8 lg:py-0">
+            <div className="order-2 lg:order-1 text-center lg:text-start space-y-4 py-6 lg:py-0">
               <div
                 key={`badge-${slide.id}`}
                 className={cn(!isFirstRender && "animate-[heroFadeUp_0.6s_ease-out_forwards]")}
