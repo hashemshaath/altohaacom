@@ -3,7 +3,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider, MutationCache } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { LanguageProvider } from "@/i18n/LanguageContext";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ThemeProvider } from "@/components/ThemeProvider";
@@ -108,7 +108,7 @@ function AppRoutes() {
                 {adminRoutes}
                 {companyRoutes}
                 {/* Catch-all: redirect unknown routes to home */}
-                <Route path="*" element={<CatchAllRedirect />} />
+                <Route path="*" element={<Navigate to="/" replace />} />
               </Routes>
             </PageTransition>
           </div>
@@ -118,7 +118,7 @@ function AppRoutes() {
   );
 }
 
-import { Navigate } from "react-router-dom";
+
 
 /** Non-critical overlays and global widgets */
 const AppOverlays = memo(function AppOverlays({ isHome }: { isHome: boolean }) {
