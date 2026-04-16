@@ -30,7 +30,7 @@ export function FormErrorSummary({ errors, className = "" }: FormErrorSummaryPro
           ? `يوجد ${errors.length} ${errors.length === 1 ? "خطأ" : "أخطاء"} في النموذج`
           : `Please fix ${errors.length} ${errors.length === 1 ? "error" : "errors"} below`}
       </div>
-      <ul className="list-disc list-inside space-y-0.5 text-destructive/80 text-xs">
+      <ul className="list-disc list-inside space-y-0.5 text-destructive/80 typo-auth-error">
         {errors.map((msg, i) => (
           <li key={i}>{msg}</li>
         ))}

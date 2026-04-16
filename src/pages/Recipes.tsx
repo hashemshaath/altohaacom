@@ -57,19 +57,19 @@ const RecipeCard = memo(function RecipeCard({ recipe, isAr }: { recipe: RecipeWi
         </div>
         <CardContent className="p-4">
           <div className="mb-2 flex items-start justify-between gap-2">
-            <h3 className="line-clamp-1 font-semibold">{isAr && recipe.title_ar ? recipe.title_ar : recipe.title}</h3>
+            <h3 className="line-clamp-1 typo-card-title">{isAr && recipe.title_ar ? recipe.title_ar : recipe.title}</h3>
             {recipe.difficulty && (
-              <Badge variant="outline" className={`shrink-0 text-xs ${difficultyColor(recipe.difficulty)}`}>
+              <Badge variant="outline" className={`shrink-0 typo-category-badge ${difficultyColor(recipe.difficulty)}`}>
                 {recipe.difficulty}
               </Badge>
             )}
           </div>
           {recipe.description && (
-            <p className="mb-3 line-clamp-2 text-xs text-muted-foreground">
+            <p className="mb-3 line-clamp-2 typo-card-description">
               {isAr && recipe.description_ar ? recipe.description_ar : recipe.description}
             </p>
           )}
-          <div className="mb-3 flex flex-wrap items-center gap-2.5 text-xs text-muted-foreground">
+          <div className="mb-3 flex flex-wrap items-center gap-2.5 typo-card-meta text-muted-foreground">
             {recipe.cuisine && (
               <span className="flex items-center gap-1"><ChefHat className="h-3 w-3" />{recipe.cuisine}</span>
             )}
@@ -84,7 +84,7 @@ const RecipeCard = memo(function RecipeCard({ recipe, isAr }: { recipe: RecipeWi
             )}
           </div>
           {cat && (
-            <Badge variant="secondary" className="mb-3 text-xs">{isAr ? cat.ar : cat.en}</Badge>
+            <Badge variant="secondary" className="mb-3 typo-category-badge">{isAr ? cat.ar : cat.en}</Badge>
           )}
           <Separator className="mb-3" />
           <div className="flex items-center justify-between">
@@ -164,10 +164,10 @@ export default function Recipes() {
                     {isAr ? "قاعدة الوصفات" : "Recipe Vault"}
                   </span>
                 </div>
-                <h1 className="font-serif text-2xl font-bold tracking-tight md:text-4xl">
+                <h1 className="font-serif typo-page-title tracking-tight">
                   {isAr ? "الوصفات" : "Recipes"}
                 </h1>
-                <p className="text-muted-foreground text-sm md:text-base leading-relaxed">
+                <p className="typo-results-count leading-relaxed">
                   {isAr
                     ? "اكتشف وصفات من طهاة محترفين حول العالم وشاركنا وصفاتك المميزة."
                     : "Discover recipes from professional chefs worldwide and share your own culinary creations."}

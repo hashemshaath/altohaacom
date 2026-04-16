@@ -87,7 +87,7 @@ export default function Auth() {
               <div className="mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 ring-1 ring-primary/15">
                 <KeyRound className="h-7 w-7 text-primary" />
               </div>
-              <h2 className={`${isAr ? "font-sans" : "font-serif"} text-xl font-bold`}>
+              <h2 className={`${isAr ? "font-sans" : "font-serif"} typo-auth-title`}>
                 {isAr ? "إعادة تعيين كلمة المرور" : "Reset Password"}
               </h2>
               <p className="mt-1 text-sm text-muted-foreground">
@@ -105,19 +105,19 @@ export default function Auth() {
               <>
                 {auth.formError && (
                   <div className="rounded-lg border border-destructive/30 bg-destructive/5 px-3 py-2 animate-in slide-in-from-top-1 duration-200">
-                    <p className="flex items-center gap-1.5 text-xs text-destructive"><AlertCircle className="h-3.5 w-3.5 shrink-0" />{auth.formError}</p>
+                    <p className="flex items-center gap-1.5 typo-auth-error"><AlertCircle className="h-3.5 w-3.5 shrink-0" />{auth.formError}</p>
                   </div>
                 )}
                 <div className="space-y-1.5">
-                  <Label className="text-xs">{isAr ? "كلمة المرور الجديدة" : "New Password"} *</Label>
+                  <Label className="typo-auth-label">{isAr ? "كلمة المرور الجديدة" : "New Password"} *</Label>
                   <Input type="password" autoComplete="new-password" value={auth.resetPassword} onChange={(e) => auth.setResetPassword(e.target.value)} placeholder="••••••••" />
                   <PasswordStrengthMeter password={auth.resetPassword} />
-                  {auth.errors.resetPassword && <p className="text-xs text-destructive">{auth.errors.resetPassword}</p>}
+                  {auth.errors.resetPassword && <p className="typo-auth-error">{auth.errors.resetPassword}</p>}
                 </div>
                 <div className="space-y-1.5">
-                  <Label className="text-xs">{isAr ? "تأكيد كلمة المرور" : "Confirm Password"} *</Label>
+                  <Label className="typo-auth-label">{isAr ? "تأكيد كلمة المرور" : "Confirm Password"} *</Label>
                   <Input type="password" autoComplete="new-password" value={auth.resetConfirm} onChange={(e) => auth.setResetConfirm(e.target.value)} placeholder="••••••••" />
-                  {auth.errors.resetConfirm && <p className="text-xs text-destructive">{auth.errors.resetConfirm}</p>}
+                  {auth.errors.resetConfirm && <p className="typo-auth-error">{auth.errors.resetConfirm}</p>}
                 </div>
                 <Button className="w-full" size="lg" onClick={auth.handleResetPassword} disabled={auth.loading}>
                   {auth.loading && <Loader2 className="me-2 h-4 w-4 animate-spin" />}
@@ -142,7 +142,7 @@ export default function Auth() {
               <div className="mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 ring-1 ring-primary/15">
                 <ShieldCheck className="h-7 w-7 text-primary" />
               </div>
-              <h2 className={`${isAr ? "font-sans" : "font-serif"} text-xl font-bold`}>
+               <h2 className={`${isAr ? "font-sans" : "font-serif"} typo-auth-title`}>
                 {auth.signUpMethod === "phone" ? (isAr ? "التحقق من رقم الهاتف" : "Phone Verification") : (isAr ? "التحقق من البريد الإلكتروني" : "Email Verification")}
               </h2>
               <p className="mt-1 text-sm text-muted-foreground">{isAr ? `الخطوة 2 من ${totalSteps}` : `Step 2 of ${totalSteps}`}</p>
@@ -181,7 +181,7 @@ export default function Auth() {
               <div className="mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 ring-1 ring-primary/15">
                 <UserPlus className="h-7 w-7 text-primary" />
               </div>
-              <h2 className={`${isAr ? "font-sans" : "font-serif"} text-xl font-bold`}>{isAr ? "المعلومات الشخصية" : "Personal Details"}</h2>
+              <h2 className={`${isAr ? "font-sans" : "font-serif"} typo-auth-title`}>{isAr ? "المعلومات الشخصية" : "Personal Details"}</h2>
               <p className="mt-1 text-sm text-muted-foreground">{isAr ? `الخطوة 3 من ${totalSteps}` : `Step 3 of ${totalSteps}`}</p>
             </div>
 

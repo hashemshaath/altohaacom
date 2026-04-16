@@ -33,6 +33,7 @@ export function SubmitButton({
       type="submit"
       disabled={disabled || loading}
       aria-busy={loading}
+      className="typo-auth-submit"
       {...props}
     >
       {loading ? (

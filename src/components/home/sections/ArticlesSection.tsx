@@ -130,16 +130,16 @@ const ArticlesSection = memo(forwardRef<HTMLElement>(function ArticlesSection(_p
                     </div>
                   </div>
                   <div className="p-4">
-                    <h3 className="text-sm font-bold text-foreground group-hover:text-primary transition-colors line-clamp-2 leading-snug">
+                    <h3 className="typo-card-title text-foreground group-hover:text-primary transition-colors line-clamp-2 leading-snug">
                       {isAr ? article.title_ar || article.title : article.title}
                     </h3>
                     {(article.excerpt || article.excerpt_ar) && (
-                      <p className="mt-1.5 text-xs text-muted-foreground line-clamp-2 leading-relaxed">
+                      <p className="mt-1.5 typo-card-description line-clamp-2 leading-relaxed">
                         {isAr ? article.excerpt_ar || article.excerpt : article.excerpt}
                       </p>
                     )}
                     {article.published_at && (
-                      <p className="mt-2 text-xs text-muted-foreground/60 flex items-center gap-1">
+                      <p className="mt-2 typo-card-meta text-muted-foreground/60 flex items-center gap-1">
                         <Clock className="h-3 w-3" />
                         {formatDistanceToNow(new Date(article.published_at), { addSuffix: true, locale: isAr ? ar : undefined })}
                       </p>

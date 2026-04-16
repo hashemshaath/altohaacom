@@ -162,15 +162,15 @@ export default function RecipeDetail() {
               {/* Title & meta */}
               <div>
                 <div className="flex flex-wrap items-center gap-2 mb-2">
-                  {'recipe_number' in recipe && (recipe as any).recipe_number && <Badge variant="secondary" className="text-xs font-mono h-5">{String((recipe as any).recipe_number)}</Badge>}
-                  {recipe.cuisine && <Badge variant="secondary"><ChefHat className="h-3 w-3 me-1" />{recipe.cuisine}</Badge>}
-                  {recipe.difficulty && <Badge variant="outline" className={difficultyColor(recipe.difficulty)}>{recipe.difficulty}</Badge>}
-                  {recipe.category && <Badge variant="outline">{recipe.category.replace("_", " ")}</Badge>}
+                  {'recipe_number' in recipe && (recipe as any).recipe_number && <Badge variant="secondary" className="typo-detail-badge font-mono h-5">{String((recipe as any).recipe_number)}</Badge>}
+                  {recipe.cuisine && <Badge variant="secondary" className="typo-detail-badge"><ChefHat className="h-3 w-3 me-1" />{recipe.cuisine}</Badge>}
+                  {recipe.difficulty && <Badge variant="outline" className={`typo-detail-badge ${difficultyColor(recipe.difficulty)}`}>{recipe.difficulty}</Badge>}
+                  {recipe.category && <Badge variant="outline" className="typo-detail-badge">{recipe.category.replace("_", " ")}</Badge>}
                 </div>
-                <h1 className="text-3xl font-bold font-serif">{title}</h1>
-                {description && <p className="mt-2 text-muted-foreground">{description}</p>}
+                <h1 className="typo-detail-title font-serif">{title}</h1>
+                {description && <p className="mt-2 typo-body-content text-muted-foreground">{description}</p>}
 
-                <div className="mt-4 flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
+                <div className="mt-4 flex flex-wrap items-center gap-4 typo-publish-date">
                   {totalTime > 0 && (
                     <span className="flex items-center gap-1"><Clock className="h-4 w-4" />{totalTime} min</span>
                   )}
@@ -221,12 +221,12 @@ export default function RecipeDetail() {
 
               {/* Ingredients */}
               <section>
-                <h2 className="text-xl font-semibold mb-3">{isAr ? "المكونات" : "Ingredients"}</h2>
+                <h2 className="typo-content-heading mb-3">{isAr ? "المكونات" : "Ingredients"}</h2>
                 <Card>
                   <CardContent className="py-4">
                     <ul className="space-y-2">
                       {ingredients.map((ing, i) => (
-                        <li key={i} className="flex items-center gap-2 text-sm">
+                        <li key={i} className="flex items-center gap-2 typo-ingredient-item">
                           <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary/10">
                             <Check className="h-3 w-3 text-primary" />
                           </div>
@@ -240,7 +240,7 @@ export default function RecipeDetail() {
 
               {/* Steps */}
               <section>
-                <h2 className="text-xl font-semibold mb-3">
+                <h2 className="typo-content-heading mb-3">
                   {isAr ? "الخطوات" : "Instructions"}
                   <span className="text-sm text-muted-foreground font-normal ms-2">
                     {checkedSteps.size}/{steps.length}
@@ -263,7 +263,7 @@ export default function RecipeDetail() {
                           <div className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-xs font-bold ${done ? "bg-chart-2 text-chart-2-foreground" : "bg-primary/10 text-primary"}`}>
                             {done ? <Check className="h-4 w-4" /> : i + 1}
                           </div>
-                          <p className={`text-sm ${done ? "line-through text-muted-foreground" : ""}`}>{text}</p>
+                          <p className={`typo-body-content ${done ? "line-through text-muted-foreground" : ""}`}>{text}</p>
                         </CardContent>
                       </Card>
                     );
@@ -274,7 +274,7 @@ export default function RecipeDetail() {
               {/* Gallery */}
               {recipe.gallery_urls && recipe.gallery_urls.length > 0 && (
                 <section>
-                  <h2 className="text-xl font-semibold mb-3">{isAr ? "معرض الصور" : "Gallery"}</h2>
+                  <h2 className="typo-content-heading mb-3">{isAr ? "معرض الصور" : "Gallery"}</h2>
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                     {recipe.gallery_urls.map((url, i) => (
                       <img loading="lazy" key={i} src={url} alt={`${title} ${i + 1}`} className="rounded-xl aspect-video object-cover" />
@@ -286,7 +286,7 @@ export default function RecipeDetail() {
               {/* Rating */}
               {user && (
                 <section>
-                  <h2 className="text-xl font-semibold mb-3">{isAr ? "قيّم هذه الوصفة" : "Rate this Recipe"}</h2>
+                  <h2 className="typo-content-heading mb-3">{isAr ? "قيّم هذه الوصفة" : "Rate this Recipe"}</h2>
                   <Card>
                     <CardContent className="py-4 space-y-3">
                       <div className="flex gap-1">

@@ -332,12 +332,12 @@ const HeroWelcome = memo(function HeroWelcome({
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0">
                 <div className="flex items-center gap-2 flex-wrap">
-                  <h1 className="font-serif text-xl sm:text-2xl md:text-3xl font-bold tracking-tight text-foreground">
+                  <h1 className="font-serif typo-user-name sm:text-2xl md:text-3xl tracking-tight text-foreground">
                     {greeting}
                   </h1>
                   <ActivityPulse status="live" label={isAr ? "متصل" : "Online"} />
                 </div>
-                <p className="mt-1.5 text-sm sm:text-base text-muted-foreground/80 line-clamp-1">{subtitle}</p>
+                <p className="mt-1.5 typo-dash-stat-label sm:text-base line-clamp-1">{subtitle}</p>
 
                 {/* Quick stats chips */}
                 <div className="flex items-center gap-2 mt-3 flex-wrap">
@@ -412,7 +412,7 @@ const QuickAccessGrid = memo(function QuickAccessGrid({ sections, isAr }: { sect
           <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary/10">
             <Sparkles className="h-3.5 w-3.5 text-primary" />
           </div>
-          <h2 className="text-xs sm:text-sm font-bold uppercase tracking-widest text-muted-foreground">
+           <h2 className="typo-section-overline sm:text-sm font-bold tracking-widest">
             {isAr ? "الوصول السريع" : "Quick Access"}
           </h2>
         </div>
@@ -473,8 +473,8 @@ const AchievementsSummary = memo(function AchievementsSummary({ userId, isAr }: 
               <item.icon className={`h-5 w-5 ${item.color}`} />
             </div>
             <div>
-              <AnimatedCounter value={item.value} className="text-2xl sm:text-3xl font-black tabular-nums" />
-              <p className="text-xs uppercase tracking-wider text-muted-foreground leading-tight font-medium">{item.label}</p>
+              <AnimatedCounter value={item.value} className="typo-dash-stat-number text-2xl sm:text-3xl tabular-nums" />
+              <p className="typo-dash-stat-label uppercase tracking-wider leading-tight font-medium">{item.label}</p>
             </div>
           </CardContent>
         </Card>

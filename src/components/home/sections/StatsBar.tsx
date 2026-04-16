@@ -34,10 +34,10 @@ const StatCard = forwardRef<HTMLDivElement, { value: number; label: string; icon
         <div className={cn("flex items-center justify-center h-11 w-11 rounded-xl", color.icon)}>
           <Icon className={cn("h-5 w-5", color.text)} />
         </div>
-        <p className={cn("text-3xl sm:text-4xl font-extrabold tabular-nums tracking-tight", color.text)} dir="ltr">
+        <p className="typo-stats-number text-3xl sm:text-4xl tabular-nums tracking-tight" dir="ltr">
           {count.toLocaleString()}+
         </p>
-        <p className="text-sm font-medium text-muted-foreground">{label}</p>
+        <p className="typo-stats-label text-sm font-medium">{label}</p>
       </div>
     );
   }

@@ -18,7 +18,7 @@ export const FilterChip = forwardRef<HTMLButtonElement, FilterChipProps>(
         variant={active ? "default" : "outline"}
         size="sm"
         className={cn(
-          "h-7 rounded-full text-xs px-3 gap-1 transition-all",
+          "h-7 rounded-full typo-filter-pill px-3 gap-1 transition-all",
           !active && "hover:bg-accent/50 border-dashed"
         )}
         onClick={onClick}

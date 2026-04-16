@@ -35,7 +35,7 @@ export function FormField({
 }: FormFieldProps) {
   return (
     <div className={`space-y-1.5 ${className}`}>
-      <Label htmlFor={htmlFor} className={error ? "text-destructive" : ""}>
+      <Label htmlFor={htmlFor} className={`typo-auth-label ${error ? "text-destructive" : ""}`}>
         {label}
         {required && <span className="text-destructive ms-0.5">*</span>}
       </Label>
@@ -43,7 +43,7 @@ export function FormField({
       {children}
 
       {error && (
-        <p className="flex items-center gap-1 text-xs text-destructive animate-in fade-in-0 slide-in-from-top-1 duration-200" role="alert">
+        <p className="flex items-center gap-1 typo-auth-error animate-in fade-in-0 slide-in-from-top-1 duration-200" role="alert">
           <AlertCircle className="h-3 w-3 shrink-0" />
           {error}
         </p>
