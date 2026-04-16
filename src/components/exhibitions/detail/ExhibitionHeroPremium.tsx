@@ -99,8 +99,8 @@ export const ExhibitionHeroPremium = memo(function ExhibitionHeroPremium({
 
             <div className="flex items-center gap-2">
               {isHappening && (
-                <Badge className="border-0 bg-red-500/90 px-3 py-1.5 text-[0.6875rem] font-bold uppercase tracking-wider text-white shadow-lg backdrop-blur-md">
-                  <span className="me-1.5 inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-white" />
+                <Badge className="border-0 bg-destructive px-3 py-1.5 text-[0.6875rem] font-bold uppercase tracking-wider text-destructive-foreground shadow-lg backdrop-blur-md">
+                  <span className="me-1.5 inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-destructive-foreground" />
                   {isAr ? "مباشر" : "Live"}
                 </Badge>
               )}
