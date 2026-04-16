@@ -33,7 +33,7 @@ export const ShopProductCard = memo(function ShopProductCard({ product, onAddToC
   const label = typeLabels[product.product_type] || typeLabels.physical;
 
   return (
-    <Card className="group flex h-full flex-col overflow-hidden rounded-2xl border-border/40 bg-card/50 backdrop-blur-sm transition-all duration-500 hover:shadow-2xl hover:shadow-primary/8 hover:-translate-y-0.5 hover:border-primary/30 active:scale-[0.98] touch-manipulation relative">
+    <Card className="group flex h-full flex-col overflow-hidden rounded-2xl border-border/40 bg-card/50 backdrop-blur-sm transition-all duration-500 hover:shadow-2xl hover:shadow-primary/8 hover:-translate-y-0.5 hover:border-primary/30 active:scale-[0.98] touch-manipulation relative cursor-pointer">
       <Link to={ROUTES.shopProduct(product.id)} className="block overflow-hidden">
         <div className="relative aspect-square overflow-hidden bg-muted">
           {product.image_url ? (
