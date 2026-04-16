@@ -32,7 +32,7 @@ export const SectionHeader = forwardRef<HTMLDivElement, SectionHeaderProps>(func
         <div className="flex items-center gap-2.5 mb-2">
           <Badge
             variant="secondary"
-            className="gap-1.5 px-3 py-1.5 text-label font-bold uppercase tracking-widest rounded-lg bg-primary/8 text-primary border-primary/15"
+            className="gap-1.5 px-3 py-1.5 typo-section-overline rounded-lg bg-primary/8 border-primary/15"
           >
             <Icon className="h-3.5 w-3.5" />
             {badge}
