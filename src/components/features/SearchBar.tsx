@@ -17,7 +17,7 @@
 import { useState, useEffect, useRef, useCallback, useMemo, memo } from "react";
 import { createPortal } from "react-dom";
 import { useNavigate } from "react-router-dom";
-import { Search, X, Clock, TrendingUp, Loader2, FileQuestion } from "lucide-react";
+import { Search, X, Clock, TrendingUp, Loader2, FileQuestion, WifiOff, RefreshCw } from "lucide-react";
 import { useIsAr } from "@/hooks/useIsAr";
 import { useGlobalSearch } from "@/hooks/useGlobalSearch";
 import { fetchTrendingTags } from "@/services/searchService";
@@ -25,6 +25,7 @@ import {
   getRecentSearches,
   addRecentSearch,
   removeRecentSearch,
+  subscribeRecentSearches,
 } from "@/lib/recentSearches";
 import { ROUTES } from "@/config/routes";
 import { cn } from "@/lib/utils";
@@ -98,16 +99,17 @@ export const SearchBar = memo(function SearchBar({
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const [recents, setRecents] = useState<string[]>([]);
 
-  const { filters, updateFilter, results, isLoading, preloadPopular } = useGlobalSearch();
+  const { filters, updateFilter, results, isLoading, error, refetch, preloadPopular } = useGlobalSearch();
   const query = filters.query;
   const trimmed = query.trim();
 
   // ── Mobile: lock body scroll while sheet is open ──
   useBodyScrollLock(isMobile && open);
 
-  // ── Hydrate recents on mount ──
+  // ── Hydrate recents on mount + subscribe to changes (so "Recent Searches" stays in sync after navigate→back) ──
   useEffect(() => {
     setRecents(getRecentSearches());
+    return subscribeRecentSearches(() => setRecents(getRecentSearches()));
   }, []);
 
   // ── Click outside closes dropdown (desktop only — mobile uses backdrop) ──
@@ -222,7 +224,8 @@ export const SearchBar = memo(function SearchBar({
   const showRecents = trimmed.length < 2;
   const showResults = trimmed.length >= 2;
   const hasResults = flatResults.length > 0;
-  const showEmpty = showResults && !isLoading && !hasResults;
+  const showError = showResults && !isLoading && !!error;
+  const showEmpty = showResults && !isLoading && !hasResults && !error;
 
   // ── Handlers ──
   const handleClear = useCallback(() => {
@@ -283,7 +286,7 @@ export const SearchBar = memo(function SearchBar({
     [open, flatResults, selectedIndex, navigateToResult]
   );
 
-  const dropdownVisible = open && (isLoading || showRecents || hasResults || showEmpty);
+  const dropdownVisible = open && (isLoading || showRecents || hasResults || showEmpty || showError);
   const [dynamicTrending, setDynamicTrending] = useState<string[] | null>(null);
   useEffect(() => {
     if (!open || dynamicTrending) return;
@@ -361,8 +364,9 @@ export const SearchBar = memo(function SearchBar({
                       setRecents(getRecentSearches());
                     }}
                     className={cn(
-                      "h-9 w-9 sm:h-7 sm:w-7 flex items-center justify-center rounded-full text-muted-foreground/60 hover:bg-muted/80 transition-opacity",
-                      isMobile ? "opacity-100" : "opacity-0 group-hover:opacity-100"
+                      "flex items-center justify-center rounded-full text-muted-foreground/60 hover:bg-muted/80 transition-opacity",
+                      // ≥44px touch target on mobile per Apple HIG / WCAG AA
+                      isMobile ? "h-11 w-11 opacity-100" : "h-7 w-7 opacity-0 group-hover:opacity-100"
                     )}
                   >
                     <X className="h-3.5 w-3.5" />
@@ -460,6 +464,35 @@ export const SearchBar = memo(function SearchBar({
         </div>
       )}
 
+      {/* ERROR STATE — network failure or query error, with retry */}
+      {showError && (
+        <div className="py-8 px-6 text-center">
+          <WifiOff className="h-10 w-10 text-destructive/60 mx-auto mb-3" aria-hidden="true" />
+          <p className="text-sm font-semibold text-foreground mb-1">
+            {isAr ? "تعذّر إجراء البحث" : "Search failed"}
+          </p>
+          <p className="text-xs text-muted-foreground mb-4">
+            {isAr
+              ? "تحقق من اتصالك بالإنترنت ثم أعد المحاولة"
+              : "Check your internet connection and try again"}
+          </p>
+          <button
+            type="button"
+            onClick={() => refetch()}
+            style={{ touchAction: "manipulation" }}
+            className={cn(
+              "inline-flex items-center gap-2 rounded-lg px-4",
+              "bg-primary text-primary-foreground text-sm font-semibold",
+              "hover:bg-primary/90 active:scale-95 transition-all",
+              isMobile ? "h-11" : "h-9"
+            )}
+          >
+            <RefreshCw className="h-4 w-4" />
+            {isAr ? "إعادة المحاولة" : "Retry"}
+          </button>
+        </div>
+      )}
+
       {/* EMPTY STATE */}
       {showEmpty && (
         <div className="py-10 px-6 text-center">
@@ -539,14 +572,15 @@ export const SearchBar = memo(function SearchBar({
           readOnly={isMobile && open}
         />
 
-        {/* Clear button */}
+        {/* Clear button — 44px on mobile (a11y touch target), 32px on desktop */}
         <button
           type="button"
           onClick={handleClear}
           aria-label={isAr ? "مسح" : "Clear"}
           style={{ touchAction: "manipulation" }}
           className={cn(
-            "h-8 w-8 flex items-center justify-center rounded-full shrink-0",
+            "flex items-center justify-center rounded-full shrink-0",
+            "h-11 w-11 md:h-8 md:w-8",
             "text-muted-foreground hover:bg-muted/60 transition-opacity duration-200",
             query ? "opacity-100" : "opacity-0 pointer-events-none"
           )}
@@ -554,16 +588,16 @@ export const SearchBar = memo(function SearchBar({
           <X className="h-4 w-4" />
         </button>
 
-        {/* Submit — icon on mobile, text on desktop */}
+        {/* Submit — icon on mobile (44px), text on desktop */}
         <button
           type="submit"
           aria-label={isAr ? "بحث" : "Search"}
           style={{ touchAction: "manipulation" }}
           className={cn(
-            "h-9 md:h-10 shrink-0 rounded-lg md:rounded-xl bg-primary text-primary-foreground font-semibold",
+            "shrink-0 rounded-lg md:rounded-xl bg-primary text-primary-foreground font-semibold",
+            "h-11 w-11 md:h-10 md:w-auto md:px-5 text-sm",
             "transition-colors hover:bg-primary/90 active:scale-95",
-            "flex items-center justify-center",
-            "w-9 md:w-auto md:px-5 text-sm"
+            "flex items-center justify-center"
           )}
         >
           <Search className="h-4 w-4 md:hidden" />
@@ -660,7 +694,7 @@ export const SearchBar = memo(function SearchBar({
                     onClick={handleClear}
                     aria-label={isAr ? "مسح" : "Clear"}
                     style={{ touchAction: "manipulation" }}
-                    className="h-7 w-7 flex items-center justify-center rounded-full shrink-0 text-muted-foreground hover:bg-muted"
+                    className="h-11 w-11 flex items-center justify-center rounded-full shrink-0 text-muted-foreground hover:bg-muted"
                   >
                     <X className="h-3.5 w-3.5" />
                   </button>

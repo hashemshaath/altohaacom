@@ -207,7 +207,7 @@ export function useGlobalSearch() {
     [debouncedQuery, filters.type, filters.competitionStatus, filters.isVirtual, filters.articleType, filters.articleStatus, filters.memberRole, filters.experienceLevel, filters.country, filters.cuisineType]
   );
 
-  const { data: results = EMPTY, isLoading } = useQuery({
+  const { data: results = EMPTY, isLoading, error, refetch } = useQuery({
     queryKey: ["global-search", stableFilters],
     queryFn: async () => {
       // Abort previous in-flight request
@@ -249,6 +249,8 @@ export function useGlobalSearch() {
     results: displayResults,
     totalResults,
     isLoading,
+    error: error as Error | null,
+    refetch,
     preloadPopular,
   };
 }

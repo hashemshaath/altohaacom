@@ -12,6 +12,31 @@ export function getRecentSearches(): string[] {
   }
 }
 
+/** Custom event fired whenever the recent-searches list changes — lets open SearchBars stay in sync. */
+const CHANGE_EVENT = "altoha:recent-searches-changed";
+
+function notifyChange() {
+  try {
+    window.dispatchEvent(new CustomEvent(CHANGE_EVENT));
+  } catch {
+    // SSR / no window
+  }
+}
+
+/** Subscribe to recent-searches changes (in this tab and other tabs). Returns unsubscribe. */
+export function subscribeRecentSearches(handler: () => void): () => void {
+  if (typeof window === "undefined") return () => {};
+  window.addEventListener(CHANGE_EVENT, handler);
+  const storageHandler = (e: StorageEvent) => {
+    if (e.key === STORAGE_KEY) handler();
+  };
+  window.addEventListener("storage", storageHandler);
+  return () => {
+    window.removeEventListener(CHANGE_EVENT, handler);
+    window.removeEventListener("storage", storageHandler);
+  };
+}
+
 export function addRecentSearch(query: string): void {
   const trimmed = query.trim();
   if (!trimmed || trimmed.length < 2) return;
@@ -19,6 +44,7 @@ export function addRecentSearch(query: string): void {
     const recent = getRecentSearches().filter((q) => q !== trimmed);
     recent.unshift(trimmed);
     localStorage.setItem(STORAGE_KEY, JSON.stringify(recent.slice(0, MAX_RECENT)));
+    notifyChange();
   } catch {
     // localStorage not available
   }
@@ -27,6 +53,7 @@ export function addRecentSearch(query: string): void {
 export function clearRecentSearches(): void {
   try {
     localStorage.removeItem(STORAGE_KEY);
+    notifyChange();
   } catch {
     // noop
   }
@@ -36,6 +63,7 @@ export function removeRecentSearch(query: string): void {
   try {
     const recent = getRecentSearches().filter((q) => q !== query);
     localStorage.setItem(STORAGE_KEY, JSON.stringify(recent));
+    notifyChange();
   } catch {
     // noop
   }
