@@ -468,7 +468,10 @@ export function HeroSection() {
           z-index: 5;
         }
         @media (max-width: 768px) {
-          .hero-dots { bottom: 24px; }
+          /* Lift dots above mobile bottom nav (64px + safe-area) */
+          .hero-dots {
+            bottom: calc(64px + env(safe-area-inset-bottom, 0px) + 16px);
+          }
         }
         .hero-dot {
           width: 8px;
