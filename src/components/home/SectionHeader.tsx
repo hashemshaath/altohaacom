@@ -40,7 +40,7 @@ export const SectionHeader = forwardRef<HTMLDivElement, SectionHeaderProps>(func
         </div>
 
         {/* Title row */}
-        <div className="flex items-end justify-between gap-4">
+        <div className="section-header-row">
           <div className="min-w-0 flex-1">
             <h2
               className={cn(
@@ -57,7 +57,7 @@ export const SectionHeader = forwardRef<HTMLDivElement, SectionHeaderProps>(func
             )}
           </div>
 
-          <div className="flex items-center gap-2 shrink-0">
+          <div className="flex items-center gap-2 shrink-0 section-header-cta">
             {actions}
             {viewAllHref && (
               <Button
