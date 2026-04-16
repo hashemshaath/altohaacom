@@ -2,7 +2,7 @@ import { useState, useCallback, useMemo, useEffect, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import type { Database } from "@/integrations/supabase/types";
 import { CACHE } from "@/lib/queryConfig";
-import { searchAll } from "@/services/searchService";
+import { searchAll, fetchPopularPreload } from "@/services/searchService";
 
 type CompetitionStatus = Database["public"]["Enums"]["competition_status"];
 
