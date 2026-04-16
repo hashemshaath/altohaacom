@@ -40,7 +40,7 @@ const CompetitionsSection = memo(forwardRef<HTMLElement>(function CompetitionsSe
   const showSubtitle = config?.show_subtitle ?? true;
   const showViewAll = config?.show_view_all ?? true;
 
-  const { data: competitions = [], isLoading: loadingComps , isError } = useQuery({
+  const { data: competitions = [], isLoading: loadingComps, isError: errorComps } = useQuery({
     queryKey: ["home-competitions-minimal", itemCount],
     queryFn: async () => {
       const { data } = await supabase
@@ -56,7 +56,7 @@ const CompetitionsSection = memo(forwardRef<HTMLElement>(function CompetitionsSe
     refetchOnWindowFocus: false,
   });
 
-  const { data: exhibitions = [], isLoading: loadingExhibs , isError } = useQuery({
+  const { data: exhibitions = [], isLoading: loadingExhibs, isError: errorExhibs } = useQuery({
     queryKey: ["home-exhibitions-minimal"],
     queryFn: async () => {
       const { data } = await supabase
