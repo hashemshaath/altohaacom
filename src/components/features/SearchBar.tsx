@@ -694,7 +694,7 @@ export const SearchBar = memo(function SearchBar({
                     onClick={handleClear}
                     aria-label={isAr ? "مسح" : "Clear"}
                     style={{ touchAction: "manipulation" }}
-                    className="h-7 w-7 flex items-center justify-center rounded-full shrink-0 text-muted-foreground hover:bg-muted"
+                    className="h-11 w-11 flex items-center justify-center rounded-full shrink-0 text-muted-foreground hover:bg-muted"
                   >
                     <X className="h-3.5 w-3.5" />
                   </button>
