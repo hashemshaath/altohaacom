@@ -202,7 +202,7 @@ export function useChefsTableSession(id: string | undefined) {
       const { data, error } = await untypedFrom("chefs_table_sessions")
         .select("id, request_id, company_id, session_number, title, title_ar, description, description_ar, product_name, product_name_ar, product_category, experience_type, venue, venue_ar, city, country_code, session_date, session_end, cover_image_url, status, organizer_id, chef_selection_method, max_chefs, sample_delivery_address, sample_delivery_notes, notes, notes_ar, is_published, published_at, created_at, updated_at")
         .eq("id", id!)
-        .single();
+        .maybeSingle();
       if (error) throw error;
       return data as unknown as ChefsTableSession;
     },

@@ -44,7 +44,7 @@ export const UserDropdown = memo(forwardRef<HTMLDivElement>(function UserDropdow
         .from("profiles")
         .select("full_name, full_name_ar, display_name, display_name_ar, avatar_url, username, membership_tier")
         .eq("user_id", user.id)
-        .single();
+        .maybeSingle();
       return data;
     },
     enabled: !!user,

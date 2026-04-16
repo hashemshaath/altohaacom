@@ -233,7 +233,7 @@ export const BulkImportPanel = memo(function BulkImportPanel({ entityType, onImp
           created_by: user?.id,
         })
         .select("id")
-        .single();
+        .maybeSingle();
 
       if (insertErr) throw insertErr;
 

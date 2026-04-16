@@ -39,7 +39,7 @@ export const ReviewStep = memo(function ReviewStep({ data }: ReviewStepProps) {
         .from("exhibitions")
         .select("title, title_ar")
         .eq("id", data.exhibitionId)
-        .single();
+        .maybeSingle();
       return exh;
     },
     enabled: !!data.exhibitionId,

@@ -70,7 +70,7 @@ export default function TastingDetail() {
         .from("competitions")
         .select("id, title, title_ar, status")
         .eq("id", session!.competition_id!)
-        .single();
+        .maybeSingle();
       if (error) throw handleSupabaseError(error);
       return data;
     },

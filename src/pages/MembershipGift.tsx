@@ -58,7 +58,7 @@ export default function MembershipGift() {
         .from("profiles")
         .select("full_name, email")
         .eq("user_id", user!.id)
-        .single();
+        .maybeSingle();
       return data;
     },
     enabled: !!user?.id,
@@ -87,7 +87,7 @@ export default function MembershipGift() {
           status: "pending",
         } as any)
         .select("gift_code")
-        .single();
+        .maybeSingle();
 
       if (error) throw handleSupabaseError(error);
       return data;

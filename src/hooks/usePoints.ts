@@ -15,7 +15,7 @@ export function usePointsBalance() {
         .from("user_wallets")
         .select("points_balance")
         .eq("user_id", user.id)
-        .single();
+        .maybeSingle();
       return data?.points_balance || 0;
     },
     enabled: !!user,

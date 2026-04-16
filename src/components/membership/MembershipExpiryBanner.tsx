@@ -25,7 +25,7 @@ export const MembershipExpiryBanner = memo(function MembershipExpiryBanner({ cla
         .from("profiles")
         .select("membership_tier, membership_expires_at, membership_status")
         .eq("user_id", user.id)
-        .single();
+        .maybeSingle();
 
       if (!data?.membership_expires_at || data.membership_tier === "basic") return null;
 

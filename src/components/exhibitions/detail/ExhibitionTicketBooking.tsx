@@ -66,7 +66,7 @@ export const ExhibitionTicketBooking = memo(function ExhibitionTicketBooking({ e
           payment_status: isPaid ? "pending" : "free",
         })
         .select()
-        .single();
+        .maybeSingle();
       if (error) throw handleSupabaseError(error);
       await supabase.from("qr_codes").insert({
         code: qrCode as string,

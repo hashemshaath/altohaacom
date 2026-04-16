@@ -81,7 +81,7 @@ export const CompanySponsorshipPanelEnhanced = memo(function CompanySponsorshipP
   const handleAISuggestions = async () => {
     setAiLoading(true);
     try {
-      const companyData = await supabase.from("companies").select("name, type, description, country_code").eq("id", companyId).single();
+      const companyData = await supabase.from("companies").select("name, type, description, country_code").eq("id", companyId).maybeSingle();
       const history = sponsorships.map((s) => ({
         competition: (s as Record<string, unknown>).competitions && typeof (s as Record<string, unknown>).competitions === "object" ? ((s as Record<string, unknown>).competitions as Record<string, unknown>)?.title : undefined,
         tier: (s as Record<string, unknown>).sponsorship_packages && typeof (s as Record<string, unknown>).sponsorship_packages === "object" ? ((s as Record<string, unknown>).sponsorship_packages as Record<string, unknown>)?.tier : undefined,

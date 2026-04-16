@@ -149,7 +149,7 @@ export function useEvaluationCriteriaByDomain(domainSlug: string, productCategor
       const { data: domains } = await untypedFrom("evaluation_domains")
         .select("id")
         .eq("slug", domainSlug)
-        .single();
+        .maybeSingle();
       if (!domains) return { categories: [], criteria: [] };
       const domainId = (domains as unknown as { id: string }).id;
 

@@ -27,7 +27,7 @@ export const ProfileSummaryCard = memo(function ProfileSummaryCard() {
         .from("profiles")
         .select("full_name, full_name_ar, username, avatar_url, account_type, membership_tier, is_verified, country_code, city, specialization, specialization_ar, loyalty_points, years_of_experience, job_title, job_title_ar")
         .eq("user_id", user.id)
-        .single();
+        .maybeSingle();
       return data;
     },
     enabled: !!user,

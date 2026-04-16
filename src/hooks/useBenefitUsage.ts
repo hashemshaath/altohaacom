@@ -28,7 +28,7 @@ export function useBenefitUsage() {
         .from("profiles")
         .select("membership_tier")
         .eq("user_id", user.id)
-        .single();
+        .maybeSingle();
 
       const tier = profile?.membership_tier || "basic";
 

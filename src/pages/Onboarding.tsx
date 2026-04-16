@@ -19,7 +19,7 @@ export default function Onboarding() {
         .from("profiles")
         .select("profile_completed")
         .eq("user_id", user!.id)
-        .single();
+        .maybeSingle();
       return data;
     },
     enabled: !!user,

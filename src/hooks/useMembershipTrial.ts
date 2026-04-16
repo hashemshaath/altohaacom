@@ -25,7 +25,7 @@ export function useTrialInfo() {
         .from("profiles")
         .select("trial_tier, trial_started_at, trial_ends_at, trial_expired")
         .eq("user_id", user.id)
-        .single();
+        .maybeSingle();
       if (error || !data) return { trialTier: null, trialStartedAt: null, trialEndsAt: null, trialExpired: false, isInTrial: false, daysRemaining: 0 };
 
       const isInTrial = !!data.trial_tier && !data.trial_expired && !!data.trial_ends_at && new Date(data.trial_ends_at) > new Date();

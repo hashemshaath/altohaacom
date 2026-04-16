@@ -133,7 +133,7 @@ export default function CompanySponsorships() {
         .from("competitions")
         .select("organizer_id, title")
         .eq("id", applyDialog.id)
-        .single();
+        .maybeSingle();
       if (comp?.organizer_id) {
         sendNotification({
           userId: comp.organizer_id,

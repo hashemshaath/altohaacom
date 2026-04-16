@@ -145,7 +145,7 @@ export function useTastingSession(id: string | undefined) {
       const { data, error } = await untypedFrom("tasting_sessions")
         .select(SESSION_COLS)
         .eq("id", id!)
-        .single();
+        .maybeSingle();
       if (error) throw error;
       return data as unknown as TastingSession;
     },

@@ -78,7 +78,7 @@ export const ItemRequestPanel = memo(function ItemRequestPanel({ competitionId, 
   const { data: competition } = useQuery({
     queryKey: ["competition-title", competitionId],
     queryFn: async () => {
-      const { data } = await supabase.from("competitions").select("title, title_ar").eq("id", competitionId).single();
+      const { data } = await supabase.from("competitions").select("title, title_ar").eq("id", competitionId).maybeSingle();
       return data;
     },
   });

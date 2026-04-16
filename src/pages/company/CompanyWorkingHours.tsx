@@ -78,7 +78,7 @@ export default function CompanyWorkingHours() {
         .from("companies")
         .select("working_hours")
         .eq("id", companyId)
-        .single();
+        .maybeSingle();
       if (error) throw handleSupabaseError(error);
       return data;
     },

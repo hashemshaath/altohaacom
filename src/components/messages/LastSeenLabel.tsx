@@ -21,7 +21,7 @@ export const LastSeenLabel = memo(function LastSeenLabel({ userId, isOnline, isT
         .from("profiles")
         .select("last_login_at")
         .eq("user_id", userId)
-        .single();
+        .maybeSingle();
       return data?.last_login_at || null;
     },
     enabled: !isOnline && !isTyping,

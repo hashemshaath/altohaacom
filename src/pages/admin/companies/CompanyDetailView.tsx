@@ -87,7 +87,7 @@ export const CompanyDetailView = memo(function CompanyDetailView({ companyId, on
   const { data: companyDetails } = useQuery({
     queryKey: ["company", companyId],
     queryFn: async () => {
-      const { data, error } = await supabase.from("companies").select("id, name, name_ar, type, status, country_code, country, city, address, address_ar, phone, email, website, logo_url, cover_image_url, description, description_ar, company_number, tax_number, registration_number, founded_year, specializations, social_links, currency, credit_limit, payment_terms, created_at, updated_at").eq("id", companyId).single();
+      const { data, error } = await supabase.from("companies").select("id, name, name_ar, type, status, country_code, country, city, address, address_ar, phone, email, website, logo_url, cover_image_url, description, description_ar, company_number, tax_number, registration_number, founded_year, specializations, social_links, currency, credit_limit, payment_terms, created_at, updated_at").eq("id", companyId).maybeSingle();
       if (error) throw handleSupabaseError(error);
       return data;
     },

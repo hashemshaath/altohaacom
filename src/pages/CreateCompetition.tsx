@@ -127,7 +127,7 @@ export default function CreateCompetition() {
           min_team_size: data.minTeamSize,
         })
         .select()
-        .single();
+        .maybeSingle();
 
       if (compError) throw compError;
 

@@ -27,7 +27,7 @@ export const ProfileWalletTab = memo(function ProfileWalletTab({ userId }: Profi
         .from("user_wallets")
         .select("id, balance, currency, points_balance, created_at, updated_at")
         .eq("user_id", userId)
-        .single();
+        .maybeSingle();
       return data;
     },
   });

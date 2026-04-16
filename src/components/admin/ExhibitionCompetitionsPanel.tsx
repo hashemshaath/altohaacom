@@ -100,7 +100,7 @@ export const ExhibitionCompetitionsPanel = memo(function ExhibitionCompetitionsP
         status: "draft",
         exhibition_id: exhibitionId,
         created_by: user?.id,
-      } as any).select("id").single();
+      } as any).select("id").maybeSingle();
       if (error) throw handleSupabaseError(error);
       return data.id;
     },

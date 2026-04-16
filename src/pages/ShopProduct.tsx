@@ -39,7 +39,7 @@ export default function ShopProduct() {
         .from("shop_products")
         .select("id, title, title_ar, description, description_ar, price, compare_at_price, currency, image_url, gallery_urls, category, stock_quantity, sku, seller_id, product_type, is_active, is_featured, discount_percent, brand, brand_ar, tags, created_at")
         .eq("id", id)
-        .single();
+        .maybeSingle();
       if (error) throw handleSupabaseError(error);
       return data;
     },
@@ -53,7 +53,7 @@ export default function ShopProduct() {
         .from("profiles")
         .select("full_name, avatar_url, username")
         .eq("user_id", product!.seller_id)
-        .single();
+        .maybeSingle();
       return data;
     },
     enabled: !!product?.seller_id,

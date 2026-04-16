@@ -48,12 +48,12 @@ export function usePostThread(postId: string): UsePostThreadReturn {
     queryFn: async () => {
       const { data: post } = await supabase.from("posts")
         .select("id, content, author_id, image_url, image_urls, video_url, link_url, link_preview, visibility, replies_count, reposts_count, is_pinned, reply_to_post_id, created_at, updated_at")
-        .eq("id", postId).single();
+        .eq("id", postId).maybeSingle();
       if (!post) return { parent: null, replies: [] as ThreadReply[] };
 
       const { data: profile } = await supabase.from("profiles")
         .select("full_name, display_name, display_name_ar, username, avatar_url, specialization")
-        .eq("user_id", post.author_id).single();
+        .eq("user_id", post.author_id).maybeSingle();
 
       const parent: ParentPost = { ...post, ...profile };
 
