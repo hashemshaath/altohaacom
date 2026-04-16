@@ -77,7 +77,7 @@ const ArticlesSection = memo(forwardRef<HTMLElement>(function ArticlesSection(_p
           badge={isAr ? "أخبار ومقالات" : "News & Articles"}
           title={title}
           subtitle={showSubtitle ? subtitle : undefined}
-          viewAllHref={showViewAll ? "/blog" : undefined}
+          viewAllHref={showViewAll ? ROUTES.blog : undefined}
           isAr={isAr}
         />
 

@@ -79,7 +79,7 @@ export const HomeTrendingContent = forwardRef<HTMLDivElement>(function HomeTrend
             subtitle={sectionSubtitle}
             dataSource="articles (by view_count)"
             itemCount={filtered.length}
-            viewAllHref={showViewAll ? "/blog" : undefined}
+            viewAllHref={showViewAll ? ROUTES.blog : undefined}
             isAr={isAr}
             filters={showFilters && types.length > 1 ? (
               <>

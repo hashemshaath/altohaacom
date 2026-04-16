@@ -79,7 +79,7 @@ export function RegionalEvents() {
             subtitle={isAr ? "اكتشف الأحداث القريبة منك والفعاليات العالمية المميزة" : "Discover events near you and standout global gatherings"}
             dataSource="competitions"
             itemCount={filteredComps.length}
-            viewAllHref="/competitions"
+            viewAllHref={ROUTES.competitions}
             viewAllLabel={isAr ? "عرض جميع الفعاليات" : "View All Events"}
             filters={
               <>

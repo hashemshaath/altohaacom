@@ -90,7 +90,7 @@ const CompetitionsSection = memo(forwardRef<HTMLElement>(function CompetitionsSe
           badge={isAr ? "فعاليات" : "Events"}
           title={title}
           subtitle={showSubtitle ? subtitle : undefined}
-          viewAllHref={showViewAll ? "/events-calendar" : undefined}
+          viewAllHref={showViewAll ? ROUTES.eventsCalendar : undefined}
           isAr={isAr}
         />
 

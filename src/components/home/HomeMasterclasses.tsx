@@ -97,7 +97,7 @@ export const HomeMasterclasses = memo(forwardRef<HTMLElement>(function HomeMaste
         subtitle={sectionSubtitle}
         dataSource="masterclasses"
         itemCount={filtered.length}
-        viewAllHref={showViewAll ? "/masterclasses" : undefined}
+        viewAllHref={showViewAll ? ROUTES.masterclasses : undefined}
         isAr={isAr}
         filters={showFilters && (levels.length > 1 || categories.length > 1) ? (
           <>

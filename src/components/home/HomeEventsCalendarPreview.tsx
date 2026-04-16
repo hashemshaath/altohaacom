@@ -122,7 +122,7 @@ export const HomeEventsCalendarPreview = memo(function HomeEventsCalendarPreview
           badge={isAr ? "التقويم" : "Calendar"}
           title={isAr ? "تقويم الفعاليات" : "Events Calendar"}
           subtitle={isAr ? "الفعاليات القادمة محلياً ودولياً" : "Upcoming local & international events"}
-          viewAllHref="/events-calendar"
+          viewAllHref={ROUTES.eventsCalendar}
           viewAllLabel={isAr ? "عرض التقويم" : "View Calendar"}
           isAr={isAr}
         />
