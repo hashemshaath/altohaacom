@@ -50,7 +50,7 @@ const StatsBar = memo(forwardRef<HTMLElement>(function StatsBar(_props, _ref) {
   const { data: stats } = useQuery({
     queryKey: ["home-stats"],
     queryFn: async () => {
-      const safeCount = async (table: string) => {
+      const safeCount = async <T extends "profiles_public" | "competitions" | "culinary_entities" | "exhibitions" | "organizers">(table: T) => {
         try {
           const { count } = await supabase.from(table).select("*", { count: "exact", head: true });
           return count ?? 0;
