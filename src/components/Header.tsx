@@ -21,25 +21,25 @@ import {
 } from "lucide-react";
 
 const primaryNav = [
-  { to: "/competitions", icon: Trophy, labelEn: "Competitions", labelAr: "المسابقات" },
-  { to: "/exhibitions", icon: Landmark, labelEn: "Exhibitions", labelAr: "المعارض" },
-  { to: "/community", icon: Users, labelEn: "Community", labelAr: "المجتمع" },
-  { to: "/blog", icon: Newspaper, labelEn: "News", labelAr: "الأخبار" },
+  { to: ROUTES.competitions, icon: Trophy, labelEn: "Competitions", labelAr: "المسابقات" },
+  { to: ROUTES.exhibitions, icon: Landmark, labelEn: "Exhibitions", labelAr: "المعارض" },
+  { to: ROUTES.community, icon: Users, labelEn: "Community", labelAr: "المجتمع" },
+  { to: ROUTES.blog, icon: Newspaper, labelEn: "News", labelAr: "الأخبار" },
 ];
 
 const moreLinks = [
-  { to: "/jobs", icon: Briefcase, labelEn: "Jobs", labelAr: "الوظائف" },
-  { to: "/organizers", icon: Building2, labelEn: "Organizers", labelAr: "المنظمون" },
-  { to: "/masterclasses", icon: GraduationCap, labelEn: "Masterclasses", labelAr: "الدروس المتقدمة" },
-  { to: "/recipes", icon: UtensilsCrossed, labelEn: "Recipes", labelAr: "الوصفات" },
-  { to: "/shop", icon: ShoppingBag, labelEn: "Shop", labelAr: "المتجر" },
-  { to: "/entities", icon: Star, labelEn: "Entities", labelAr: "الجهات" },
-  { to: "/establishments", icon: Building2, labelEn: "Establishments", labelAr: "المؤسسات" },
-  { to: "/pro-suppliers", icon: Factory, labelEn: "Pro Suppliers", labelAr: "الموردون المحترفون" },
-  { to: "/mentorship", icon: HandHeart, labelEn: "Mentorship", labelAr: "الإرشاد" },
-  { to: "/knowledge", icon: BookOpen, labelEn: "Knowledge", labelAr: "المعرفة" },
-  { to: "/events-calendar", icon: CalendarDays, labelEn: "Events", labelAr: "الفعاليات" },
-  { to: "/rankings", icon: Medal, labelEn: "Rankings", labelAr: "التصنيفات" },
+  { to: ROUTES.jobs, icon: Briefcase, labelEn: "Jobs", labelAr: "الوظائف" },
+  { to: ROUTES.organizers, icon: Building2, labelEn: "Organizers", labelAr: "المنظمون" },
+  { to: ROUTES.masterclasses, icon: GraduationCap, labelEn: "Masterclasses", labelAr: "الدروس المتقدمة" },
+  { to: ROUTES.recipes, icon: UtensilsCrossed, labelEn: "Recipes", labelAr: "الوصفات" },
+  { to: ROUTES.shop, icon: ShoppingBag, labelEn: "Shop", labelAr: "المتجر" },
+  { to: ROUTES.entities, icon: Star, labelEn: "Entities", labelAr: "الجهات" },
+  { to: ROUTES.establishments, icon: Building2, labelEn: "Establishments", labelAr: "المؤسسات" },
+  { to: ROUTES.proSuppliers, icon: Factory, labelEn: "Pro Suppliers", labelAr: "الموردون المحترفون" },
+  { to: ROUTES.mentorship, icon: HandHeart, labelEn: "Mentorship", labelAr: "الإرشاد" },
+  { to: ROUTES.knowledge, icon: BookOpen, labelEn: "Knowledge", labelAr: "المعرفة" },
+  { to: ROUTES.eventsCalendar, icon: CalendarDays, labelEn: "Events", labelAr: "الفعاليات" },
+  { to: ROUTES.rankings, icon: Medal, labelEn: "Rankings", labelAr: "التصنيفات" },
 ];
 
 export const Header = forwardRef<HTMLElement>(function Header(_, ref) {

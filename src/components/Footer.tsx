@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { useIsAr } from "@/hooks/useIsAr";
 import { forwardRef, useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
@@ -22,45 +23,45 @@ const navColumns = [
     titleEn: "Platform",
     titleAr: "المنصة",
     links: [
-      { to: "/competitions", en: "Competitions", ar: "المسابقات" },
-      { to: "/exhibitions", en: "Exhibitions", ar: "المعارض" },
-      { to: "/community", en: "Community", ar: "المجتمع" },
-      { to: "/blog", en: "News", ar: "الأخبار" },
-      { to: "/jobs", en: "Jobs", ar: "الوظائف" },
-      { to: "/recipes", en: "Recipes", ar: "الوصفات" },
+      { to: ROUTES.competitions, en: "Competitions", ar: "المسابقات" },
+      { to: ROUTES.exhibitions, en: "Exhibitions", ar: "المعارض" },
+      { to: ROUTES.community, en: "Community", ar: "المجتمع" },
+      { to: ROUTES.blog, en: "News", ar: "الأخبار" },
+      { to: ROUTES.jobs, en: "Jobs", ar: "الوظائف" },
+      { to: ROUTES.recipes, en: "Recipes", ar: "الوصفات" },
     ],
   },
   {
     titleEn: "Discover",
     titleAr: "اكتشف",
     links: [
-      { to: "/masterclasses", en: "Masterclasses", ar: "الدروس المتقدمة" },
-      { to: "/shop", en: "Shop", ar: "المتجر" },
-      { to: "/rankings", en: "Rankings", ar: "التصنيفات" },
-      { to: "/events-calendar", en: "Events", ar: "الفعاليات" },
-      { to: "/mentorship", en: "Mentorship", ar: "الإرشاد" },
-      { to: "/entities", en: "Entities", ar: "الجهات" },
+      { to: ROUTES.masterclasses, en: "Masterclasses", ar: "الدروس المتقدمة" },
+      { to: ROUTES.shop, en: "Shop", ar: "المتجر" },
+      { to: ROUTES.rankings, en: "Rankings", ar: "التصنيفات" },
+      { to: ROUTES.eventsCalendar, en: "Events", ar: "الفعاليات" },
+      { to: ROUTES.mentorship, en: "Mentorship", ar: "الإرشاد" },
+      { to: ROUTES.entities, en: "Entities", ar: "الجهات" },
     ],
   },
   {
     titleEn: "Company",
     titleAr: "الشركة",
     links: [
-      { to: "/about", en: "About", ar: "من نحن" },
-      { to: "/contact", en: "Contact", ar: "اتصل بنا" },
-      { to: "/help", en: "Help Center", ar: "المساعدة" },
-      { to: "/for-organizers", en: "For Organizers", ar: "للمنظمين" },
-      { to: "/for-companies", en: "For Companies", ar: "للشركات" },
-      { to: "/verify", en: "Verify Certificate", ar: "التحقق من الشهادات" },
+      { to: ROUTES.about, en: "About", ar: "من نحن" },
+      { to: ROUTES.contact, en: "Contact", ar: "اتصل بنا" },
+      { to: ROUTES.help, en: "Help Center", ar: "المساعدة" },
+      { to: ROUTES.forOrganizers, en: "For Organizers", ar: "للمنظمين" },
+      { to: ROUTES.forCompanies, en: "For Companies", ar: "للشركات" },
+      { to: ROUTES.verify, en: "Verify Certificate", ar: "التحقق من الشهادات" },
     ],
   },
   {
     titleEn: "Legal",
     titleAr: "قانوني",
     links: [
-      { to: "/privacy", en: "Privacy Policy", ar: "سياسة الخصوصية" },
-      { to: "/terms", en: "Terms of Service", ar: "شروط الاستخدام" },
-      { to: "/cookies", en: "Cookie Policy", ar: "سياسة الكوكيز" },
+      { to: ROUTES.privacy, en: "Privacy Policy", ar: "سياسة الخصوصية" },
+      { to: ROUTES.terms, en: "Terms of Service", ar: "شروط الاستخدام" },
+      { to: ROUTES.cookies, en: "Cookie Policy", ar: "سياسة الكوكيز" },
     ],
   },
 ];
