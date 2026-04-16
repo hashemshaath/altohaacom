@@ -36,8 +36,8 @@ export const NewlyJoinedUsers = memo(function NewlyJoinedUsers() {
     queryKey: ["newly-joined-users", itemCount],
     queryFn: async () => {
       const { data } = await supabase
-        .from("profiles")
-        .select("id, user_id, username, full_name, full_name_ar, display_name, display_name_ar, avatar_url, country_code, city, specialization, specialization_ar, nationality, show_nationality, created_at")
+        .from("profiles_public")
+        .select("user_id, username, full_name, full_name_ar, display_name, display_name_ar, avatar_url, country_code, city, specialization, specialization_ar, nationality, show_nationality, created_at")
         .order("created_at", { ascending: false })
         .limit(itemCount);
       return data || [];
@@ -112,7 +112,7 @@ export const NewlyJoinedUsers = memo(function NewlyJoinedUsers() {
 
             return (
               <Link
-                key={user.id}
+                key={user.user_id}
                 to={user.username ? `/${user.username}` : `/profile/${user.user_id}`}
                 className="group block snap-start shrink-0 w-[32vw] sm:w-[24vw] md:w-[18vw] lg:w-[14vw] xl:w-[11vw] touch-manipulation"
               >
