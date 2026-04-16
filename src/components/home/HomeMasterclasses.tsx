@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useMemo, memo, forwardRef } from "react";
 import { Link } from "react-router-dom";
@@ -140,7 +141,7 @@ export const HomeMasterclasses = memo(forwardRef<HTMLElement>(function HomeMaste
             const levelLabel = LEVEL_LABELS[mc.level];
 
             return (
-              <Link key={mc.id} to={`/masterclasses/${mc.id}`} className="group block snap-start shrink-0 w-[64vw] sm:w-[40vw] md:w-[30vw] lg:w-[22vw] xl:w-[18vw] touch-manipulation">
+              <Link key={mc.id} to={ROUTES.masterclass(mc.id)} className="group block snap-start shrink-0 w-[64vw] sm:w-[40vw] md:w-[30vw] lg:w-[22vw] xl:w-[18vw] touch-manipulation">
                 <Card className="h-full overflow-hidden border-border/40 rounded-2xl transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5 hover:border-primary/20 active:scale-[0.98]">
                   <div className="relative aspect-[16/10] overflow-hidden bg-muted">
                     {mc.cover_image_url ? (

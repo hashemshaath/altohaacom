@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useMemo, memo } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -113,7 +114,7 @@ export const NewlyJoinedUsers = memo(function NewlyJoinedUsers() {
             return (
               <Link
                 key={user.user_id}
-                to={user.username ? `/${user.username}` : `/profile/${user.user_id}`}
+                to={user.username ? ROUTES.publicProfile(user.username) : ROUTES.publicProfile(user.user_id)}
                 className="group block snap-start shrink-0 w-[32vw] sm:w-[24vw] md:w-[18vw] lg:w-[14vw] xl:w-[11vw] touch-manipulation"
               >
                 <Card className="h-full border-border/40 rounded-2xl p-3 text-center transition-all duration-200 hover:shadow-lg hover:shadow-primary/5 hover:-translate-y-0.5 hover:border-primary/20 active:scale-[0.98]">
