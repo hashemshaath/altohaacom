@@ -8,13 +8,13 @@ import { useSiteSettingsContext } from "@/contexts/SiteSettingsContext";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import { ThemeToggle } from "./ThemeToggle";
 import { NotificationBell } from "./notifications/NotificationBell";
-import { Button } from "@/components/ui/button";
 import { DesktopNav } from "./header/DesktopNav";
 import { UserDropdown } from "./header/UserDropdown";
 import { MobileMenu } from "./header/MobileMenu";
 import { cn } from "@/lib/utils";
+import { Search } from "lucide-react";
 import {
-  Search, Trophy, Users, GraduationCap, Landmark, Newspaper,
+  Trophy, Users, GraduationCap, Landmark, Newspaper,
   ShoppingBag, UtensilsCrossed, Building2, Star, BookOpen,
   HandHeart, Factory, Briefcase, CalendarDays, Medal,
 } from "lucide-react";
@@ -61,23 +61,25 @@ export const Header = forwardRef<HTMLElement>(function Header(_, ref) {
         role="banner"
         className={cn(
           "sticky inset-x-0 top-0 z-50 transition-all duration-300",
-          /* Desktop: 72px, Mobile: 60px */
-          "h-[60px] lg:h-[72px]",
-          scrolled
-            ? "bg-[var(--bg-background)] shadow-[0_1px_0_rgba(0,0,0,0.06),0_2px_12px_rgba(0,0,0,0.04)] border-b border-[var(--color-border)]"
-            : "bg-[var(--bg-background)]/95 dark:bg-[rgba(17,24,39,0.95)] backdrop-blur-[20px] backdrop-saturate-[180%] border-b border-[var(--color-border-light)] dark:border-[rgba(55,65,81,0.8)]"
+          "h-[56px] lg:h-[64px]"
         )}
-        style={{ WebkitBackdropFilter: scrolled ? undefined : "blur(20px) saturate(180%)" }}
+        style={{
+          background: "#FEFCF8",
+          borderBottom: scrolled
+            ? "1px solid rgba(28,28,26,0.12)"
+            : "1px solid rgba(28,28,26,0.08)",
+          boxShadow: scrolled ? "0 1px 8px rgba(28,28,26,0.06)" : "none",
+        }}
       >
-        <div className="mx-auto flex h-full max-w-[var(--container-max)] items-center gap-4 px-4 lg:px-6">
-          {/* Mobile: hamburger on the left (LTR) / right (RTL) */}
+        <div className="mx-auto flex h-full max-w-[1280px] items-center gap-4 px-4 lg:px-6">
+          {/* Mobile: hamburger */}
           <MobileMenu primaryNav={primaryNav} moreLinks={moreLinks} />
 
           {/* Logo */}
           <Link
             to="/"
             aria-label="Altoha homepage"
-            className="flex items-center gap-2.5 shrink-0 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:rounded-lg"
+            className="flex items-center gap-2.5 shrink-0 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:rounded-lg"
           >
             {headerCfg.showLogo !== false && (
               <img
@@ -88,7 +90,10 @@ export const Header = forwardRef<HTMLElement>(function Header(_, ref) {
               />
             )}
             {headerCfg.showBrandName !== false && (
-              <span className="text-base font-bold text-[var(--color-heading)] hidden sm:inline tracking-tight">
+              <span
+                className="text-base font-bold hidden sm:inline tracking-tight"
+                style={{ color: "#1C1C1A" }}
+              >
                 {isAr ? (brandCfg.siteNameAr || "الطهاة") : (brandCfg.siteName || "Altoha")}
               </span>
             )}
@@ -103,13 +108,24 @@ export const Header = forwardRef<HTMLElement>(function Header(_, ref) {
           />
 
           {/* Right: Actions */}
-          <div className="flex items-center gap-1 ms-auto shrink-0">
+          <div className="flex items-center gap-1.5 ms-auto shrink-0">
             {headerCfg.showSearch !== false && (
-              <Button variant="ghost" size="icon" asChild className="rounded-full h-10 w-10 text-[var(--color-muted)] hover:text-[var(--color-heading)] hover:bg-[var(--bg-surface)] touch-manipulation transition-colors duration-150">
-                <Link to="/search" aria-label={isAr ? "البحث" : "Search"}>
-                  <Search className="h-[18px] w-[18px]" aria-hidden="true" />
-                </Link>
-              </Button>
+              <Link
+                to="/search"
+                aria-label={isAr ? "البحث" : "Search"}
+                className="flex items-center justify-center h-10 w-10 rounded-lg transition-colors duration-150 touch-manipulation"
+                style={{ color: "#6B6560" }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = "#F5F0E8";
+                  e.currentTarget.style.color = "#1C1C1A";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = "transparent";
+                  e.currentTarget.style.color = "#6B6560";
+                }}
+              >
+                <Search className="h-[18px] w-[18px]" aria-hidden="true" />
+              </Link>
             )}
             {user && headerCfg.showNotifications !== false && <NotificationBell />}
             {headerCfg.showThemeToggle !== false && <ThemeToggle />}
