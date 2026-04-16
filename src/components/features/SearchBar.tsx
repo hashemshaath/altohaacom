@@ -464,6 +464,35 @@ export const SearchBar = memo(function SearchBar({
         </div>
       )}
 
+      {/* ERROR STATE — network failure or query error, with retry */}
+      {showError && (
+        <div className="py-8 px-6 text-center">
+          <WifiOff className="h-10 w-10 text-destructive/60 mx-auto mb-3" aria-hidden="true" />
+          <p className="text-sm font-semibold text-foreground mb-1">
+            {isAr ? "تعذّر إجراء البحث" : "Search failed"}
+          </p>
+          <p className="text-xs text-muted-foreground mb-4">
+            {isAr
+              ? "تحقق من اتصالك بالإنترنت ثم أعد المحاولة"
+              : "Check your internet connection and try again"}
+          </p>
+          <button
+            type="button"
+            onClick={() => refetch()}
+            style={{ touchAction: "manipulation" }}
+            className={cn(
+              "inline-flex items-center gap-2 rounded-lg px-4",
+              "bg-primary text-primary-foreground text-sm font-semibold",
+              "hover:bg-primary/90 active:scale-95 transition-all",
+              isMobile ? "h-11" : "h-9"
+            )}
+          >
+            <RefreshCw className="h-4 w-4" />
+            {isAr ? "إعادة المحاولة" : "Retry"}
+          </button>
+        </div>
+      )}
+
       {/* EMPTY STATE */}
       {showEmpty && (
         <div className="py-10 px-6 text-center">
