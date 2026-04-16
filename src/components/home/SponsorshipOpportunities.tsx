@@ -46,7 +46,7 @@ export const SponsorshipOpportunities = forwardRef<HTMLElement>(function Sponsor
       const { data: competitions } = await supabase
         .from("competitions")
         .select(`
-          id, title, title_ar, cover_image_url, status, competition_start, city, country, country_code, is_virtual,
+          id, title, title_ar, slug, cover_image_url, status, competition_start, city, country, country_code, is_virtual,
           competition_sponsors(id, company_id)
         `)
         .in("status", ["registration_open", "upcoming", "in_progress"])
