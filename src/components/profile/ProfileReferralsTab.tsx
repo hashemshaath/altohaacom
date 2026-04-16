@@ -134,7 +134,7 @@ export const ProfileReferralsTab = memo(function ProfileReferralsTab({ userId }:
                   <Copy className="h-4 w-4" />
                 </Button>
               </div>
-              <p className="text-xs text-muted-foreground mt-2.5 leading-relaxed">
+              <p className="text-sm text-muted-foreground mt-2.5 leading-relaxed">
                 {isAr
                   ? "شارك هذا الكود مع أصدقائك ليستخدموه أثناء التسجيل"
                   : "Share this code with friends to use during registration"}
@@ -144,7 +144,7 @@ export const ProfileReferralsTab = memo(function ProfileReferralsTab({ userId }:
 
           {/* Referral Link */}
           <div>
-            <p className="text-xs text-muted-foreground mb-1.5">
+            <p className="text-sm text-muted-foreground mb-1.5">
               {isAr ? "أو شارك الرابط المباشر:" : "Or share the direct link:"}
             </p>
             <div className="flex gap-2">
@@ -160,27 +160,27 @@ export const ProfileReferralsTab = memo(function ProfileReferralsTab({ userId }:
 
           {/* ── Social Share Buttons ── */}
           <div>
-            <p className="text-xs font-semibold mb-2 flex items-center gap-1.5">
+            <p className="text-sm font-semibold mb-2 flex items-center gap-1.5">
               <Share2 className="h-3.5 w-3.5 text-primary" />
               {isAr ? "شارك عبر" : "Share via"}
             </p>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-              <Button variant="outline" size="sm" onClick={shareViaWhatsApp} className="gap-1.5 text-xs border-chart-2/20 hover:bg-chart-2/5 hover:border-chart-2/40 transition-all">
+              <Button variant="outline" size="sm" onClick={shareViaWhatsApp} className="gap-1.5 text-sm border-chart-2/20 hover:bg-chart-2/5 hover:border-chart-2/40 transition-all">
                 <MessageCircle className="h-3.5 w-3.5 text-chart-2" />
                 WhatsApp
               </Button>
-              <Button variant="outline" size="sm" onClick={shareViaTwitter} className="gap-1.5 text-xs border-chart-1/20 hover:bg-chart-1/5 hover:border-chart-1/40 transition-all">
+              <Button variant="outline" size="sm" onClick={shareViaTwitter} className="gap-1.5 text-sm border-chart-1/20 hover:bg-chart-1/5 hover:border-chart-1/40 transition-all">
                 <Twitter className="h-3.5 w-3.5 text-chart-1" />
                 X / Twitter
               </Button>
-              <Button variant="outline" size="sm" onClick={shareViaTelegram} className="gap-1.5 text-xs border-primary/20 hover:bg-primary/5 hover:border-primary/40 transition-all">
+              <Button variant="outline" size="sm" onClick={shareViaTelegram} className="gap-1.5 text-sm border-primary/20 hover:bg-primary/5 hover:border-primary/40 transition-all">
                 <Send className="h-3.5 w-3.5 text-primary" />
                 Telegram
               </Button>
               <Button
                 variant="outline"
                 size="sm"
-                className="gap-1.5 text-xs"
+                className="gap-1.5 text-sm"
                 onClick={async () => {
                   if (navigator.share) {
                     await navigator.share({ title: "Altoha", text: isAr ? "انضم إلى Altoha" : "Join Altoha", url: referralLink });

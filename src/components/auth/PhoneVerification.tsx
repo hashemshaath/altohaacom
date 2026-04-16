@@ -191,7 +191,7 @@ export const PhoneVerification = memo(function PhoneVerification({ onVerified, o
               dir="ltr"
             />
             {error && <p className="text-sm text-destructive">{error}</p>}
-            <p className="text-xs text-muted-foreground">
+            <p className="text-sm text-muted-foreground">
               {language === "ar" 
                 ? "أدخل رقمك بالصيغة الدولية (مثال: +966512345678)"
                 : "Enter number with country code (e.g., +966512345678)"}

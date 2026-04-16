@@ -154,7 +154,7 @@ export const SponsorshipOpportunities = forwardRef<HTMLElement>(function Sponsor
                     </Badge>
                   </div>
                   <CardContent className="p-3 space-y-1.5">
-                    <div className="space-y-1 text-xs text-muted-foreground">
+                    <div className="space-y-1 text-sm text-muted-foreground">
                       {comp.competition_start && (
                         <div className="flex items-center gap-1.5">
                           <Calendar className="h-3 w-3 shrink-0 text-primary/50" />
@@ -174,11 +174,11 @@ export const SponsorshipOpportunities = forwardRef<HTMLElement>(function Sponsor
                       ) : null}
                     </div>
                     <div className="flex items-center justify-between pt-1 border-t border-border/40">
-                      <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                      <div className="flex items-center gap-1 text-sm text-muted-foreground">
                         <Users className="h-3 w-3" />
                         <span>{comp.currentSponsors} {isAr ? "راعٍ" : "sponsors"}</span>
                       </div>
-                      <span className="text-xs font-medium text-primary">
+                      <span className="text-sm font-medium text-primary">
                         {isAr ? "تقدّم" : "Apply"} →
                       </span>
                     </div>

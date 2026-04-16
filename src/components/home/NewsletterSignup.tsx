@@ -76,7 +76,7 @@ export const NewsletterSignup = forwardRef<HTMLElement>(function NewsletterSignu
               {loading ? "..." : (isAr ? "اشتراك" : "Subscribe")}
             </Button>
           </form>
-          <div className="mt-4 flex items-center justify-center gap-1.5 text-xs text-muted-foreground/60">
+          <div className="mt-4 flex items-center justify-center gap-1.5 text-sm text-muted-foreground/60">
             <Shield className="h-3 w-3" />
             {isAr ? "بدون إزعاج. يمكنك إلغاء الاشتراك في أي وقت." : "No spam ever. Unsubscribe anytime."}
           </div>
