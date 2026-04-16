@@ -89,13 +89,14 @@ function TrustStats({ isAr }: { isAr: boolean }) {
       ];
 
   return (
-    <div className="flex items-center gap-6 sm:gap-8">
-      {stats.map((s) => (
+    <div className="flex items-center gap-5 sm:gap-7">
+      {stats.map((s, i) => (
         <div key={s.label} className="flex items-center gap-2">
-          <s.icon className="h-4 w-4 text-brand-primary shrink-0 hidden sm:block" />
+          {i > 0 && <div className="w-px h-8 bg-[#1C1C1A]/10 -ms-3 me-2 hidden sm:block" />}
+          <s.icon className="h-4 w-4 shrink-0 hidden sm:block" style={{ color: "#C05B2E" }} />
           <div>
-            <p className="text-sm sm:text-base font-bold" style={{ color: "#C05B2E" }}>{s.value}</p>
-            <p className="text-[0.75rem] leading-tight" style={{ color: "#6B6560" }}>{s.label}</p>
+            <p className="text-sm sm:text-base font-bold tracking-tight" style={{ color: "#C05B2E" }}>{s.value}</p>
+            <p className="text-[0.7rem] sm:text-xs leading-tight" style={{ color: "#6B6560" }}>{s.label}</p>
           </div>
         </div>
       ))}
@@ -109,7 +110,7 @@ function FallbackHero() {
   return (
     <section
       className="relative overflow-hidden"
-      style={{ background: "#F5F0E8", minHeight: "85vh" }}
+      style={{ background: "linear-gradient(180deg, #F5F0E8 0%, #EDE7DB 100%)", minHeight: "70vh" }}
       dir={isAr ? "rtl" : "ltr"}
     >
       <div className="container h-full flex items-center py-12 lg:py-0" style={{ minHeight: "inherit" }}>
@@ -280,18 +281,21 @@ export function HeroSection() {
   return (
     <section
       className="relative overflow-hidden"
-      style={{ background: "#F5F0E8" }}
+      style={{ background: "linear-gradient(180deg, #F5F0E8 0%, #EDE7DB 100%)" }}
       dir={isAr ? "rtl" : "ltr"}
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
       {...swipe}
     >
-      <div className="h-[85vh] lg:h-screen max-h-[900px] min-h-[600px]">
+      {/* Subtle decorative circles */}
+      <div className="absolute -top-32 -start-32 w-96 h-96 rounded-full opacity-[0.07]" style={{ background: "radial-gradient(circle, #C05B2E 0%, transparent 70%)" }} />
+      <div className="absolute -bottom-24 -end-24 w-72 h-72 rounded-full opacity-[0.05]" style={{ background: "radial-gradient(circle, #C05B2E 0%, transparent 70%)" }} />
+      <div className="min-h-[520px] lg:min-h-[600px] lg:h-[75vh] max-h-[780px]">
         <div className="container h-full">
-          <div className="grid grid-cols-1 lg:grid-cols-[55fr_45fr] gap-6 lg:gap-10 h-full items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-[50fr_50fr] gap-6 lg:gap-14 h-full items-center">
 
             {/* ── Text column ── */}
-            <div className="order-2 lg:order-1 text-center lg:text-start space-y-5 py-8 lg:py-0">
+            <div className="order-2 lg:order-1 text-center lg:text-start space-y-4 py-6 lg:py-0">
               <div
                 key={`badge-${slide.id}`}
                 className={cn(!isFirstRender && "animate-[heroFadeUp_0.6s_ease-out_forwards]")}
@@ -310,7 +314,7 @@ export function HeroSection() {
                 className={cn(!isFirstRender && "animate-[heroFadeUp_0.7s_ease-out_forwards]")}
               >
                 <h1
-                  className="text-[2rem] lg:text-[3rem] font-bold leading-[1.15] tracking-[-0.02em]"
+                  className="text-[1.75rem] sm:text-[2rem] lg:text-[2.75rem] xl:text-[3.25rem] font-bold leading-[1.12] tracking-[-0.025em]"
                   style={{ color: "#1C1C1A" }}
                 >
                   {isAr ? slide.title_ar || slide.title : slide.title}
@@ -332,7 +336,7 @@ export function HeroSection() {
               )}
 
               {/* CTA Buttons */}
-              <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start pt-2">
+              <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start pt-1">
                 {slide.link_url && (
                   <Link
                     to={slide.link_url}
@@ -366,14 +370,14 @@ export function HeroSection() {
               </div>
 
               {/* Trust Stats */}
-              <div className="pt-4">
+              <div className="pt-2">
                 <TrustStats isAr={isAr} />
               </div>
             </div>
 
             {/* ── Image column ── */}
-            <div className="order-1 lg:order-2 relative h-[40vh] lg:h-[80%] min-h-[250px]">
-              <div className="relative h-full w-full rounded-2xl lg:rounded-3xl overflow-hidden shadow-2xl">
+            <div className="order-1 lg:order-2 relative h-[35vh] lg:h-[85%] min-h-[250px]">
+              <div className="relative h-full w-full rounded-2xl lg:rounded-3xl overflow-hidden shadow-[0_25px_60px_-12px_rgba(0,0,0,0.15)]">
                 {slides.map((s, idx) => (
                   <div
                     key={s.id}
