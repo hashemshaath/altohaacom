@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { forwardRef, memo } from "react";
 import { Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
@@ -117,7 +118,7 @@ export const ExhibitionCard = memo(
       const isFeaturedVariant = variant === "featured";
 
       return (
-        <Link to={`/exhibitions/${exhibition.slug}`} className="group block">
+        <Link to={ROUTES.exhibition(exhibition.slug)} className="group block">
           <Card
             ref={ref}
             className={`group flex h-full flex-col overflow-hidden border-border/40 bg-card/60 backdrop-blur-sm transition-all duration-500 hover:shadow-2xl hover:shadow-primary/5 hover:shadow-primary/5 hover:-translate-y-0.5 hover:border-primary/30 hover:bg-card ${exhibition.is_featured ? "ring-1 ring-primary/20 shadow-lg shadow-primary/5" : ""}`}

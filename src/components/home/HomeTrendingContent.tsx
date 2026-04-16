@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useMemo, forwardRef } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -108,7 +109,7 @@ export const HomeTrendingContent = forwardRef<HTMLDivElement>(function HomeTrend
               {filtered.map((article, i) => (
                 <Link
                   key={article.id}
-                  to={`/blog/${article.slug}`}
+                  to={ROUTES.article(article.slug)}
                   className="group block snap-start shrink-0 w-[72vw] sm:w-[45vw] md:w-[32vw] lg:w-[24vw] xl:w-[20vw] touch-manipulation"
                 >
                   <Card className="overflow-hidden h-full border-border/40 rounded-2xl hover:shadow-lg transition-all duration-300 hover:-translate-y-0.5 active:scale-[0.98]">

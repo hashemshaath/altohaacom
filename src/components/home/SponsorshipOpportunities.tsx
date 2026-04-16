@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { useIsAr } from "@/hooks/useIsAr";
 import { forwardRef } from "react";
 import { Link } from "react-router-dom";
@@ -119,7 +120,7 @@ export const SponsorshipOpportunities = forwardRef<HTMLElement>(function Sponsor
             return (
               <Link
                 key={comp.id}
-                to={`/competitions/${comp.id}`}
+                to={ROUTES.competition(comp.slug || comp.id)}
                 className="group block snap-start shrink-0 w-[72vw] sm:w-[45vw] md:w-[32vw] lg:w-[24vw] xl:w-[20vw] touch-manipulation"
               >
                 <Card className="h-full overflow-hidden border-border/40 rounded-2xl transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5 hover:border-primary/20 active:scale-[0.98]">

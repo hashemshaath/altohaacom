@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { memo } from "react";
 import { Link } from "react-router-dom";
 import { Card } from "@/components/ui/card";
@@ -33,7 +34,7 @@ export const NewsListCard = memo(function NewsListCard({ article, isAr, formatDa
   const readTime = estimateReadTime(excerpt);
 
   return (
-    <Link to={`/blog/${article.slug}`} className="group block" role="listitem">
+    <Link to={ROUTES.article(article.slug)} className="group block" role="listitem">
       <article>
         <Card className="overflow-hidden rounded-xl border-border/15 transition-all duration-200 hover:shadow-md hover:border-primary/15">
           <div className="flex gap-4 p-3.5">

@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { Card, CardContent } from "@/components/ui/card";
@@ -32,7 +33,7 @@ export const ShopProductCard = memo(function ShopProductCard({ product, onAddToC
 
   return (
     <Card className="group flex h-full flex-col overflow-hidden rounded-2xl border-border/40 bg-card/50 backdrop-blur-sm transition-all duration-500 hover:shadow-2xl hover:shadow-primary/8 hover:-translate-y-0.5 hover:border-primary/30 active:scale-[0.98] touch-manipulation relative">
-      <Link to={`/shop/${product.id}`} className="block overflow-hidden">
+      <Link to={ROUTES.shopProduct(product.id)} className="block overflow-hidden">
         <div className="relative aspect-square overflow-hidden bg-muted">
           {product.image_url ? (
             <img
@@ -88,7 +89,7 @@ export const ShopProductCard = memo(function ShopProductCard({ product, onAddToC
           <Badge variant="outline" className="text-xs sm:text-xs font-bold uppercase tracking-widest border-primary/20 bg-primary/5 text-primary/80">
             {product.category}
           </Badge>
-          <Link to={`/shop/${product.id}`} className="block">
+          <Link to={ROUTES.shopProduct(product.id)} className="block">
             <h3 className="text-sm sm:text-base font-bold leading-tight group-hover:text-primary transition-colors line-clamp-2">
               {title}
             </h3>

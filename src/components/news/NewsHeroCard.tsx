@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { memo } from "react";
 import { Link } from "react-router-dom";
 import { Card } from "@/components/ui/card";
@@ -46,7 +47,7 @@ export const NewsHeroCard = memo(function NewsHeroCard({ article, isAr, formatDa
   const readTime = estimateReadTime(excerpt);
 
   return (
-    <Link to={`/blog/${article.slug}`} className="group block h-full">
+    <Link to={ROUTES.article(article.slug)} className="group block h-full">
       <Card className="h-full overflow-hidden rounded-2xl border-0 transition-all duration-300 hover:shadow-2xl relative">
         <div className="relative aspect-[16/10] overflow-hidden">
           {article.featured_image_url ? (

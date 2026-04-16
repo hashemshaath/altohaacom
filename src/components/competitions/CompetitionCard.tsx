@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { memo, forwardRef, useState, useCallback } from "react";
 import { getOptimizedUrl } from "@/components/ui/optimized-image";
 import { Link } from "react-router-dom";
@@ -112,7 +113,7 @@ export const CompetitionCard = memo(
       const onImgLoad = useCallback(() => setImgLoaded(true), []);
 
       return (
-        <Link to={`/competitions/${competition.id}`} className="group block h-full active:scale-[0.98] transition-transform duration-150 touch-manipulation">
+        <Link to={ROUTES.competition(competition.slug || competition.id)} className="group block h-full active:scale-[0.98] transition-transform duration-150 touch-manipulation">
           <Card ref={ref} className="flex h-full flex-col overflow-hidden rounded-2xl border-border/30 bg-card/80 backdrop-blur-sm transition-all duration-500 hover:shadow-2xl hover:shadow-primary/8 hover:-translate-y-0.5 hover:border-primary/20 active:shadow-lg">
             {/* Image Section */}
             <div className="relative aspect-[16/10] shrink-0 overflow-hidden bg-muted" role="img" aria-label={title}>
@@ -286,7 +287,7 @@ export const FeaturedCompetitionCard = memo(function FeaturedCompetitionCard({
   const regCount = competition.competition_registrations?.length || 0;
 
   return (
-    <Link to={`/competitions/${competition.id}`} className="group mb-10 block">
+    <Link to={ROUTES.competition(competition.slug || competition.id)} className="group mb-10 block">
       <Card className="relative overflow-hidden rounded-2xl border-primary/10 bg-card/80 backdrop-blur-sm shadow-sm transition-all duration-500 hover:shadow-2xl hover:shadow-primary/10 hover:border-primary/20">
         {/* Ambient glow */}
         <div className="pointer-events-none absolute -top-32 -end-32 h-72 w-72 rounded-full bg-primary/6 blur-[100px] transition-all duration-700 group-hover:bg-primary/10" />
