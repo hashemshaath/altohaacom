@@ -68,6 +68,8 @@ const ArticlesSection = memo(forwardRef<HTMLElement>(function ArticlesSection(_p
     refetchOnWindowFocus: false,
   });
 
+  if (isError) return null;
+
   if (!isLoading && articles.length === 0) return null;
 
   return (

@@ -75,6 +75,8 @@ const FeaturedChefsSection = memo(forwardRef<HTMLElement>(function FeaturedChefs
     (chef, index, self) => chef.user_id && self.findIndex((c) => c.user_id === chef.user_id) === index
   );
 
+  if (isError) return null;
+
   if (!isLoading && uniqueChefs.length === 0) {
     return (
       <section dir={isAr ? "rtl" : "ltr"}>
