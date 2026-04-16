@@ -1,4 +1,6 @@
+import { ROUTES } from "@/config/routes";
 import React, { memo } from "react";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Shield, Clock, Award } from "lucide-react";
 
@@ -46,10 +48,10 @@ export const ChefsTableCTA = memo(React.forwardRef<HTMLElement, Props>(function 
                   <ArrowRight className="h-5 w-5" />
                 </>
               ) : (
-                <a href="/login">
+                <Link to={ROUTES.login}>
                   {isAr ? "سجّل لتبدأ" : "Sign Up to Start"}
                   <ArrowRight className="h-5 w-5" />
-                </a>
+                </Link>
               )}
             </Button>
 

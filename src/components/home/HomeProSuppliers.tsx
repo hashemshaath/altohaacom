@@ -81,7 +81,7 @@ export const HomeProSuppliers = memo(function HomeProSuppliers() {
         subtitle={sectionSubtitle}
         dataSource="companies (is_pro_supplier)"
         itemCount={filtered.length}
-        viewAllHref={showViewAll ? "/pro-suppliers" : undefined}
+        viewAllHref={showViewAll ? ROUTES.proSuppliers : undefined}
         isAr={isAr}
         filters={showFilters && categories.length > 1 ? (
           <>

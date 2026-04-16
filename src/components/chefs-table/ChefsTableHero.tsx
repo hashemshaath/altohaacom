@@ -1,4 +1,6 @@
+import { ROUTES } from "@/config/routes";
 import { memo } from "react";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Plus, ArrowRight, Sparkles, ChefHat, Star, FileCheck, Users } from "lucide-react";
 import { useCoverSettings } from "@/hooks/useCoverSettings";
@@ -71,10 +73,10 @@ export const ChefsTableHero = memo(function ChefsTableHero({ isAr, user, onReque
               </Button>
             ) : (
               <Button size="lg" className="gap-2 rounded-2xl py-7 px-10 text-base font-bold" asChild>
-                <a href="/login">
+                <Link to={ROUTES.login}>
                   {isAr ? "سجّل الآن لتبدأ" : "Sign Up to Get Started"}
                   <ArrowRight className="h-5 w-5" />
-                </a>
+                </Link>
               </Button>
             )}
           </div>

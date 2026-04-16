@@ -83,7 +83,7 @@ export const SponsorshipOpportunities = forwardRef<HTMLElement>(function Sponsor
           subtitle={sectionSubtitle}
           dataSource="competitions • sponsorship_packages"
           itemCount={opportunities.length}
-          viewAllHref={showViewAll ? "/sponsors" : undefined}
+          viewAllHref={showViewAll ? ROUTES.forSponsors : undefined}
           viewAllLabel={isAr ? "جميع الفرص" : "All Opportunities"}
           isAr={isAr}
         />

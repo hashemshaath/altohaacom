@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { useIsAr } from "@/hooks/useIsAr";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -77,7 +78,7 @@ const FeaturedChefsSection = memo(forwardRef<HTMLElement>(function FeaturedChefs
     return (
       <section dir={isAr ? "rtl" : "ltr"}>
         <div className="container">
-          <SectionHeader icon={ChefHat} badge={isAr ? "طهاة مميزون" : "Featured Chefs"} title={title} subtitle={showSubtitle ? subtitle : undefined} viewAllHref={showViewAll ? "/community" : undefined} isAr={isAr} />
+          <SectionHeader icon={ChefHat} badge={isAr ? "طهاة مميزون" : "Featured Chefs"} title={title} subtitle={showSubtitle ? subtitle : undefined} viewAllHref={showViewAll ? ROUTES.community : undefined} isAr={isAr} />
           <div className="flex items-center justify-center py-10 text-sm text-muted-foreground">{isAr ? "انضم إلى مجتمعنا لتظهر هنا!" : "Join our community to be featured here!"}</div>
         </div>
       </section>
@@ -87,7 +88,7 @@ const FeaturedChefsSection = memo(forwardRef<HTMLElement>(function FeaturedChefs
   return (
     <section dir={isAr ? "rtl" : "ltr"}>
       <div className="container">
-        <SectionHeader icon={ChefHat} badge={isAr ? "طهاة مميزون" : "Featured Chefs"} title={title} subtitle={showSubtitle ? subtitle : undefined} viewAllHref={showViewAll ? "/community" : undefined} viewAllLabel={isAr ? "عرض الكل" : "View All"} isAr={isAr} />
+        <SectionHeader icon={ChefHat} badge={isAr ? "طهاة مميزون" : "Featured Chefs"} title={title} subtitle={showSubtitle ? subtitle : undefined} viewAllHref={showViewAll ? ROUTES.community : undefined} viewAllLabel={isAr ? "عرض الكل" : "View All"} isAr={isAr} />
 
         <HorizontalScrollRow isAr={isAr}>
           {isLoading
