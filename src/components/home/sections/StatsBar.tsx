@@ -50,15 +50,19 @@ const StatsBar = memo(forwardRef<HTMLElement>(function StatsBar(_props, _ref) {
   const { data: stats } = useQuery({
     queryKey: ["home-stats"],
     queryFn: async () => {
-      const results = await Promise.allSettled([
-        supabase.from("profiles").select("id", { count: "exact", head: true }),
-        supabase.from("competitions").select("id", { count: "exact", head: true }),
-        supabase.from("culinary_entities").select("id", { count: "exact", head: true }),
-        supabase.from("exhibitions").select("id", { count: "exact", head: true }),
-        supabase.from("organizers").select("id", { count: "exact", head: true }),
-      ]);
-      const getCount = (r: PromiseSettledResult<{ count: number | null }>) => r.status === "fulfilled" ? (r.value.count ?? 0) : 0;
-      return { members: getCount(results[0]), competitions: getCount(results[1]), entities: getCount(results[2]), exhibitions: getCount(results[3]), organizers: getCount(results[4]) };
+      const safeCount = async (table: string) => {
+        try {
+          const { count } = await supabase.from(table).select("*", { count: "exact", head: true });
+          return count ?? 0;
+        } catch { return 0; }
+      };
+      // Sequential to avoid browser aborting concurrent HEAD requests
+      const members = await safeCount("profiles_public");
+      const competitions = await safeCount("competitions");
+      const entities = await safeCount("culinary_entities");
+      const exhibitions = await safeCount("exhibitions");
+      const organizers = await safeCount("organizers");
+      return { members, competitions, entities, exhibitions, organizers };
     },
     staleTime: CACHE.long.staleTime,
   });
