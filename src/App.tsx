@@ -1,4 +1,4 @@
-import { Suspense, lazy, useLayoutEffect, memo } from "react";
+import { Suspense, useLayoutEffect, memo } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -38,7 +38,6 @@ import { companyRoutes } from "@/routes/companyRoutes";
 
 // Lazy-load non-critical components
 const AIChatbot = safeLazy(() => import("@/components/ai/AIChatbot"));
-const NotFound = lazy(() => import("./pages/NotFound"));
 
 import { handleSupabaseError, redirectOnSessionExpiry } from "@/lib/supabaseErrorHandler";
 import { AppError } from "@/lib/AppError";
@@ -51,7 +50,6 @@ const queryClient = new QueryClient({
       if (import.meta.env.DEV) {
         console.error("[Mutation Error]", appError.code, appError.message);
       }
-      // Auto-redirect on session expiry
       redirectOnSessionExpiry(appError);
     },
   }),
@@ -88,11 +86,11 @@ function AppBootMarker() {
   return null;
 }
 
-/** Loading spinner shown while route chunks load */
+/** Arabic-first loading spinner shown while route chunks load */
 const RouteSpinner = (
-  <div className="flex h-screen items-center justify-center" role="status" aria-label="Loading">
-    <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
-    <span className="sr-only">Loading page...</span>
+  <div className="flex h-screen flex-col items-center justify-center gap-3" role="status" aria-label="جاري التحميل">
+    <div className="h-10 w-10 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+    <span className="text-sm text-muted-foreground font-medium">جاري التحميل...</span>
   </div>
 );
 
@@ -102,14 +100,15 @@ function AppRoutes() {
     <SectionErrorBoundary name="app-routes">
       <MaintenanceGuard>
         <Suspense fallback={RouteSpinner}>
-          <div id="main-content" className="min-h-screen pb-20 md:pb-0">
+          <div className="min-h-screen pb-20 md:pb-0">
             <PageTransition>
               <Routes>
                 {publicRoutes}
                 {protectedRoutes}
                 {adminRoutes}
                 {companyRoutes}
-                <Route path="*" element={<NotFound />} />
+                {/* Catch-all: redirect unknown routes to home */}
+                <Route path="*" element={<CatchAllRedirect />} />
               </Routes>
             </PageTransition>
           </div>
@@ -117,6 +116,12 @@ function AppRoutes() {
       </MaintenanceGuard>
     </SectionErrorBoundary>
   );
+}
+
+/** Redirects unknown routes to home instead of showing 404 */
+function CatchAllRedirect() {
+  const { Navigate } = require("react-router-dom");
+  return <Navigate to="/" replace />;
 }
 
 /** Non-critical overlays and global widgets */
