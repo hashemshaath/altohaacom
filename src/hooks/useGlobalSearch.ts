@@ -48,6 +48,7 @@ export interface ArticleResult {
   status: string | null;
   published_at: string | null;
   slug: string;
+  view_count: number | null;
   _relevance?: number;
 }
 
