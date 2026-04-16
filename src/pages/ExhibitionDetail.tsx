@@ -14,7 +14,9 @@ import { Badge } from "@/components/ui/badge";
 import { toast } from "@/hooks/use-toast";
 import {
   Calendar, Landmark, ImageIcon, LayoutGrid, MessageSquare, Award,
-  Star, Trophy, Users, Clock, Settings, CalendarClock, ChefHat, Navigation, Gavel, Ticket, ScanLine, BookmarkCheck, Gem, LucideIcon } from "lucide-react";
+  Star, Trophy, Users, Clock, Settings, ChefHat, Ticket, ScanLine, Gem, LucideIcon,
+  Info, MapPinned,
+} from "lucide-react";
 import { SEOHead } from "@/components/SEOHead";
 import { ExhibitionGalleryLightbox } from "@/components/exhibitions/detail/ExhibitionGalleryLightbox";
 import { countryFlag as getCountryFlagUtil } from "@/lib/countryFlag";
@@ -23,10 +25,9 @@ import { useState, useMemo, lazy, Suspense, memo, useCallback, useEffect, useRef
 import { useEntityQRCode } from "@/hooks/useQRCode";
 import { useEventWatchlist } from "@/components/fan/FanEventWatchlist";
 import { EventComments } from "@/components/fan/EventComments";
-import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
 
 // Static imports for critical path
-import { ExhibitionHero } from "@/components/exhibitions/detail/ExhibitionHero";
+import { ExhibitionHeroPremium } from "@/components/exhibitions/detail/ExhibitionHeroPremium";
 import { ExhibitionMobileActionBar } from "@/components/exhibitions/detail/ExhibitionMobileActionBar";
 import { ExhibitionInteractiveStats } from "@/components/exhibitions/detail/ExhibitionInteractiveStats";
 import { CACHE } from "@/lib/queryConfig";
