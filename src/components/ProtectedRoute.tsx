@@ -1,10 +1,11 @@
 import { ROUTES } from "@/config/routes";
 import { memo } from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 
 export const ProtectedRoute = memo(function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
+  const location = useLocation();
 
   if (loading) {
     return (
@@ -14,6 +15,6 @@ export const ProtectedRoute = memo(function ProtectedRoute({ children }: { child
     );
   }
 
-  if (!user) return <Navigate to={ROUTES.login} replace />;
+  if (!user) return <Navigate to={ROUTES.login} replace state={{ from: location.pathname }} />;
   return <>{children}</>;
 });
