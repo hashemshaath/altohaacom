@@ -1,4 +1,4 @@
-import { useState, useEffect, memo } from "react";
+import { useState, useEffect, memo, forwardRef } from "react";
 import { isPast } from "date-fns";
 
 interface CountdownTimerProps {
@@ -7,7 +7,7 @@ interface CountdownTimerProps {
   compact?: boolean;
 }
 
-export const CountdownTimer = memo(function CountdownTimer({ targetDate, isAr, compact = false }: CountdownTimerProps) {
+export const CountdownTimer = memo(forwardRef<HTMLDivElement, CountdownTimerProps>(function CountdownTimer({ targetDate, isAr, compact = false }, _ref) {
   const [now, setNow] = useState(new Date());
   useEffect(() => {
     const id = setInterval(() => setNow(new Date()), 1000);
@@ -65,4 +65,4 @@ export const CountdownTimer = memo(function CountdownTimer({ targetDate, isAr, c
       ))}
     </div>
   );
-});
+}));

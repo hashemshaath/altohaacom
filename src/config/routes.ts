@@ -1,8 +1,6 @@
 /**
  * Single source of truth for ALL URL paths in the AlToha project.
  * Every component must import from here — no hardcoded path strings anywhere else.
- *
- * Based on actual route definitions in src/routes/publicRoutes.tsx
  */
 
 export const ROUTES = {
@@ -14,6 +12,7 @@ export const ROUTES = {
   // ── Auth ──────────────────────────────────────────
   login: '/login',
   register: '/register',
+  registerCompany: '/register-company',
   signup: '/signup',
   resetPassword: '/reset-password',
   companyLogin: '/company-login',
@@ -21,28 +20,41 @@ export const ROUTES = {
   verifyCertificate: '/verify/certificate',
   acceptInvite: '/accept-invite',
   unsubscribe: '/unsubscribe',
+  onboarding: '/onboarding',
 
   // ── Competitions ──────────────────────────────────
   competitions: '/competitions',
   competition: (slug: string) => `/competitions/${slug}`,
   competitionResults: (slug: string) => `/competitions/${slug}/results`,
+  competitionCreate: '/competitions/create',
+  competitionEdit: (id: string) => `/competitions/${id}/edit`,
   competitionDiscovery: '/discover',
   rankings: '/rankings',
 
   // ── Exhibitions ───────────────────────────────────
   exhibitions: '/exhibitions',
   exhibition: (slug: string) => `/exhibitions/${slug}`,
-  
+  exhibitionCreate: '/exhibitions/create',
+  exhibitionEdit: (slug: string) => `/exhibitions/${slug}/edit`,
 
   // ── Blog (canonical) ───────────────────────────────
   blog: '/blog',
   article: (slug: string) => `/blog/${slug}`,
+
+  // ── News ──────────────────────────────────────────
+  news: '/news',
+  newsArticle: (slug: string) => `/news/${slug}`,
+
+  // ── Knowledge ─────────────────────────────────────
+  knowledge: '/knowledge',
 
   // ── Chefs & Profiles ──────────────────────────────
   profile: (username: string) => `/${username}`,
   publicProfile: (username: string) => `/${username}`,
   portfolio: (userId: string) => `/portfolio/${userId}`,
   bio: (username: string) => `/bio/${username}`,
+  profileDashboard: '/profile',
+  profileAnalytics: '/profile/analytics',
 
   // ── Entities (Academies + Associations) ───────────
   entities: '/entities',
@@ -59,6 +71,7 @@ export const ROUTES = {
   // ── Recipes ───────────────────────────────────────
   recipes: '/recipes',
   recipe: (slug: string) => `/recipes/${slug}`,
+  recipeCreate: '/recipes/create',
 
   // ── Establishments ────────────────────────────────
   establishments: '/establishments',
@@ -67,11 +80,14 @@ export const ROUTES = {
   // ── Mentorship ────────────────────────────────────
   mentorship: '/mentorship',
   mentorshipDetail: (id: string) => `/mentorship/${id}`,
+  mentorshipApply: '/mentorship/apply',
+  mentorshipMatch: (id: string) => `/mentorship/match/${id}`,
 
   // ── Jobs ──────────────────────────────────────────
   jobs: '/jobs',
   jobSearch: '/jobs/search',
   job: (id: string) => `/jobs/${id}`,
+  jobApplications: '/jobs/my-applications',
 
   // ── Pro Suppliers ─────────────────────────────────
   proSuppliers: '/pro-suppliers',
@@ -85,10 +101,18 @@ export const ROUTES = {
   // ── Shop ──────────────────────────────────────────
   shop: '/shop',
   shopProduct: (id: string) => `/shop/${id}`,
+  shopOrders: '/shop/orders',
+  shopMyProducts: '/shop/my-products',
 
   // ── Chefs Table ───────────────────────────────────
   chefsTable: '/chefs-table',
   chefsTableDetail: (id: string) => `/chefs-table/${id}`,
+  chefsTableRequest: '/chefs-table/request',
+
+  // ── Tastings ──────────────────────────────────────
+  tastings: '/tastings',
+  tasting: (id: string) => `/tastings/${id}`,
+  tastingCreate: '/tastings/create',
 
   // ── Events ────────────────────────────────────────
   eventsCalendar: '/events-calendar',
@@ -96,6 +120,34 @@ export const ROUTES = {
   // ── Membership ────────────────────────────────────
   membership: '/membership',
   membershipRedeem: '/membership/redeem',
+  membershipCheckout: '/membership/checkout',
+  membershipGift: '/membership/gift',
+  membershipGifts: '/membership/gifts',
+  membershipReferral: '/membership/referral',
+
+  // ── Community & Social ────────────────────────────
+  community: '/community',
+  forYou: '/for-you',
+  socialLinks: '/social-links',
+  socialLinksAnalytics: '/social-links/analytics',
+
+  // ── Engagement ────────────────────────────────────
+  rewards: '/rewards',
+  referrals: '/referrals',
+  notifications: '/notifications',
+  notificationPreferences: '/notification-preferences',
+  messages: '/messages',
+
+  // ── Dashboard ─────────────────────────────────────
+  dashboard: '/dashboard',
+  judging: '/judging',
+  myEvaluations: '/my-evaluations',
+  verification: '/verification',
+  checkout: '/checkout',
+  support: '/support',
+
+  // ── Advertising ───────────────────────────────────
+  advertise: '/advertise',
 
   // ── Landing Pages ─────────────────────────────────
   forChefs: '/for-chefs',
@@ -125,7 +177,7 @@ export const ROUTES = {
 
   // ── Misc ──────────────────────────────────────────
   evaluationReport: (token: string) => `/evaluation-report/${token}`,
-  socialLinks: (username: string) => `/bio/${username}`,
+  socialLinksProfile: (username: string) => `/bio/${username}`,
 } as const;
 
 /** Base URL for canonical/SEO purposes */

@@ -3,6 +3,8 @@
    Font loading via index.html <head>
    ═══════════════════════════════════════════════════════════════ */
 
+@import './styles/typography.css';
+
 /* ── Font-display fallback (prevents FOIT / CLS from web fonts) ── */
 @font-face {
   font-family: 'IBM Plex Arabic';
@@ -18,8 +20,6 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-@import './styles/typography.css';
 
 @layer base {
   :root {
