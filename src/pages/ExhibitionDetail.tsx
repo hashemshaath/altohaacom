@@ -111,7 +111,7 @@ function getCountryFlag(country?: string): string {
 const ExhibitionTabTrigger = memo(({ value, icon: Icon, label, count }: { value: string; icon: LucideIcon; label: string; count?: number }) => (
   <TabsTrigger
     value={value}
-    className="gap-1.5 rounded-lg px-3 py-2 text-xs font-semibold transition-all data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md hover:bg-muted/50 sm:px-4 sm:py-2.5 sm:text-sm whitespace-nowrap touch-manipulation"
+    className="gap-1.5 rounded-xl px-3.5 py-2 text-[0.8125rem] font-semibold transition-all data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md hover:bg-muted/60 sm:px-4 sm:py-2.5 sm:text-sm whitespace-nowrap touch-manipulation"
   >
     <Icon className="h-3.5 w-3.5 sm:h-4 sm:w-4 shrink-0" />
     {label}
@@ -121,6 +121,25 @@ const ExhibitionTabTrigger = memo(({ value, icon: Icon, label, count }: { value:
   </TabsTrigger>
 ));
 ExhibitionTabTrigger.displayName = "ExhibitionTabTrigger";
+
+/* ---------- Section Block — premium glass card wrapper ---------- */
+const SectionBlock = memo(({ title, icon: Icon, count, children }: { title: string; icon: LucideIcon; count?: number; children: React.ReactNode }) => (
+  <section className="overflow-hidden rounded-3xl border border-border/40 bg-card/60 shadow-sm backdrop-blur-xl">
+    <header className="flex items-center justify-between gap-3 border-b border-border/30 bg-background/30 px-6 py-4 backdrop-blur-md">
+      <div className="flex items-center gap-3">
+        <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 text-primary">
+          <Icon className="h-4 w-4" />
+        </span>
+        <h2 className="text-base font-semibold tracking-tight text-foreground sm:text-[1.0625rem]">{title}</h2>
+      </div>
+      {count !== undefined && count > 0 && (
+        <Badge variant="secondary" className="rounded-full px-2.5 py-0.5 text-[0.6875rem] font-bold">{count}</Badge>
+      )}
+    </header>
+    <div className="p-6">{children}</div>
+  </section>
+));
+SectionBlock.displayName = "SectionBlock";
 
 /* ========== MAIN ========== */
 export default function ExhibitionDetail() {
