@@ -372,8 +372,8 @@ export function HeroSection() {
             </div>
 
             {/* ── Image column ── */}
-            <div className="order-1 lg:order-2 relative h-[40vh] lg:h-[80%] min-h-[250px]">
-              <div className="relative h-full w-full rounded-2xl lg:rounded-3xl overflow-hidden shadow-2xl">
+            <div className="order-1 lg:order-2 relative h-[35vh] lg:h-[85%] min-h-[250px]">
+              <div className="relative h-full w-full rounded-2xl lg:rounded-3xl overflow-hidden shadow-[0_25px_60px_-12px_rgba(0,0,0,0.15)]">
                 {slides.map((s, idx) => (
                   <div
                     key={s.id}
