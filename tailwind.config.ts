@@ -79,6 +79,31 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+        brand: {
+          primary: '#C05B2E',
+          hover: '#A34D24',
+          secondary: '#2D5016',
+          'secondary-light': '#4A7C35',
+          burgundy: '#8B1A1A',
+          'burgundy-light': '#F5E6E6',
+        },
+        surface: {
+          page: '#F5F0E8',
+          card: '#FEFCF8',
+          elevated: '#FFFFFF',
+          overlay: 'rgba(28,28,26,0.6)',
+        },
+        text: {
+          primary: '#1C1C1A',
+          secondary: '#6B6560',
+          muted: '#9E9890',
+          inverse: '#FEFCF8',
+        },
+        'border-custom': {
+          default: 'rgba(28,28,26,0.1)',
+          strong: 'rgba(28,28,26,0.2)',
+          focus: '#C05B2E',
+        },
       },
       borderRadius: {
         lg: "var(--radius)",
