@@ -1,3 +1,4 @@
+import { SafeImage } from "@/components/ui/SafeImage";
 import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useRef, useMemo, forwardRef } from "react";
 import { ROUTES } from "@/config/routes";
@@ -66,7 +67,7 @@ export function RegionalEvents() {
   return (
     <section className="relative overflow-hidden w-full" aria-labelledby="regional-heading" dir={isAr ? "rtl" : "ltr"}>
       <div className="relative h-[160px] sm:h-[200px] md:h-[220px] overflow-hidden">
-        <img src={regionalCover} alt="Regional culinary events" width={1200} height={220} className="absolute inset-0 h-full w-full object-cover" loading="lazy" decoding="async" />
+        <SafeImage src={regionalCover} alt="Regional culinary events" width={1200} height={220} className="absolute inset-0 h-full w-full object-cover" />
         <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/60 to-background" />
       </div>
 
@@ -135,7 +136,7 @@ const EventCard = forwardRef<HTMLAnchorElement, { item: any }>(function EventCar
       <Card interactive className="h-full overflow-hidden border-border/50 rounded-2xl">
         <div className="relative aspect-[16/10] overflow-hidden bg-muted">
           {item.cover_image_url ? (
-            <img src={item.cover_image_url} alt={title} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" decoding="async" />
+            <SafeImage src={item.cover_image_url} alt={title} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
           ) : (
             <div className="flex h-full items-center justify-center bg-gradient-to-br from-primary/10 to-primary/5">
               <Trophy className="h-8 w-8 text-primary/30" />

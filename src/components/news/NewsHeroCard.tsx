@@ -1,3 +1,4 @@
+import { SafeImage } from "@/components/ui/SafeImage";
 import { ROUTES } from "@/config/routes";
 import { memo } from "react";
 import { Link } from "react-router-dom";
@@ -55,7 +56,6 @@ export const NewsHeroCard = memo(function NewsHeroCard({ article, isAr, formatDa
               src={article.featured_image_url}
               alt={title}
               className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
-              loading="eager"
               fetchPriority="high"
             />
           ) : (

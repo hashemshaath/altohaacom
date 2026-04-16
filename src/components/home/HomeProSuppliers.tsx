@@ -1,3 +1,4 @@
+import { SafeImage } from "@/components/ui/SafeImage";
 import { ROUTES } from "@/config/routes";
 import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useMemo, memo } from "react";
@@ -119,7 +120,7 @@ export const HomeProSuppliers = memo(function HomeProSuppliers() {
                 <CardContent className="p-3 sm:p-4 text-center space-y-2">
                   <div className="mx-auto flex h-12 w-12 sm:h-14 sm:w-14 items-center justify-center rounded-2xl bg-muted/60 ring-1 ring-border/30 transition-transform duration-300 group-hover:scale-110">
                     {s.logo_url ? (
-                      <img src={s.logo_url} width={36} height={36} className="h-8 w-8 sm:h-9 sm:w-9 object-contain" alt={name} loading="lazy" decoding="async" />
+                      <SafeImage src={s.logo_url} width={36} height={36} className="h-8 w-8 sm:h-9 sm:w-9 object-contain" alt={name} />
                     ) : (
                       <Building2 className="h-6 w-6 text-muted-foreground/40" />
                     )}

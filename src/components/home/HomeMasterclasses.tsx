@@ -1,3 +1,4 @@
+import { SafeImage } from "@/components/ui/SafeImage";
 import { ROUTES } from "@/config/routes";
 import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useMemo, memo, forwardRef } from "react";
@@ -145,7 +146,7 @@ export const HomeMasterclasses = memo(forwardRef<HTMLElement>(function HomeMaste
                 <Card className="h-full overflow-hidden border-border/40 rounded-2xl transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5 hover:border-primary/20 active:scale-[0.98]">
                   <div className="relative aspect-[16/10] overflow-hidden bg-muted">
                     {mc.cover_image_url ? (
-                      <img src={mc.cover_image_url} alt={title} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" decoding="async" />
+                      <SafeImage src={mc.cover_image_url} alt={title} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
                     ) : (
                       <div className="flex h-full items-center justify-center bg-gradient-to-br from-primary/10 to-accent/5">
                         <GraduationCap className="h-10 w-10 text-primary/30" />

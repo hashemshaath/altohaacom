@@ -1,3 +1,4 @@
+import { SafeImage } from "@/components/ui/SafeImage";
 import { ROUTES } from "@/config/routes";
 import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
@@ -40,7 +41,6 @@ export const ShopProductCard = memo(function ShopProductCard({ product, onAddToC
               src={product.image_url}
               alt={title}
               className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
-              loading="lazy"
             />
           ) : (
             <div className="flex h-full items-center justify-center bg-gradient-to-br from-primary/5 to-muted/20">

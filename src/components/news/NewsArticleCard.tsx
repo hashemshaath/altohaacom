@@ -1,3 +1,4 @@
+import { SafeImage } from "@/components/ui/SafeImage";
 import { ROUTES } from "@/config/routes";
 import { memo } from "react";
 import { Link } from "react-router-dom";
@@ -62,7 +63,7 @@ export const NewsArticleCard = memo(function NewsArticleCard({ article, isAr, fo
             <div className="flex gap-3 p-3">
               <div className="relative h-20 w-28 shrink-0 overflow-hidden rounded-lg bg-muted">
                 {article.featured_image_url ? (
-                  <img src={article.featured_image_url} alt={title} className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105" loading="lazy" decoding="async" />
+                  <SafeImage src={article.featured_image_url} alt={title} className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105" />
                 ) : (
                   <div className="flex h-full items-center justify-center bg-gradient-to-br from-primary/10 to-primary/5">
                     <TypeIcon className="h-6 w-6 text-primary/15" />
@@ -98,7 +99,7 @@ export const NewsArticleCard = memo(function NewsArticleCard({ article, isAr, fo
         <Card className="h-full overflow-hidden rounded-xl border-border/15 transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5 hover:border-primary/15 flex flex-col">
           <div className="relative aspect-[16/10] overflow-hidden bg-muted">
             {article.featured_image_url ? (
-              <img src={article.featured_image_url} alt={title} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]" loading="lazy" decoding="async" />
+              <SafeImage src={article.featured_image_url} alt={title} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]" />
             ) : (
               <div className="flex h-full items-center justify-center bg-gradient-to-br from-primary/10 to-primary/5">
                 <TypeIcon className="h-10 w-10 text-primary/15" />

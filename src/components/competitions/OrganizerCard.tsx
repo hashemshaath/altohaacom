@@ -1,3 +1,4 @@
+import { SafeImage } from "@/components/ui/SafeImage";
 import { useIsAr } from "@/hooks/useIsAr";
 import React from "react";
 
@@ -98,7 +99,7 @@ export const OrganizerCard = React.forwardRef<HTMLDivElement, OrganizerCardProps
           <div className="p-5">
             <div className="flex items-center gap-4">
               {logo ? (
-                <img loading="lazy" decoding="async" src={logo} alt={name || ""} className="h-14 w-14 rounded-xl object-contain bg-muted/30 p-1.5" />
+                <SafeImage src={logo} alt={name || ""} className="h-14 w-14 rounded-xl object-contain bg-muted/30 p-1.5" />
               ) : (
                 <div className="h-14 w-14 rounded-xl bg-primary/8 flex items-center justify-center">
                   <Building2 className="h-6 w-6 text-primary/40" />

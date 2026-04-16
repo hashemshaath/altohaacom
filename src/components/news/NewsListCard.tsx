@@ -1,3 +1,4 @@
+import { SafeImage } from "@/components/ui/SafeImage";
 import { ROUTES } from "@/config/routes";
 import { memo } from "react";
 import { Link } from "react-router-dom";
@@ -41,7 +42,7 @@ export const NewsListCard = memo(function NewsListCard({ article, isAr, formatDa
             {/* Image */}
             <div className="relative h-24 w-36 shrink-0 overflow-hidden rounded-lg bg-muted hidden sm:block">
               {article.featured_image_url ? (
-                <img src={article.featured_image_url} alt={title} className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105" loading="lazy" decoding="async" />
+                <SafeImage src={article.featured_image_url} alt={title} className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105" />
               ) : (
                 <div className="flex h-full items-center justify-center bg-gradient-to-br from-primary/10 to-primary/5">
                   <TypeIcon className="h-8 w-8 text-primary/15" />

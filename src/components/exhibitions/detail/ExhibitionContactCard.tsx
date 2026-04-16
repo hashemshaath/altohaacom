@@ -1,3 +1,4 @@
+import { SafeImage } from "@/components/ui/SafeImage";
 import { memo, forwardRef } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -30,7 +31,7 @@ export const ExhibitionContactCard = memo(forwardRef<HTMLDivElement, Props>(func
         {organizerName && (
           <div className="flex items-center gap-3 pb-3 border-b border-border/40">
             {organizerLogo ? (
-              <img loading="lazy" decoding="async" src={organizerLogo} alt={organizerName} className="h-12 w-12 rounded-xl object-contain bg-muted/30 p-1 border" />
+              <SafeImage src={organizerLogo} alt={organizerName} className="h-12 w-12 rounded-xl object-contain bg-muted/30 p-1 border" />
             ) : (
               <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 border">
                 <Building className="h-6 w-6 text-primary" />

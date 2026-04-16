@@ -1,3 +1,4 @@
+import { SafeImage } from "@/components/ui/SafeImage";
 import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { Link, useNavigate } from "react-router-dom";
@@ -228,8 +229,6 @@ export const PostCard = memo(function PostCard({
                         src={url}
                         alt={`Post image ${idx + 1}`}
                         className="h-full w-full object-cover transition-transform duration-300 hover:scale-105"
-                        loading="lazy"
-                        decoding="async"
                       />
                       {idx === 3 && urls.length > 4 && (
                         <div className="absolute inset-0 flex items-center justify-center bg-background/60 backdrop-blur-sm">
