@@ -197,9 +197,9 @@ export const HomeMasterclasses = memo(forwardRef<HTMLElement>(function HomeMaste
                         const cl = MC_CAT_LABELS[mc.category.toLowerCase()];
                         return cl ? (isAr ? cl.ar : cl.en) : mc.category;
                       })()}</Badge>}
-                      <h3 className="line-clamp-2 text-sm font-bold text-foreground group-hover:text-primary transition-colors leading-snug">{title}</h3>
+                      <h3 className="line-clamp-2 typo-card-title text-foreground group-hover:text-primary transition-colors leading-snug">{title}</h3>
                     </div>
-                    <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                    <div className="flex items-center gap-3 typo-card-meta text-muted-foreground">
                       {mc.duration_hours && (
                         <span className="flex items-center gap-1">
                           <Clock className="h-3 w-3 text-primary/50" />

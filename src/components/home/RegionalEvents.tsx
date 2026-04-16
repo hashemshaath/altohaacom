@@ -167,8 +167,8 @@ const EventCard = forwardRef<HTMLAnchorElement, { item: any }>(function EventCar
           </Badge>
         </div>
         <CardContent className="p-3">
-          <h3 className="mb-1 line-clamp-2 text-sm font-semibold group-hover:text-primary transition-colors">{title}</h3>
-          <div className="flex items-center gap-3 text-xs text-muted-foreground">
+          <h3 className="mb-1 line-clamp-2 typo-card-title group-hover:text-primary transition-colors">{title}</h3>
+          <div className="flex items-center gap-3 typo-card-meta text-muted-foreground">
             {item.competition_start && (
               <span className="flex items-center gap-1">
                 <Calendar className="h-3 w-3" />
