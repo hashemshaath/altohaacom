@@ -36,7 +36,7 @@ export const NewlyJoinedUsers = memo(function NewlyJoinedUsers() {
     queryKey: ["newly-joined-users", itemCount],
     queryFn: async () => {
       const { data } = await supabase
-        .from("profiles")
+        .from("profiles_public")
         .select("id, user_id, username, full_name, full_name_ar, display_name, display_name_ar, avatar_url, country_code, city, specialization, specialization_ar, nationality, show_nationality, created_at")
         .order("created_at", { ascending: false })
         .limit(itemCount);
