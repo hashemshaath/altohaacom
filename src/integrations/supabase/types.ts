@@ -1051,6 +1051,7 @@ export type Database = {
           is_featured: boolean | null
           metadata: Json | null
           published_at: string | null
+          search_vector: unknown
           slug: string
           status: string | null
           title: string
@@ -1077,6 +1078,7 @@ export type Database = {
           is_featured?: boolean | null
           metadata?: Json | null
           published_at?: string | null
+          search_vector?: unknown
           slug: string
           status?: string | null
           title: string
@@ -1103,6 +1105,7 @@ export type Database = {
           is_featured?: boolean | null
           metadata?: Json | null
           published_at?: string | null
+          search_vector?: unknown
           slug?: string
           status?: string | null
           title?: string
@@ -6396,6 +6399,7 @@ export type Database = {
           schedule_data: Json | null
           scoring_notes: string | null
           scoring_notes_ar: string | null
+          search_vector: unknown
           series_id: string | null
           slug: string | null
           status: Database["public"]["Enums"]["competition_status"]
@@ -6467,6 +6471,7 @@ export type Database = {
           schedule_data?: Json | null
           scoring_notes?: string | null
           scoring_notes_ar?: string | null
+          search_vector?: unknown
           series_id?: string | null
           slug?: string | null
           status?: Database["public"]["Enums"]["competition_status"]
@@ -6538,6 +6543,7 @@ export type Database = {
           schedule_data?: Json | null
           scoring_notes?: string | null
           scoring_notes_ar?: string | null
+          search_vector?: unknown
           series_id?: string | null
           slug?: string | null
           status?: Database["public"]["Enums"]["competition_status"]
@@ -7494,6 +7500,7 @@ export type Database = {
           registered_at: string | null
           registration_number: string | null
           scope: Database["public"]["Enums"]["entity_scope"]
+          search_vector: unknown
           secretary_name: string | null
           secretary_name_ar: string | null
           services: string[] | null
@@ -7550,6 +7557,7 @@ export type Database = {
           registered_at?: string | null
           registration_number?: string | null
           scope?: Database["public"]["Enums"]["entity_scope"]
+          search_vector?: unknown
           secretary_name?: string | null
           secretary_name_ar?: string | null
           services?: string[] | null
@@ -7606,6 +7614,7 @@ export type Database = {
           registered_at?: string | null
           registration_number?: string | null
           scope?: Database["public"]["Enums"]["entity_scope"]
+          search_vector?: unknown
           secretary_name?: string | null
           secretary_name_ar?: string | null
           services?: string[] | null
@@ -12300,6 +12309,7 @@ export type Database = {
           registration_deadline: string | null
           registration_url: string | null
           schedule: Json | null
+          search_vector: unknown
           sections: Json | null
           series_id: string | null
           short_address: string | null
@@ -12384,6 +12394,7 @@ export type Database = {
           registration_deadline?: string | null
           registration_url?: string | null
           schedule?: Json | null
+          search_vector?: unknown
           sections?: Json | null
           series_id?: string | null
           short_address?: string | null
@@ -12468,6 +12479,7 @@ export type Database = {
           registration_deadline?: string | null
           registration_url?: string | null
           schedule?: Json | null
+          search_vector?: unknown
           sections?: Json | null
           series_id?: string | null
           short_address?: string | null
@@ -18456,6 +18468,7 @@ export type Database = {
           salary_currency: string | null
           salary_range_max: number | null
           salary_range_min: number | null
+          search_vector: unknown
           second_nationality: string | null
           secondary_email: string | null
           section_visibility: Json | null
@@ -18557,6 +18570,7 @@ export type Database = {
           salary_currency?: string | null
           salary_range_max?: number | null
           salary_range_min?: number | null
+          search_vector?: unknown
           second_nationality?: string | null
           secondary_email?: string | null
           section_visibility?: Json | null
@@ -18658,6 +18672,7 @@ export type Database = {
           salary_currency?: string | null
           salary_range_max?: number | null
           salary_range_min?: number | null
+          search_vector?: unknown
           second_nationality?: string | null
           secondary_email?: string | null
           section_visibility?: Json | null
@@ -19057,6 +19072,7 @@ export type Database = {
           protein_g: number | null
           recipe_number: string | null
           save_count: number | null
+          search_vector: unknown
           servings: number | null
           share_count: number | null
           slug: string | null
@@ -19091,6 +19107,7 @@ export type Database = {
           protein_g?: number | null
           recipe_number?: string | null
           save_count?: number | null
+          search_vector?: unknown
           servings?: number | null
           share_count?: number | null
           slug?: string | null
@@ -19125,6 +19142,7 @@ export type Database = {
           protein_g?: number | null
           recipe_number?: string | null
           save_count?: number | null
+          search_vector?: unknown
           servings?: number | null
           share_count?: number | null
           slug?: string | null
@@ -20556,6 +20574,33 @@ export type Database = {
           report_type?: string
           schedule?: string | null
           updated_at?: string
+        }
+        Relationships: []
+      }
+      search_logs: {
+        Row: {
+          created_at: string
+          id: string
+          query: string
+          result_count: number
+          search_type: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          query: string
+          result_count?: number
+          search_type?: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          query?: string
+          result_count?: number
+          search_type?: string
+          user_id?: string | null
         }
         Relationships: []
       }
