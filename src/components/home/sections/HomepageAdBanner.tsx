@@ -121,7 +121,7 @@ export const HomepageAdBanner = memo(forwardRef<HTMLElement>(function HomepageAd
                     <img src={company.logo_url} alt={company?.name || "Sponsor"} width={80} height={24} className="h-6 w-auto rounded-lg mb-2" loading="lazy" />
                   )}
                   {title && <h3 className="text-sm sm:text-base font-bold text-foreground line-clamp-1">{title}</h3>}
-                  {bodyText && <p className="text-xs sm:text-xs text-muted-foreground line-clamp-2">{bodyText}</p>}
+                  {bodyText && <p className="text-sm text-muted-foreground line-clamp-2">{bodyText}</p>}
                   {ctaText && (
                     <span className="inline-flex items-center gap-1 text-xs sm:text-xs font-semibold text-primary">
                       {ctaText} →
