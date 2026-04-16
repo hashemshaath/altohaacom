@@ -28,6 +28,7 @@ export interface Message {
   is_archived: boolean;
   reply_to_id: string | null;
   metadata: Record<string, any>;
+  is_pinned: boolean;
 }
 
 export interface ConversationPartner {

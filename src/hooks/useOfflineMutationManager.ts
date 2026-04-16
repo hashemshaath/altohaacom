@@ -54,24 +54,24 @@ export function useOfflineMutationManager() {
 
             switch (action.type) {
               case "insert": {
-                const { error } = await supabase.from(table).insert(payload as never);
+                const { error } = await supabase.from(table as any).insert(payload as never);
                 if (error) throw error;
                 break;
               }
               case "update": {
                 const id = payload.id as string;
                 const { id: _, ...rest } = payload;
-                const { error } = await supabase.from(table).update(rest as never).eq("id", id);
+                const { error } = await supabase.from(table as any).update(rest as never).eq("id", id);
                 if (error) throw error;
                 break;
               }
               case "upsert": {
-                const { error } = await supabase.from(table).upsert(payload as never);
+                const { error } = await supabase.from(table as any).upsert(payload as never);
                 if (error) throw error;
                 break;
               }
               case "delete": {
-                const { error } = await supabase.from(table).delete().eq("id", payload.id as string);
+                const { error } = await supabase.from(table as any).delete().eq("id", payload.id as string);
                 if (error) throw error;
                 break;
               }
