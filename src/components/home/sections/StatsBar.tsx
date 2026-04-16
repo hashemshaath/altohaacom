@@ -50,15 +50,10 @@ const StatsBar = memo(forwardRef<HTMLElement>(function StatsBar(_props, _ref) {
   const { data: stats } = useQuery({
     queryKey: ["home-stats"],
     queryFn: async () => {
-      const results = await Promise.allSettled([
-        supabase.from("profiles").select("id", { count: "exact", head: true }),
-        supabase.from("competitions").select("id", { count: "exact", head: true }),
-        supabase.from("culinary_entities").select("id", { count: "exact", head: true }),
-        supabase.from("exhibitions").select("id", { count: "exact", head: true }),
-        supabase.from("organizers").select("id", { count: "exact", head: true }),
-      ]);
-      const getCount = (r: PromiseSettledResult<{ count: number | null }>) => r.status === "fulfilled" ? (r.value.count ?? 0) : 0;
-      return { members: getCount(results[0]), competitions: getCount(results[1]), entities: getCount(results[2]), exhibitions: getCount(results[3]), organizers: getCount(results[4]) };
+      const { data, error } = await supabase.rpc("get_platform_stats");
+      if (error || !data) return { members: 0, competitions: 0, entities: 0, exhibitions: 0, organizers: 0 };
+      const d = data as Record<string, number>;
+      return { members: d.members ?? 0, competitions: d.competitions ?? 0, entities: d.entities ?? 0, exhibitions: d.exhibitions ?? 0, organizers: d.organizers ?? 0 };
     },
     staleTime: CACHE.long.staleTime,
   });
