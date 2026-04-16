@@ -221,7 +221,13 @@ export const SearchBar = memo(function SearchBar({
   );
 
   const dropdownVisible = open && (isLoading || showRecents || hasResults || showEmpty);
-  const trendingTags = isAr ? TRENDING_TAGS_AR : TRENDING_TAGS_EN;
+  const [dynamicTrending, setDynamicTrending] = useState<string[] | null>(null);
+  useEffect(() => {
+    if (!open || dynamicTrending) return;
+    fetchTrendingTags(7).then(setDynamicTrending).catch(() => { /* fallback handled in service */ });
+  }, [open, dynamicTrending]);
+  const fallbackTags = isAr ? TRENDING_TAGS_AR : TRENDING_TAGS_EN;
+  const trendingTags = dynamicTrending && dynamicTrending.length > 0 ? dynamicTrending : fallbackTags;
   const placeholderText =
     placeholder ?? (isAr ? "ابحث عن وصفة، طاهٍ، أو مسابقة..." : "Search recipes, chefs, competitions...");
 
