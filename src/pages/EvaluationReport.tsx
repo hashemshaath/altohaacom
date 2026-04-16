@@ -40,7 +40,6 @@ function getScoreLabel(score: number, isAr: boolean) {
 export default function EvaluationReport() {
   const isAr = useIsAr();
   const { token } = useParams<{ token: string }>();
-  if (!token) return <Navigate to="/" replace />;
   const reportRef = useRef<HTMLDivElement>(null);
 
   const { data: session, isLoading, error } = useQuery({

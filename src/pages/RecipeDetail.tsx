@@ -33,7 +33,6 @@ const difficultyColor = (d: string) => {
 
 export default function RecipeDetail() {
   const { slug } = useParams<{ slug: string }>();
-  if (!slug) return <Navigate to="/recipes" replace />;
   const { user } = useAuth();
   const isAr = useIsAr();
   const { data: recipe, isLoading } = useRecipeBySlug(slug);

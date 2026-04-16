@@ -107,7 +107,6 @@ const StatRow = memo(function StatRow({ icon: Icon, label, value }: { icon: type
 
 export default function ArticleDetail() {
   const { slug } = useParams<{ slug: string }>();
-  if (!slug) return <Navigate to="/blog" replace />;
   const { language } = useLanguage();
   const isAr = useIsAr();
   const { toast } = useToast();

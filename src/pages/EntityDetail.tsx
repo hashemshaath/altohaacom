@@ -68,7 +68,6 @@ const educationalTypes: EntityType[] = ["culinary_academy", "university", "colle
 
 export default function EntityDetail() {
   const { slug } = useParams<{ slug: string }>();
-  if (!slug) return <Navigate to="/entities" replace />;
   const { language } = useLanguage();
   const isAr = useIsAr();
   const { user } = useAuth();

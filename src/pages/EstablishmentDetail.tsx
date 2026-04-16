@@ -52,7 +52,6 @@ const establishmentTypeLabels: Record<string, { en: string; ar: string }> = {
 
 export default function EstablishmentDetail() {
   const { id } = useParams<{ id: string }>();
-  if (!id) return <Navigate to="/establishments" replace />;
   const { user } = useAuth();
   const isAr = useIsAr();
   const { data: est, isLoading } = useEstablishment(id);

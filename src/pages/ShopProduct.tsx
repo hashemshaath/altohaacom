@@ -23,7 +23,6 @@ import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 export default function ShopProduct() {
   const { id } = useParams<{ id: string }>();
-  if (!id) return <Navigate to="/shop" replace />;
   const { user } = useAuth();
   const isAr = useIsAr();
   const cart = useCart();
