@@ -118,11 +118,7 @@ function AppRoutes() {
   );
 }
 
-/** Redirects unknown routes to home instead of showing 404 */
-function CatchAllRedirect() {
-  const { Navigate } = require("react-router-dom");
-  return <Navigate to="/" replace />;
-}
+import { Navigate } from "react-router-dom";
 
 /** Non-critical overlays and global widgets */
 const AppOverlays = memo(function AppOverlays({ isHome }: { isHome: boolean }) {
