@@ -1,5 +1,5 @@
 import { useIsAr } from "@/hooks/useIsAr";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, Navigate } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
 import { SEOHead } from "@/components/SEOHead";
 import { useQuery } from "@tanstack/react-query";
@@ -107,6 +107,7 @@ const StatRow = memo(function StatRow({ icon: Icon, label, value }: { icon: type
 
 export default function ArticleDetail() {
   const { slug } = useParams<{ slug: string }>();
+  if (!slug) return <Navigate to="/blog" replace />;
   const { language } = useLanguage();
   const isAr = useIsAr();
   const { toast } = useToast();

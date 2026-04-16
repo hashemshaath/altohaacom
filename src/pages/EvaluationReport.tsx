@@ -1,5 +1,5 @@
 import { useIsAr } from "@/hooks/useIsAr";
-import { useParams } from "react-router-dom";
+import { useParams, Navigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
@@ -40,6 +40,7 @@ function getScoreLabel(score: number, isAr: boolean) {
 export default function EvaluationReport() {
   const isAr = useIsAr();
   const { token } = useParams<{ token: string }>();
+  if (!token) return <Navigate to="/" replace />;
   const reportRef = useRef<HTMLDivElement>(null);
 
   const { data: session, isLoading, error } = useQuery({

@@ -1,5 +1,5 @@
 import { useIsAr } from "@/hooks/useIsAr";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, Navigate } from "react-router-dom";
 import { useState, lazy } from "react";
 
 import { useAuth } from "@/contexts/AuthContext";
@@ -33,6 +33,7 @@ const difficultyColor = (d: string) => {
 
 export default function RecipeDetail() {
   const { slug } = useParams<{ slug: string }>();
+  if (!slug) return <Navigate to="/recipes" replace />;
   const { user } = useAuth();
   const isAr = useIsAr();
   const { data: recipe, isLoading } = useRecipeBySlug(slug);

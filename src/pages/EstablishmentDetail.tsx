@@ -1,6 +1,6 @@
 import { useIsAr } from "@/hooks/useIsAr";
 import { useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, Navigate } from "react-router-dom";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { SEOHead } from "@/components/SEOHead";
@@ -52,6 +52,7 @@ const establishmentTypeLabels: Record<string, { en: string; ar: string }> = {
 
 export default function EstablishmentDetail() {
   const { id } = useParams<{ id: string }>();
+  if (!id) return <Navigate to="/establishments" replace />;
   const { user } = useAuth();
   const isAr = useIsAr();
   const { data: est, isLoading } = useEstablishment(id);

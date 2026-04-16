@@ -1,5 +1,5 @@
 import { useIsAr } from "@/hooks/useIsAr";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, Navigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -23,6 +23,7 @@ import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 export default function ShopProduct() {
   const { id } = useParams<{ id: string }>();
+  if (!id) return <Navigate to="/shop" replace />;
   const { user } = useAuth();
   const isAr = useIsAr();
   const cart = useCart();
