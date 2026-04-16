@@ -74,6 +74,24 @@ export const HomeProSuppliers = memo(function HomeProSuppliers() {
 
   if (suppliers.length === 0) return null;
 
+  if (isLoading) return (
+
+    <section className="container py-6">
+
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+
+        {Array.from({ length: 4 }).map((_, i) => <SkeletonCard key={i} />)}
+
+      </div>
+
+    </section>
+
+  );
+
+
+  if (isError) return null;
+
+
   return (
     <section className="container" dir={isAr ? "rtl" : "ltr"}>
       <SectionHeader
