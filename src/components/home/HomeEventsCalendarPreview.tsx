@@ -1,3 +1,4 @@
+import { SkeletonCard } from "@/components/ui/SkeletonCard";
 import { SafeImage } from "@/components/ui/SafeImage";
 import { ROUTES } from "@/config/routes";
 import { useIsAr } from "@/hooks/useIsAr";

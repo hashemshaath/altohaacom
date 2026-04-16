@@ -1,3 +1,4 @@
+import { SkeletonCard } from "@/components/ui/SkeletonCard";
 import { SafeImage } from "@/components/ui/SafeImage";
 import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useRef, useMemo, forwardRef } from "react";
@@ -29,7 +30,7 @@ export function RegionalEvents() {
   const sectionConfig = useSectionConfig();
   const itemCount = sectionConfig?.item_count || 20;
 
-  const { data: allComps = [] } = useQuery({
+  const { data: allComps = [] , isLoading, isError } = useQuery({
     queryKey: ["home-regional-comps"],
     queryFn: async () => {
       const { data } = await supabase

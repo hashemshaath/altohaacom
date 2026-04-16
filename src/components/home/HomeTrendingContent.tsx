@@ -1,3 +1,4 @@
+import { SkeletonCard } from "@/components/ui/SkeletonCard";
 import { SafeImage } from "@/components/ui/SafeImage";
 import { ROUTES } from "@/config/routes";
 import { useIsAr } from "@/hooks/useIsAr";
@@ -40,7 +41,7 @@ export const HomeTrendingContent = forwardRef<HTMLDivElement>(function HomeTrend
     ? (isAr ? sectionConfig.subtitle_ar || "" : sectionConfig.subtitle_en || "")
     : (isAr ? "الأكثر قراءة هذا الأسبوع" : "Most read this week");
 
-  const { data: articles = [] } = useQuery({
+  const { data: articles = [] , isLoading, isError } = useQuery({
     queryKey: ["home-trending-articles", itemCount],
     queryFn: async () => {
       const { data } = await supabase

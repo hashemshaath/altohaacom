@@ -1,3 +1,4 @@
+import { SkeletonCard } from "@/components/ui/SkeletonCard";
 import { SafeImage } from "@/components/ui/SafeImage";
 import { ROUTES } from "@/config/routes";
 import { useIsAr } from "@/hooks/useIsAr";
@@ -52,7 +53,7 @@ export const HomeMasterclasses = memo(forwardRef<HTMLElement>(function HomeMaste
     ? (isAr ? sectionConfig.subtitle_ar || "" : sectionConfig.subtitle_en || "")
     : (isAr ? "تعلّم من أمهر الطهاة واحترف فنون الطهي" : "Learn from top chefs and master culinary arts");
 
-  const { data: classes = [] } = useQuery({
+  const { data: classes = [] , isLoading, isError } = useQuery({
     queryKey: ["home-masterclasses", itemCount],
     queryFn: async () => {
       const { data } = await supabase

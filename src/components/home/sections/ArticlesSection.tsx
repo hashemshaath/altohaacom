@@ -1,3 +1,4 @@
+import { SkeletonCard } from "@/components/ui/SkeletonCard";
 import { useIsAr } from "@/hooks/useIsAr";
 import { memo, forwardRef } from "react";
 import { ROUTES } from "@/config/routes";
@@ -51,7 +52,7 @@ const ArticlesSection = memo(forwardRef<HTMLElement>(function ArticlesSection(_p
   const showSubtitle = config?.show_subtitle ?? true;
   const showViewAll = config?.show_view_all ?? true;
 
-  const { data: articles = [], isLoading } = useQuery({
+  const { data: articles = [], isLoading , isError } = useQuery({
     queryKey: ["home-articles-minimal", itemCount],
     queryFn: async () => {
       const { data } = await supabase

@@ -1,3 +1,4 @@
+import { SkeletonCard } from "@/components/ui/SkeletonCard";
 import { SafeImage } from "@/components/ui/SafeImage";
 import { ROUTES } from "@/config/routes";
 import { useIsAr } from "@/hooks/useIsAr";
@@ -41,7 +42,7 @@ export const SponsorshipOpportunities = forwardRef<HTMLElement>(function Sponsor
     ? (isAr ? sectionConfig.subtitle_ar || "" : sectionConfig.subtitle_en || "")
     : (isAr ? "ادعم مسابقات الطهي العالمية واربط علامتك بأمهر الطهاة" : "Support world-class culinary competitions & connect your brand with top chefs");
 
-  const { data: opportunities = [] } = useQuery({
+  const { data: opportunities = [] , isLoading, isError } = useQuery({
     queryKey: ["home-sponsorship-opportunities"],
     queryFn: async () => {
       const { data: competitions } = await supabase

@@ -1,3 +1,4 @@
+import { SkeletonCard } from "@/components/ui/SkeletonCard";
 import { ROUTES } from "@/config/routes";
 import { useIsAr } from "@/hooks/useIsAr";
 import { useQuery } from "@tanstack/react-query";
@@ -36,7 +37,7 @@ const FeaturedChefsSection = memo(forwardRef<HTMLElement>(function FeaturedChefs
   const showSubtitle = config?.show_subtitle ?? true;
   const showViewAll = config?.show_view_all ?? true;
 
-  const { data: chefs = [], isLoading } = useQuery({
+  const { data: chefs = [], isLoading , isError } = useQuery({
     queryKey: ["featured-chefs-home", itemCount],
     queryFn: async () => {
       const { data: ranked } = await supabase

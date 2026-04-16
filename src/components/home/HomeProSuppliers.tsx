@@ -1,3 +1,4 @@
+import { SkeletonCard } from "@/components/ui/SkeletonCard";
 import { SafeImage } from "@/components/ui/SafeImage";
 import { ROUTES } from "@/config/routes";
 import { useIsAr } from "@/hooks/useIsAr";
@@ -43,7 +44,7 @@ export const HomeProSuppliers = memo(function HomeProSuppliers() {
     ? (isAr ? sectionConfig.subtitle_ar || "" : sectionConfig.subtitle_en || "")
     : (isAr ? "شركات متخصصة في منتجات الشيفات المحترفين" : "Companies specializing in professional chef products");
 
-  const { data: suppliers = [] } = useQuery({
+  const { data: suppliers = [] , isLoading, isError } = useQuery({
     queryKey: ["homeProSuppliers", itemCount],
     queryFn: async () => {
       const { data } = await supabase
