@@ -389,13 +389,6 @@ export function HeroSection() {
           gap: 12px;
           flex-wrap: wrap;
         }
-        .hero-slide__search {
-          margin-top: 32px;
-          max-width: 680px;
-        }
-        @media (max-width: 768px) {
-          .hero-slide__search { margin-top: 24px; max-width: 100%; }
-        }
         @media (max-width: 768px) {
           .hero-slide__buttons {
             flex-direction: column;
