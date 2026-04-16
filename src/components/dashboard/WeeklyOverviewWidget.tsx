@@ -22,7 +22,7 @@ export const WeeklyOverviewWidget = memo(function WeeklyOverviewWidget() {
   const { user } = useAuth();
   const isAr = useIsAr();
 
-  const { data: stats, isLoading } = useQuery({
+  const { data: stats, isLoading , isError } = useQuery({
     queryKey: ["weekly-overview", user?.id],
     queryFn: async () => {
       if (!user) return null;

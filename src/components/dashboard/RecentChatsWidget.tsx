@@ -16,7 +16,7 @@ export const RecentChatsWidget = memo(function RecentChatsWidget() {
   const { user } = useAuth();
   const isAr = useIsAr();
 
-  const { data: chats } = useQuery({
+  const { data: chats , isError , isLoading } = useQuery({
     queryKey: ["recent-chats-widget", user?.id],
     queryFn: async () => {
       if (!user) return [];

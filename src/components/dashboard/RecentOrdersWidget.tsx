@@ -23,7 +23,7 @@ export const RecentOrdersWidget = memo(function RecentOrdersWidget() {
   const { user } = useAuth();
   const isAr = useIsAr();
 
-  const { data: orders, isLoading } = useQuery({
+  const { data: orders, isLoading , isError } = useQuery({
     queryKey: ["recent-orders-widget", user?.id],
     queryFn: async () => {
       if (!user) return [];

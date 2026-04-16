@@ -21,7 +21,7 @@ export const PlatformScoreWidget = memo(function PlatformScoreWidget() {
   const { user } = useAuth();
   const isAr = useIsAr();
 
-  const { data } = useQuery({
+  const { data , isError , isLoading } = useQuery({
     queryKey: ["platform-score", user?.id],
     queryFn: async () => {
       if (!user) return null;

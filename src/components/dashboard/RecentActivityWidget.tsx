@@ -38,7 +38,7 @@ export const RecentActivityWidget = memo(function RecentActivityWidget() {
   const { language, t } = useLanguage();
   const [realtimeItems, setRealtimeItems] = useState<ActivityItem[]>([]);
 
-  const { data: activities, isLoading } = useQuery({
+  const { data: activities, isLoading , isError } = useQuery({
     queryKey: ["recent-activity-widget", user?.id],
     queryFn: async () => {
       if (!user) return [];

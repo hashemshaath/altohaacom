@@ -38,7 +38,7 @@ export const EventsCalendarWidget = memo(function EventsCalendarWidget() {
   const [month, setMonth] = useState(new Date());
 
   // Fetch competitions user registered for + upcoming ones
-  const { data: competitions = [], isLoading: compsLoading } = useQuery({
+  const { data: competitions = [], isLoading: compsLoading , isError } = useQuery({
     queryKey: ["calendar-competitions", user?.id],
     queryFn: async () => {
       // Get user's registered competitions

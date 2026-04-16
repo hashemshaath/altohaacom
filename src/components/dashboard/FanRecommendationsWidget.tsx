@@ -11,7 +11,7 @@ import { CACHE } from "@/lib/queryConfig";
 export const FanRecommendationsWidget = memo(function FanRecommendationsWidget() {
   const isAr = useIsAr();
 
-  const { data: recipes = [] } = useQuery({
+  const { data: recipes = [] , isError , isLoading } = useQuery({
     queryKey: ["fan-recommended-recipes"],
     queryFn: async () => {
       const { data } = await supabase

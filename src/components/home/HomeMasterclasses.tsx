@@ -1,3 +1,4 @@
+import { SkeletonCard } from "@/components/ui/SkeletonCard";
 import { SafeImage } from "@/components/ui/SafeImage";
 import { ROUTES } from "@/config/routes";
 import { useIsAr } from "@/hooks/useIsAr";
@@ -52,7 +53,7 @@ export const HomeMasterclasses = memo(forwardRef<HTMLElement>(function HomeMaste
     ? (isAr ? sectionConfig.subtitle_ar || "" : sectionConfig.subtitle_en || "")
     : (isAr ? "تعلّم من أمهر الطهاة واحترف فنون الطهي" : "Learn from top chefs and master culinary arts");
 
-  const { data: classes = [] } = useQuery({
+  const { data: classes = [] , isLoading, isError } = useQuery({
     queryKey: ["home-masterclasses", itemCount],
     queryFn: async () => {
       const { data } = await supabase
@@ -88,6 +89,24 @@ export const HomeMasterclasses = memo(forwardRef<HTMLElement>(function HomeMaste
   }, [classes, levelFilter, catFilter]);
 
   if (classes.length === 0) return null;
+
+  if (isLoading) return (
+
+    <section className="container py-6">
+
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+
+        {Array.from({ length: 4 }).map((_, i) => <SkeletonCard key={i} />)}
+
+      </div>
+
+    </section>
+
+  );
+
+
+  if (isError) return null;
+
 
   return (
     <section className="container" aria-labelledby="masterclasses-heading" dir={isAr ? "rtl" : "ltr"}>

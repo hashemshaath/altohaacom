@@ -18,7 +18,7 @@ export const ProfileInsightsWidget = memo(function ProfileInsightsWidget() {
   const { user } = useAuth();
   const isAr = useIsAr();
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading , isError } = useQuery({
     queryKey: ["dashboard-profile-insights", user?.id],
     queryFn: async () => {
       if (!user) return null;

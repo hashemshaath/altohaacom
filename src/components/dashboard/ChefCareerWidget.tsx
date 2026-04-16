@@ -25,7 +25,7 @@ export const ChefCareerWidget = memo(function ChefCareerWidget() {
   const { user } = useAuth();
   const isAr = useIsAr();
 
-  const { data } = useQuery({
+  const { data , isError , isLoading } = useQuery({
     queryKey: ["chef-career-widget", user?.id],
     queryFn: async () => {
       if (!user) return null;

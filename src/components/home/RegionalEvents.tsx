@@ -1,3 +1,4 @@
+import { SkeletonCard } from "@/components/ui/SkeletonCard";
 import { SafeImage } from "@/components/ui/SafeImage";
 import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useRef, useMemo, forwardRef } from "react";
@@ -29,7 +30,7 @@ export function RegionalEvents() {
   const sectionConfig = useSectionConfig();
   const itemCount = sectionConfig?.item_count || 20;
 
-  const { data: allComps = [] } = useQuery({
+  const { data: allComps = [] , isLoading, isError } = useQuery({
     queryKey: ["home-regional-comps"],
     queryFn: async () => {
       const { data } = await supabase
@@ -63,6 +64,24 @@ export function RegionalEvents() {
   };
 
   if (allComps.length === 0) return null;
+
+  if (isLoading) return (
+
+    <section className="container py-6">
+
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+
+        {Array.from({ length: 4 }).map((_, i) => <SkeletonCard key={i} />)}
+
+      </div>
+
+    </section>
+
+  );
+
+
+  if (isError) return null;
+
 
   return (
     <section className="relative overflow-hidden w-full" aria-labelledby="regional-heading" dir={isAr ? "rtl" : "ltr"}>

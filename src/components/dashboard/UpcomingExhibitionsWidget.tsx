@@ -15,7 +15,7 @@ import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 export const UpcomingExhibitionsWidget = memo(function UpcomingExhibitionsWidget() {
   const isAr = useIsAr();
 
-  const { data: exhibitions, isLoading } = useQuery({
+  const { data: exhibitions, isLoading , isError } = useQuery({
     queryKey: ["upcoming-exhibitions-widget"],
     queryFn: async () => {
       const { data, error } = await supabase

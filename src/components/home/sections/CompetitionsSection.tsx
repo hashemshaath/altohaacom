@@ -1,3 +1,4 @@
+import { SkeletonCard } from "@/components/ui/SkeletonCard";
 import { useIsAr } from "@/hooks/useIsAr";
 import { memo, forwardRef } from "react";
 import { ROUTES } from "@/config/routes";
@@ -39,7 +40,7 @@ const CompetitionsSection = memo(forwardRef<HTMLElement>(function CompetitionsSe
   const showSubtitle = config?.show_subtitle ?? true;
   const showViewAll = config?.show_view_all ?? true;
 
-  const { data: competitions = [], isLoading: loadingComps } = useQuery({
+  const { data: competitions = [], isLoading: loadingComps , isError } = useQuery({
     queryKey: ["home-competitions-minimal", itemCount],
     queryFn: async () => {
       const { data } = await supabase
@@ -55,7 +56,7 @@ const CompetitionsSection = memo(forwardRef<HTMLElement>(function CompetitionsSe
     refetchOnWindowFocus: false,
   });
 
-  const { data: exhibitions = [], isLoading: loadingExhibs } = useQuery({
+  const { data: exhibitions = [], isLoading: loadingExhibs , isError } = useQuery({
     queryKey: ["home-exhibitions-minimal"],
     queryFn: async () => {
       const { data } = await supabase
@@ -79,6 +80,8 @@ const CompetitionsSection = memo(forwardRef<HTMLElement>(function CompetitionsSe
   ].sort((a, b) => new Date(a.date || 0).getTime() - new Date(b.date || 0).getTime()).slice(0, Math.max(itemCount, 12));
 
   const isLoading = loadingComps || loadingExhibs;
+
+  if (isError) return null;
 
   if (!isLoading && allEvents.length === 0) return null;
 

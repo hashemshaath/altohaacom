@@ -1,3 +1,4 @@
+import { SkeletonCard } from "@/components/ui/SkeletonCard";
 import { ROUTES } from "@/config/routes";
 import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useMemo, memo } from "react";
@@ -33,7 +34,7 @@ export const NewlyJoinedUsers = memo(function NewlyJoinedUsers() {
     ? (isAr ? sectionConfig.subtitle_ar || "" : sectionConfig.subtitle_en || "")
     : (isAr ? "انضم إلى مجتمع متنامٍ من الطهاة والمحترفين حول العالم" : "Join a growing community of chefs and professionals worldwide");
 
-  const { data: users = [] } = useQuery({
+  const { data: users = [] , isLoading, isError } = useQuery({
     queryKey: ["newly-joined-users", itemCount],
     queryFn: async () => {
       const { data } = await supabase
@@ -65,6 +66,24 @@ export const NewlyJoinedUsers = memo(function NewlyJoinedUsers() {
   }, [users, countryFilter]);
 
   if (users.length === 0) return null;
+
+  if (isLoading) return (
+
+    <section className="container py-6">
+
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+
+        {Array.from({ length: 4 }).map((_, i) => <SkeletonCard key={i} />)}
+
+      </div>
+
+    </section>
+
+  );
+
+
+  if (isError) return null;
+
 
   return (
     <section aria-labelledby="new-users-heading" dir={isAr ? "rtl" : "ltr"}>

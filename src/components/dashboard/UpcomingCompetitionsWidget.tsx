@@ -17,7 +17,7 @@ export const UpcomingCompetitionsWidget = memo(function UpcomingCompetitionsWidg
   const isAr = useIsAr();
   const { language, t } = useLanguage();
 
-  const { data: competitions, isLoading } = useQuery({
+  const { data: competitions, isLoading , isError } = useQuery({
     queryKey: ["upcoming-competitions-widget"],
     queryFn: async () => {
       const { data, error } = await supabase

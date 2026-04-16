@@ -1,3 +1,4 @@
+import { SkeletonCard } from "@/components/ui/SkeletonCard";
 import { SafeImage } from "@/components/ui/SafeImage";
 import { ROUTES } from "@/config/routes";
 import { useIsAr } from "@/hooks/useIsAr";
@@ -40,7 +41,7 @@ export const HomeTrendingContent = forwardRef<HTMLDivElement>(function HomeTrend
     ? (isAr ? sectionConfig.subtitle_ar || "" : sectionConfig.subtitle_en || "")
     : (isAr ? "الأكثر قراءة هذا الأسبوع" : "Most read this week");
 
-  const { data: articles = [] } = useQuery({
+  const { data: articles = [] , isLoading, isError } = useQuery({
     queryKey: ["home-trending-articles", itemCount],
     queryFn: async () => {
       const { data } = await supabase
@@ -68,6 +69,24 @@ export const HomeTrendingContent = forwardRef<HTMLDivElement>(function HomeTrend
   }, [articles, typeFilter]);
 
   if (articles.length === 0) return null;
+
+  if (isLoading) return (
+
+    <section className="container py-6">
+
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+
+        {Array.from({ length: 4 }).map((_, i) => <SkeletonCard key={i} />)}
+
+      </div>
+
+    </section>
+
+  );
+
+
+  if (isError) return null;
+
 
   return (
     <div>

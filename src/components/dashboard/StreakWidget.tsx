@@ -17,7 +17,7 @@ export const StreakWidget = memo(function StreakWidget() {
   const { user } = useAuth();
   const isAr = useIsAr();
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading , isError } = useQuery({
     queryKey: ["login-streak", user?.id],
     queryFn: async () => {
       if (!user) return { streak: 0, weekDays: [] };

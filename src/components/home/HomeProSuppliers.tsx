@@ -1,3 +1,4 @@
+import { SkeletonCard } from "@/components/ui/SkeletonCard";
 import { SafeImage } from "@/components/ui/SafeImage";
 import { ROUTES } from "@/config/routes";
 import { useIsAr } from "@/hooks/useIsAr";
@@ -43,7 +44,7 @@ export const HomeProSuppliers = memo(function HomeProSuppliers() {
     ? (isAr ? sectionConfig.subtitle_ar || "" : sectionConfig.subtitle_en || "")
     : (isAr ? "شركات متخصصة في منتجات الشيفات المحترفين" : "Companies specializing in professional chef products");
 
-  const { data: suppliers = [] } = useQuery({
+  const { data: suppliers = [] , isLoading, isError } = useQuery({
     queryKey: ["homeProSuppliers", itemCount],
     queryFn: async () => {
       const { data } = await supabase
@@ -72,6 +73,24 @@ export const HomeProSuppliers = memo(function HomeProSuppliers() {
   }, [suppliers, catFilter]);
 
   if (suppliers.length === 0) return null;
+
+  if (isLoading) return (
+
+    <section className="container py-6">
+
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+
+        {Array.from({ length: 4 }).map((_, i) => <SkeletonCard key={i} />)}
+
+      </div>
+
+    </section>
+
+  );
+
+
+  if (isError) return null;
+
 
   return (
     <section className="container" dir={isAr ? "rtl" : "ltr"}>

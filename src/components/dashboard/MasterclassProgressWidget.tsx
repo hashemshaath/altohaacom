@@ -16,7 +16,7 @@ export const MasterclassProgressWidget = memo(function MasterclassProgressWidget
   const { user } = useAuth();
   const isAr = useIsAr();
 
-  const { data: enrollments, isLoading } = useQuery({
+  const { data: enrollments, isLoading , isError } = useQuery({
     queryKey: ["dashboard-enrollments", user?.id],
     queryFn: async () => {
       if (!user) return [];

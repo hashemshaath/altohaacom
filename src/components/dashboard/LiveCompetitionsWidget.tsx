@@ -30,7 +30,7 @@ export const LiveCompetitionsWidget = memo(function LiveCompetitionsWidget() {
   const { user } = useAuth();
   const isAr = useIsAr();
 
-  const { data: competitions = [], isLoading } = useQuery({
+  const { data: competitions = [], isLoading , isError } = useQuery({
     queryKey: ["live-competitions-widget", user?.id],
     queryFn: async () => {
       // Get active/upcoming competitions

@@ -41,7 +41,7 @@ function buildDailyCounts(rows: { created_at: string }[] | null, days: number): 
 export const ContentStatsWidget = memo(function ContentStatsWidget() {
   const isAr = useIsAr();
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading , isError } = useQuery({
     queryKey: ["content-stats-dashboard-v2"],
     queryFn: async () => {
       const now = new Date();
