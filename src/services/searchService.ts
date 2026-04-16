@@ -369,9 +369,9 @@ export async function fetchPopularPreload(signal?: AbortSignal): Promise<SearchR
   if (signal?.aborted) return empty;
 
   const [recipesRes, competitionsRes, membersRes] = await Promise.all([
-    supabase
+    (supabase
       .from("recipes")
-      .select("id, title, title_ar, description, description_ar, image_url, prep_time, cook_time, average_rating, slug")
+      .select("id, title, title_ar, description, description_ar, image_url, prep_time, cook_time, average_rating, slug") as any)
       .eq("status", "published")
       .order("average_rating", { ascending: false, nullsFirst: false })
       .limit(4),
@@ -393,7 +393,7 @@ export async function fetchPopularPreload(signal?: AbortSignal): Promise<SearchR
 
   const results: SearchResults = {
     ...empty,
-    recipes: (recipesRes.data || []) as RecipeResult[],
+    recipes: ((recipesRes as any).data || []) as RecipeResult[],
     competitions: (competitionsRes.data || []) as CompetitionResult[],
     members: (membersRes.data || []) as MemberResult[],
   };
