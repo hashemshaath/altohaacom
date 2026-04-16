@@ -54,8 +54,11 @@ export default function Auth() {
   }, [refCode]);
 
   useEffect(() => {
-    if (user && !isResetMode) navigate("/", { replace: true });
-  }, [user, navigate, isResetMode]);
+    if (user && !isResetMode) {
+      const from = (location.state as { from?: string })?.from || "/";
+      navigate(from, { replace: true });
+    }
+  }, [user, navigate, isResetMode, location.state]);
 
   useEffect(() => {
     if (location.pathname === "/register") setIsSignUp(true);
