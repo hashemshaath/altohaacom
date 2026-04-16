@@ -145,7 +145,7 @@ export const HomeProSuppliers = memo(function HomeProSuppliers() {
                     )}
                   </div>
                   <div>
-                    <p className="text-xs sm:text-sm font-bold truncate text-foreground">{name}</p>
+                    <p className="text-sm font-bold truncate text-foreground">{name}</p>
                     {s.supplier_category && (
                       <Badge variant="outline" className="text-xs sm:text-xs mt-1">{(() => { const cl = SUPPLIER_CAT_LABELS[s.supplier_category.toLowerCase()]; return cl ? (isAr ? cl.ar : cl.en) : s.supplier_category; })()}</Badge>
                     )}
@@ -156,10 +156,10 @@ export const HomeProSuppliers = memo(function HomeProSuppliers() {
                     )}
                   </div>
                   {tagline && (
-                    <p className="text-xs sm:text-xs text-muted-foreground line-clamp-1">{tagline}</p>
+                    <p className="text-sm text-muted-foreground line-clamp-1">{tagline}</p>
                   )}
                   {s.country_code && (
-                    <p className="text-xs text-muted-foreground/70 flex items-center justify-center gap-1">
+                    <p className="text-sm text-muted-foreground/70 flex items-center justify-center gap-1">
                       <MapPin className="h-2 w-2 shrink-0" />
                       {countryFlag(s.country_code)} {localizeLocation({ city: s.city, countryCode: s.country_code }, isAr)}
                     </p>

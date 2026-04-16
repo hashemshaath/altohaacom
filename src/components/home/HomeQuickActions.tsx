@@ -44,7 +44,7 @@ export const HomeQuickActions = memo(function HomeQuickActions() {
             )}>
               <a.icon className="h-[22px] w-[22px] sm:h-5 sm:w-5" />
             </div>
-            <span className="text-xs sm:text-xs font-semibold text-muted-foreground group-hover:text-foreground transition-colors line-clamp-1 whitespace-nowrap">
+            <span className="text-sm font-semibold text-muted-foreground group-hover:text-foreground transition-colors line-clamp-1 whitespace-nowrap">
               {isAr ? a.labelAr : a.label}
             </span>
           </Link>

@@ -202,19 +202,19 @@ export default function RecipeDetail() {
                 <div className="grid grid-cols-3 gap-3">
                   {recipe.prep_time_minutes && (
                     <Card><CardContent className="py-4 text-center">
-                      <p className="text-xs text-muted-foreground">{isAr ? "تحضير" : "Prep"}</p>
-                      <p className="text-lg font-bold">{recipe.prep_time_minutes}<span className="text-xs text-muted-foreground ms-1">min</span></p>
+                      <p className="text-sm text-muted-foreground">{isAr ? "تحضير" : "Prep"}</p>
+                      <p className="text-lg font-bold">{recipe.prep_time_minutes}<span className="text-sm text-muted-foreground ms-1">min</span></p>
                     </CardContent></Card>
                   )}
                   {recipe.cook_time_minutes && (
                     <Card><CardContent className="py-4 text-center">
-                      <p className="text-xs text-muted-foreground">{isAr ? "طبخ" : "Cook"}</p>
-                      <p className="text-lg font-bold">{recipe.cook_time_minutes}<span className="text-xs text-muted-foreground ms-1">min</span></p>
+                      <p className="text-sm text-muted-foreground">{isAr ? "طبخ" : "Cook"}</p>
+                      <p className="text-lg font-bold">{recipe.cook_time_minutes}<span className="text-sm text-muted-foreground ms-1">min</span></p>
                     </CardContent></Card>
                   )}
                   <Card><CardContent className="py-4 text-center">
-                    <p className="text-xs text-muted-foreground">{isAr ? "إجمالي" : "Total"}</p>
-                    <p className="text-lg font-bold">{totalTime}<span className="text-xs text-muted-foreground ms-1">min</span></p>
+                    <p className="text-sm text-muted-foreground">{isAr ? "إجمالي" : "Total"}</p>
+                    <p className="text-lg font-bold">{totalTime}<span className="text-sm text-muted-foreground ms-1">min</span></p>
                   </CardContent></Card>
                 </div>
               )}

@@ -94,11 +94,11 @@ const RecipeCard = memo(function RecipeCard({ recipe, isAr }: { recipe: RecipeWi
                   {(recipe.author_name || "C")[0].toUpperCase()}
                 </AvatarFallback>
               </Avatar>
-              <span className="text-xs text-muted-foreground">{recipe.author_name || "Chef"}</span>
+              <span className="typo-card-meta text-muted-foreground">{recipe.author_name || "Chef"}</span>
             </div>
             <div className="flex items-center gap-2">
               {recipe.ratings_count > 0 && (
-                <span className="flex items-center gap-1 text-xs">
+                <span className="flex items-center gap-1 typo-card-meta">
                   <Star className="h-3 w-3 fill-chart-4 text-chart-4" />
                   {recipe.avg_rating} ({recipe.ratings_count})
                 </span>

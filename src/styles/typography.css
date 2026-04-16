@@ -2,19 +2,78 @@
    ALTOHA TYPOGRAPHY SYSTEM — Responsive font scaling
    ═══════════════════════════════════════════════════════════════ */
 
-/* ── Mobile-first responsive overrides ── */
+/* ── iOS Safari zoom prevention: inputs must be ≥16px ── */
+@layer base {
+  input, select, textarea, [contenteditable] {
+    font-size: 1rem !important; /* 16px — prevents iOS auto-zoom on focus */
+  }
+}
+
+/* ── Tablet breakpoint (≤768px) ── */
 @media (max-width: 768px) {
-  .text-display {
-    font-size: 2rem !important;
+  /* Heading scale */
+  .text-display  { font-size: 2rem !important; }
+  .text-h1       { font-size: 1.75rem !important; }
+  .text-h2       { font-size: 1.375rem !important; }
+  .text-h3       { font-size: 1.125rem !important; }
+  .text-h4       { font-size: 1rem !important; }
+
+  /* Body scale */
+  .text-body-lg  { font-size: 1rem !important; }
+  .text-body     { font-size: 0.9375rem !important; }
+  .text-body-sm  { font-size: 0.875rem !important; }
+
+  /* Small/utility — minimum 13px enforced */
+  .text-caption   { font-size: 0.8125rem !important; } /* 13px — mobile minimum for body text */
+  .text-label     { font-size: 0.75rem !important; }   /* badges only */
+  .text-overline  { font-size: 0.6875rem !important; text-transform: uppercase !important; }
+
+  /* Component rules */
+  .typo-hero-headline { font-size: 2rem !important; line-height: 1.15 !important; }
+  .typo-page-title    { font-size: 1.75rem !important; }
+  .typo-detail-title  { font-size: 1.75rem !important; }
+  .typo-auth-title    { font-size: 1.5rem !important; }
+  .typo-card-title    { font-size: 0.9375rem !important; font-weight: 600 !important; }
+
+  /* Button minimum touch target */
+  button, [role="button"], .btn, a[class*="Button"] {
+    min-height: 44px;
   }
-  .text-h1 {
-    font-size: 1.75rem !important;
+  button, [role="button"] {
+    font-size: max(0.9375rem, 1em);
   }
-  .text-h2 {
-    font-size: 1.375rem !important;
+
+  /* Mobile nav links */
+  nav a, [role="menuitem"] {
+    font-size: 1rem;
   }
-  .text-h3 {
-    font-size: 1.125rem !important;
+}
+
+/* ── Small phone breakpoint (≤480px) ── */
+@media (max-width: 480px) {
+  .text-display  { font-size: 1.75rem !important; }
+  .text-h1       { font-size: 1.5rem !important; }
+  .text-h2       { font-size: 1.25rem !important; }
+  .text-h3       { font-size: 1.0625rem !important; }
+  .text-body     { font-size: 0.9375rem !important; } /* never below this on any phone */
+  .text-body-sm  { font-size: 0.875rem !important; }  /* minimum for card descriptions */
+
+  .typo-hero-headline { font-size: 1.75rem !important; }
+  .typo-page-title    { font-size: 1.5rem !important; }
+  .typo-detail-title  { font-size: 1.5rem !important; }
+  .typo-auth-title    { font-size: 1.375rem !important; }
+}
+
+/* ── Global minimum font-size enforcement ──
+   Prevents any body text from going below 13px on mobile.
+   Excludes SVG, icons, and sup/sub elements. */
+@media (max-width: 768px) {
+  p, span, li, td, th, label, a, div:not([class*="icon"]):not([class*="Icon"]) {
+    font-size: max(0.8125rem, 1em); /* floor at 13px */
+  }
+  /* Exempt: badges, overlines, and icon containers where tiny text is intentional */
+  [class*="Badge"], [class*="badge"], .typo-section-overline, .typo-category-badge, .typo-detail-badge {
+    font-size: revert;
   }
 }
 
@@ -133,18 +192,6 @@
   .typo-ingredient-item {
     font-size: 1rem;
     line-height: 1.8;
-  }
-}
-
-@media (max-width: 768px) {
-  .typo-hero-headline {
-    font-size: 2rem !important;
-  }
-  .typo-detail-title {
-    font-size: 1.75rem !important;
-  }
-  .typo-page-title {
-    font-size: 1.75rem !important;
   }
 }
 
