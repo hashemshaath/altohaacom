@@ -112,7 +112,7 @@ export const NewlyJoinedUsers = memo(function NewlyJoinedUsers() {
 
             return (
               <Link
-                key={user.id}
+                key={user.user_id}
                 to={user.username ? `/${user.username}` : `/profile/${user.user_id}`}
                 className="group block snap-start shrink-0 w-[32vw] sm:w-[24vw] md:w-[18vw] lg:w-[14vw] xl:w-[11vw] touch-manipulation"
               >
