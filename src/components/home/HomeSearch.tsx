@@ -44,6 +44,27 @@ export const HomeSearch = forwardRef<HTMLElement>(function HomeSearch(_props, re
     staleTime: CACHE.realtime.staleTime * 15,
   });
 
+  const debouncedQuery = query.trim();
+  const { data: liveSuggestions = [], isFetching: isSearching } = useQuery({
+    queryKey: ["home-search-suggestions", debouncedQuery, activeCategory],
+    enabled: debouncedQuery.length >= 2,
+    staleTime: 30_000,
+    queryFn: async () => {
+      const term = `%${debouncedQuery}%`;
+      const typeFilter = activeCategory === "all" ? null : activeCategory;
+      let q = supabase
+        .from("articles")
+        .select("id, title, title_ar, slug, type")
+        .eq("status", "published")
+        .or(`title.ilike.${term},title_ar.ilike.${term}`)
+        .order("view_count", { ascending: false })
+        .limit(6);
+      if (typeFilter) q = q.eq("type", typeFilter);
+      const { data } = await q;
+      return data || [];
+    },
+  });
+
   useEffect(() => {
     const handler = (e: MouseEvent) => {
       if (wrapperRef.current && !wrapperRef.current.contains(e.target as Node)) {
