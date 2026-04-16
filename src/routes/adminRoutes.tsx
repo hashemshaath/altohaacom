@@ -98,6 +98,7 @@ export const adminRoutes = (
     <Route path="global-events" element={<GlobalEventsAdmin />} />
     <Route path="chefs-table" element={<ChefsTableAdmin />} />
     <Route path="chef-schedule" element={<ChefScheduleAdmin />} />
+    <Route path="judges" element={<JudgesAdmin />} />
 
     {/* Content & Media */}
     <Route path="articles" element={<ArticlesAdmin />} />
