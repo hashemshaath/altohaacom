@@ -22,10 +22,10 @@ function HomeEmergencyHero({ language }: { language: string }) {
   return (
     <section className="bg-background">
       <div className="container py-16 lg:py-28 text-center">
-        <h1 className="text-3xl lg:text-5xl font-extrabold tracking-tight text-foreground mb-4">
+        <h1 className="text-h1 lg:text-display tracking-tight text-foreground mb-4">
           {isAr ? "مرحباً بك في مجتمع الطهاة" : "Welcome to the Culinary Community"}
         </h1>
-        <p className="text-base text-muted-foreground max-w-lg mx-auto mb-8">
+        <p className="text-body text-muted-foreground max-w-lg mx-auto mb-8">
           {isAr ? "اكتشف المسابقات والمعارض والطهاة حول العالم" : "Discover competitions, exhibitions, and chefs worldwide"}
         </p>
         <div className="flex gap-3 justify-center">
