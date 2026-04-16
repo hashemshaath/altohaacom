@@ -44,6 +44,27 @@ export const HomeSearch = forwardRef<HTMLElement>(function HomeSearch(_props, re
     staleTime: CACHE.realtime.staleTime * 15,
   });
 
+  const debouncedQuery = query.trim();
+  const { data: liveSuggestions = [], isFetching: isSearching } = useQuery({
+    queryKey: ["home-search-suggestions", debouncedQuery, activeCategory],
+    enabled: debouncedQuery.length >= 2,
+    staleTime: 30_000,
+    queryFn: async () => {
+      const term = `%${debouncedQuery}%`;
+      const typeFilter = activeCategory === "all" ? null : activeCategory;
+      let q = supabase
+        .from("articles")
+        .select("id, title, title_ar, slug, type")
+        .eq("status", "published")
+        .or(`title.ilike.${term},title_ar.ilike.${term}`)
+        .order("view_count", { ascending: false })
+        .limit(6);
+      if (typeFilter) q = q.eq("type", typeFilter);
+      const { data } = await q;
+      return data || [];
+    },
+  });
+
   useEffect(() => {
     const handler = (e: MouseEvent) => {
       if (wrapperRef.current && !wrapperRef.current.contains(e.target as Node)) {
@@ -112,6 +133,42 @@ export const HomeSearch = forwardRef<HTMLElement>(function HomeSearch(_props, re
               {isAr ? "بحث" : "Search"}
             </Button>
           </form>
+
+          {showSuggestions && query.trim().length >= 2 && (
+            <div className="mt-1.5 rounded-lg border border-border/30 bg-card p-2 shadow-lg animate-in fade-in-0 slide-in-from-top-1 duration-200">
+              {isSearching && liveSuggestions.length === 0 ? (
+                <div className="px-2.5 py-3 text-xs text-muted-foreground">
+                  {isAr ? "جاري البحث..." : "Searching..."}
+                </div>
+              ) : liveSuggestions.length === 0 ? (
+                <div className="px-2.5 py-3 text-xs text-muted-foreground">
+                  {isAr ? "لا توجد نتائج مطابقة" : "No matches found"}
+                </div>
+              ) : (
+                <div className="space-y-0.5">
+                  {liveSuggestions.map((item) => (
+                    <button
+                      key={item.id}
+                      type="button"
+                      onClick={() => {
+                        setShowSuggestions(false);
+                        navigate(ROUTES.article(item.slug));
+                      }}
+                      className="w-full flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-start text-sm hover:bg-muted/60 transition-colors"
+                    >
+                      <Search className="h-3 w-3 text-muted-foreground/40 shrink-0" />
+                      <span className="truncate text-foreground">{isAr ? item.title_ar || item.title : item.title}</span>
+                      {item.type && (
+                        <Badge variant="outline" className="ms-auto shrink-0 text-xs">
+                          {item.type}
+                        </Badge>
+                      )}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
 
           {showSuggestions && !query && trending.length > 0 && (
             <div className="mt-1.5 rounded-lg border border-border/30 bg-card p-2.5 shadow-lg animate-in fade-in-0 slide-in-from-top-1 duration-200">
