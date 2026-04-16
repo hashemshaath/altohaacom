@@ -50,19 +50,18 @@ const StatsBar = memo(forwardRef<HTMLElement>(function StatsBar(_props, _ref) {
   const { data: stats } = useQuery({
     queryKey: ["home-stats"],
     queryFn: async () => {
-      const safeCount = async <T extends "profiles_public" | "competitions" | "culinary_entities" | "exhibitions" | "organizers">(table: T) => {
-        try {
-          const { count } = await supabase.from(table).select("*", { count: "exact", head: true });
-          return count ?? 0;
-        } catch { return 0; }
-      };
-      // Sequential to avoid browser aborting concurrent HEAD requests
-      const members = await safeCount("profiles_public");
-      const competitions = await safeCount("competitions");
-      const entities = await safeCount("culinary_entities");
-      const exhibitions = await safeCount("exhibitions");
-      const organizers = await safeCount("organizers");
-      return { members, competitions, entities, exhibitions, organizers };
+      const gc = (r: { count: number | null } | null) => r?.count ?? 0;
+      try {
+        // Sequential to avoid browser aborting concurrent HEAD requests
+        const r1 = await supabase.from("profiles_public").select("*", { count: "exact", head: true });
+        const r2 = await supabase.from("competitions").select("*", { count: "exact", head: true });
+        const r3 = await supabase.from("culinary_entities").select("*", { count: "exact", head: true });
+        const r4 = await supabase.from("exhibitions").select("*", { count: "exact", head: true });
+        const r5 = await supabase.from("organizers").select("*", { count: "exact", head: true });
+        return { members: gc(r1), competitions: gc(r2), entities: gc(r3), exhibitions: gc(r4), organizers: gc(r5) };
+      } catch {
+        return { members: 0, competitions: 0, entities: 0, exhibitions: 0, organizers: 0 };
+      }
     },
     staleTime: CACHE.long.staleTime,
   });
