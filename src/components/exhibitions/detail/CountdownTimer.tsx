@@ -65,4 +65,4 @@ export const CountdownTimer = memo(forwardRef<HTMLDivElement, CountdownTimerProp
       ))}
     </div>
   );
-});
+}));
