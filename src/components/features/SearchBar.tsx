@@ -558,16 +558,16 @@ export const SearchBar = memo(function SearchBar({
           <X className="h-4 w-4" />
         </button>
 
-        {/* Submit — icon on mobile, text on desktop */}
+        {/* Submit — icon on mobile (44px), text on desktop */}
         <button
           type="submit"
           aria-label={isAr ? "بحث" : "Search"}
           style={{ touchAction: "manipulation" }}
           className={cn(
-            "h-9 md:h-10 shrink-0 rounded-lg md:rounded-xl bg-primary text-primary-foreground font-semibold",
+            "shrink-0 rounded-lg md:rounded-xl bg-primary text-primary-foreground font-semibold",
+            "h-11 w-11 md:h-10 md:w-auto md:px-5 text-sm",
             "transition-colors hover:bg-primary/90 active:scale-95",
-            "flex items-center justify-center",
-            "w-9 md:w-auto md:px-5 text-sm"
+            "flex items-center justify-center"
           )}
         >
           <Search className="h-4 w-4 md:hidden" />
