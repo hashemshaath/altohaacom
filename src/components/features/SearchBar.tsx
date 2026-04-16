@@ -99,16 +99,17 @@ export const SearchBar = memo(function SearchBar({
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const [recents, setRecents] = useState<string[]>([]);
 
-  const { filters, updateFilter, results, isLoading, preloadPopular } = useGlobalSearch();
+  const { filters, updateFilter, results, isLoading, error, refetch, preloadPopular } = useGlobalSearch();
   const query = filters.query;
   const trimmed = query.trim();
 
   // ── Mobile: lock body scroll while sheet is open ──
   useBodyScrollLock(isMobile && open);
 
-  // ── Hydrate recents on mount ──
+  // ── Hydrate recents on mount + subscribe to changes (so "Recent Searches" stays in sync after navigate→back) ──
   useEffect(() => {
     setRecents(getRecentSearches());
+    return subscribeRecentSearches(() => setRecents(getRecentSearches()));
   }, []);
 
   // ── Click outside closes dropdown (desktop only — mobile uses backdrop) ──
