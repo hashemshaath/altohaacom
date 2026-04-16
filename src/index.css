@@ -1138,3 +1138,156 @@ html:not(.dark) .logo-dark-invert { filter: none; }
   .footer-links > li + li { margin-top: 10px; }
   .footer-copyright { margin-top: 40px; }
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   GRID POLICY — ALTOHA DESIGN SYSTEM
+   ───────────────────────────────────────────────────────────────
+   SINGLE SOURCE OF TRUTH for card grids and gaps.
+   Use these utilities instead of writing custom grid-template-columns
+   and gap values per component. All gaps are multiples of 4px.
+
+   Mobile     <768px     1 col,  16px gap (12 chef, 10 category)
+   Tablet     ≥768px     2 col,  20px gap (3 chef, 3 category)
+   Desktop    ≥1024px    3 col,  24px gap (4 chef, 4–6 category)
+
+   Variants:
+     .grid-standard    auto-fill minmax(280px, 1fr)  →  3 / 2 / 1
+     .grid-featured    first item spans 2 rows on desktop
+     .grid-chefs       4 / 3 / 2 columns
+     .grid-categories  6 / 3 / 2 columns (use .grid-categories-4 for 4 desktop)
+     .scroll-snap-x    horizontal scroll on mobile only (cards 280px)
+   ═══════════════════════════════════════════════════════════════ */
+
+@layer utilities {
+
+  /* ── Standard card grid: auto-fill 280px, 3 / 2 / 1 ── */
+  .grid-standard {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+  }
+  @media (min-width: 768px) {
+    .grid-standard { gap: 20px; }
+  }
+  @media (min-width: 1024px) {
+    .grid-standard { gap: 24px; }
+  }
+
+  /* ── Featured grid: hero card spans 2 rows on desktop ── */
+  .grid-featured {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  @media (min-width: 768px) {
+    .grid-featured {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+  }
+  @media (min-width: 1024px) {
+    .grid-featured {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+    .grid-featured > :first-child {
+      grid-row: span 2;
+    }
+  }
+
+  /* ── Chef grid: 4 / 3 / 2 ── */
+  .grid-chefs {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+  @media (min-width: 768px) {
+    .grid-chefs {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+  }
+  @media (min-width: 1024px) {
+    .grid-chefs {
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+    }
+  }
+
+  /* ── Category grid (default 6 desktop): 6 / 3 / 2 ── */
+  .grid-categories {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+  @media (min-width: 768px) {
+    .grid-categories {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+  }
+  @media (min-width: 1024px) {
+    .grid-categories {
+      grid-template-columns: repeat(6, 1fr);
+      gap: 16px;
+    }
+  }
+
+  /* ── Category grid (4 desktop variant): 4 / 3 / 2 ── */
+  .grid-categories-4 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+  @media (min-width: 768px) {
+    .grid-categories-4 {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+  }
+  @media (min-width: 1024px) {
+    .grid-categories-4 {
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+  }
+
+  /* ── Mobile horizontal scroll snap ──
+     Apply to a container; direct children become 280px cards.
+     On ≥768px the layout reverts to flex-wrap (no scroll). */
+  .scroll-snap-x {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    gap: 16px;
+    padding-bottom: 8px;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .scroll-snap-x::-webkit-scrollbar { display: none; }
+  .scroll-snap-x > * {
+    flex: 0 0 280px;
+    scroll-snap-align: start;
+  }
+  .scroll-snap-x > :last-child {
+    margin-inline-end: 20px; /* breathing room after last card */
+  }
+  /* Disable scroll-snap behavior on tablet+ — let parent grid take over */
+  @media (min-width: 768px) {
+    .scroll-snap-x {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      overflow: visible;
+      scroll-snap-type: none;
+      padding-bottom: 0;
+      gap: 20px;
+    }
+    .scroll-snap-x > * { flex: initial; }
+    .scroll-snap-x > :last-child { margin-inline-end: 0; }
+  }
+  @media (min-width: 1024px) {
+    .scroll-snap-x { gap: 24px; }
+  }
+}
