@@ -95,8 +95,8 @@ function TrustStats({ isAr }: { isAr: boolean }) {
           {i > 0 && <div className="w-px h-8 bg-[#1C1C1A]/10 -ms-3 me-2 hidden sm:block" />}
           <s.icon className="h-4 w-4 shrink-0 hidden sm:block" style={{ color: "#C05B2E" }} />
           <div>
-            <p className="text-sm sm:text-base font-bold tracking-tight" style={{ color: "#C05B2E" }}>{s.value}</p>
-            <p className="text-[0.7rem] sm:text-xs leading-tight" style={{ color: "#6B6560" }}>{s.label}</p>
+            <p className="typo-stats-number text-sm sm:text-base tracking-tight">{s.value}</p>
+            <p className="typo-stats-label text-[0.7rem] sm:text-xs leading-tight">{s.label}</p>
           </div>
         </div>
       ))}
@@ -123,15 +123,14 @@ function FallbackHero() {
             </div>
 
             <h1
-              className="text-[2rem] lg:text-[3rem] font-bold leading-[1.15] tracking-[-0.02em]"
+              className="typo-hero-headline"
               style={{ color: "#1C1C1A" }}
             >
               {isAr ? "مجتمع الطهاة العالمي" : "The Global Culinary Community"}
             </h1>
 
             <p
-              className="text-[1.125rem] leading-relaxed max-w-[480px] mx-auto lg:mx-0"
-              style={{ color: "#6B6560" }}
+              className="typo-hero-subtitle max-w-[480px] mx-auto lg:mx-0"
             >
               {isAr
                 ? "انضم إلى أفضل الطهاة والحكام والمنظمين حول العالم"
@@ -314,7 +313,7 @@ export function HeroSection() {
                 className={cn(!isFirstRender && "animate-[heroFadeUp_0.7s_ease-out_forwards]")}
               >
                 <h1
-                  className="text-[1.75rem] sm:text-[2rem] lg:text-[2.75rem] xl:text-[3.25rem] font-bold leading-[1.12] tracking-[-0.025em]"
+                  className="typo-hero-headline"
                   style={{ color: "#1C1C1A" }}
                 >
                   {isAr ? slide.title_ar || slide.title : slide.title}
@@ -327,8 +326,7 @@ export function HeroSection() {
                   className={cn(!isFirstRender && "animate-[heroFadeUp_0.8s_ease-out_forwards]")}
                 >
                   <p
-                    className="text-[1.125rem] leading-relaxed max-w-[480px] mx-auto lg:mx-0 line-clamp-3"
-                    style={{ color: "#6B6560" }}
+                    className="typo-hero-subtitle max-w-[480px] mx-auto lg:mx-0 line-clamp-3"
                   >
                     {isAr ? slide.subtitle_ar || slide.subtitle : slide.subtitle}
                   </p>
