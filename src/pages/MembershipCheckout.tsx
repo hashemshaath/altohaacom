@@ -28,6 +28,15 @@ import { MembershipReceipt } from "@/components/membership/MembershipReceipt";
 import { useEcommerceTracking } from "@/hooks/useEcommerceTracking";
 import { MS_PER_DAY } from "@/lib/constants";
 
+/**
+ * TYPOGRAPHY POLICY — ALTOHA DESIGN SYSTEM
+ * Minimum font size: 11px (0.6875rem) desktop / 13px (0.8125rem) mobile.
+ * Do NOT use `text-xs` on body text — only on badges & labels.
+ * Scale: display(48) h1(36) h2(28) h3(22) h4(18) body-lg(18) body(16) body-sm(14) caption(13) label(12) overline(11).
+ * IBM Plex Arabic required on all text.
+ * See src/styles/typography.css for the complete policy.
+ */
+
 const ALL_TIERS = [
   { id: "basic", icon: Zap, color: "text-muted-foreground", bg: "bg-muted/30", monthly: 0, yearly: 0 },
   { id: "professional", icon: Star, color: "text-primary", bg: "bg-primary/10", monthly: 19, yearly: 190 },

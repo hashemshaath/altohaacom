@@ -7,6 +7,15 @@ import { ar as arLocale } from "date-fns/locale";
 import type { GlobalEvent } from "@/hooks/useGlobalEventsCalendar";
 import { DayEventCard } from "./DayView";
 
+/**
+ * TYPOGRAPHY POLICY — ALTOHA DESIGN SYSTEM
+ * Minimum font size: 11px (0.6875rem) desktop / 13px (0.8125rem) mobile.
+ * Do NOT use `text-xs` on body text — only on badges & labels.
+ * Scale: display(48) h1(36) h2(28) h3(22) h4(18) body-lg(18) body(16) body-sm(14) caption(13) label(12) overline(11).
+ * IBM Plex Arabic required on all text.
+ * See src/styles/typography.css for the complete policy.
+ */
+
 export function SelectedDayPanel({ day, events, onClose, isAr }: {
   day: Date; events: GlobalEvent[]; onClose: () => void; isAr: boolean;
 }) {

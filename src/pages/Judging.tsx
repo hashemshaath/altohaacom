@@ -28,6 +28,15 @@ import { OfflineJudgingPanel } from "@/components/judging/OfflineJudgingPanel";
 import { WifiOff } from "lucide-react";
 import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
+/**
+ * TYPOGRAPHY POLICY — ALTOHA DESIGN SYSTEM
+ * Minimum font size: 11px (0.6875rem) desktop / 13px (0.8125rem) mobile.
+ * Do NOT use `text-xs` on body text — only on badges & labels.
+ * Scale: display(48) h1(36) h2(28) h3(22) h4(18) body-lg(18) body(16) body-sm(14) caption(13) label(12) overline(11).
+ * IBM Plex Arabic required on all text.
+ * See src/styles/typography.css for the complete policy.
+ */
+
 type Registration = Database["public"]["Tables"]["competition_registrations"]["Row"];
 type Criteria = Database["public"]["Tables"]["judging_criteria"]["Row"];
 type Score = Database["public"]["Tables"]["competition_scores"]["Row"];

@@ -11,6 +11,15 @@ import { TypographySettings } from "@/components/admin/settings/TypographySettin
 import { Skeleton } from "@/components/ui/skeleton";
 import { useTheme } from "next-themes";
 
+/**
+ * TYPOGRAPHY POLICY — ALTOHA DESIGN SYSTEM
+ * Minimum font size: 11px (0.6875rem) desktop / 13px (0.8125rem) mobile.
+ * Do NOT use `text-xs` on body text — only on badges & labels.
+ * Scale: display(48) h1(36) h2(28) h3(22) h4(18) body-lg(18) body(16) body-sm(14) caption(13) label(12) overline(11).
+ * IBM Plex Arabic required on all text.
+ * See src/styles/typography.css for the complete policy.
+ */
+
 const DARK_MODE_OPTIONS = [
   { id: "light", icon: Sun, labelEn: "Light", labelAr: "فاتح", descEn: "Always use light mode", descAr: "استخدام الوضع الفاتح دائمًا" },
   { id: "dark", icon: Moon, labelEn: "Dark", labelAr: "داكن", descEn: "Always use dark mode", descAr: "استخدام الوضع الداكن دائمًا" },

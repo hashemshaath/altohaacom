@@ -12,6 +12,15 @@ import { Card, CardContent } from "@/components/ui/card";
 import { SEOHead } from "@/components/SEOHead";
 import { RelatedPages } from "@/components/seo/RelatedPages";
 
+/**
+ * TYPOGRAPHY POLICY — ALTOHA DESIGN SYSTEM
+ * Minimum font size: 11px (0.6875rem) desktop / 13px (0.8125rem) mobile.
+ * Do NOT use `text-xs` on body text — only on badges & labels.
+ * Scale: display(48) h1(36) h2(28) h3(22) h4(18) body-lg(18) body(16) body-sm(14) caption(13) label(12) overline(11).
+ * IBM Plex Arabic required on all text.
+ * See src/styles/typography.css for the complete policy.
+ */
+
 const benefits = [
   { icon: Trophy, titleEn: "Compete Globally", titleAr: "تنافس عالمياً", descEn: "Join culinary competitions worldwide and prove your skills against the best", descAr: "انضم إلى مسابقات طهي عالمية وأثبت مهاراتك أمام الأفضل" },
   { icon: Award, titleEn: "Earn Certificates", titleAr: "احصل على شهادات", descEn: "Receive verifiable digital certificates for your achievements", descAr: "احصل على شهادات رقمية قابلة للتحقق لإنجازاتك" },
