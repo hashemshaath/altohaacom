@@ -37,6 +37,7 @@ export interface Competition {
   max_participants: number | null;
   organizer_id: string;
   edition_year: number | null;
+  slug?: string | null;
 }
 
 export interface CompetitionWithRegs extends Competition {
