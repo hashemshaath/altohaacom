@@ -1,3 +1,13 @@
+// TEMP DEBUG — remove after fixing
+if (typeof window !== 'undefined') {
+  window.addEventListener('error', (e) => {
+    console.error('[BROKEN]', e.filename, e.lineno, e.message);
+  });
+  window.addEventListener('unhandledrejection', (e) => {
+    console.error('[PROMISE BROKEN]', e.reason);
+  });
+}
+
 import { Suspense, lazy, useLayoutEffect, memo } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
