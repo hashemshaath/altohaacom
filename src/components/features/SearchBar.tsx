@@ -12,6 +12,7 @@ import { useNavigate } from "react-router-dom";
 import { Search, X, Clock, TrendingUp, Loader2, FileQuestion } from "lucide-react";
 import { useIsAr } from "@/hooks/useIsAr";
 import { useGlobalSearch } from "@/hooks/useGlobalSearch";
+import { fetchTrendingTags } from "@/services/searchService";
 import {
   getRecentSearches,
   addRecentSearch,
