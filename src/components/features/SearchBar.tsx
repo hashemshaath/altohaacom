@@ -542,14 +542,15 @@ export const SearchBar = memo(function SearchBar({
           readOnly={isMobile && open}
         />
 
-        {/* Clear button */}
+        {/* Clear button — 44px on mobile (a11y touch target), 32px on desktop */}
         <button
           type="button"
           onClick={handleClear}
           aria-label={isAr ? "مسح" : "Clear"}
           style={{ touchAction: "manipulation" }}
           className={cn(
-            "h-8 w-8 flex items-center justify-center rounded-full shrink-0",
+            "flex items-center justify-center rounded-full shrink-0",
+            "h-11 w-11 md:h-8 md:w-8",
             "text-muted-foreground hover:bg-muted/60 transition-opacity duration-200",
             query ? "opacity-100" : "opacity-0 pointer-events-none"
           )}
