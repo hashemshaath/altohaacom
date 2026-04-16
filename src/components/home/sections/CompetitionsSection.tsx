@@ -74,7 +74,7 @@ const CompetitionsSection = memo(forwardRef<HTMLElement>(function CompetitionsSe
   });
 
   const allEvents = [
-    ...competitions.map((c) => ({ ...c, type: "competition" as const, date: c.competition_start, link: ROUTES.competition(c.id) })),
+    ...competitions.map((c) => ({ ...c, type: "competition" as const, date: c.competition_start, link: ROUTES.competition(c.slug || c.id) })),
     ...exhibitions.map((e) => ({ ...e, type: "exhibition" as const, date: e.start_date, link: ROUTES.exhibition(e.slug || e.id) })),
   ].sort((a, b) => new Date(a.date || 0).getTime() - new Date(b.date || 0).getTime()).slice(0, Math.max(itemCount, 12));
 

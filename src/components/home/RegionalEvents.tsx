@@ -131,7 +131,7 @@ const EventCard = forwardRef<HTMLAnchorElement, { item: any }>(function EventCar
   const StatusIcon = s.icon;
 
   return (
-    <Link ref={ref} to={ROUTES.competition(item.id)} className="group block w-[210px] sm:w-[220px] flex-shrink-0 snap-start touch-manipulation">
+    <Link ref={ref} to={ROUTES.competition(item.slug || item.id)} className="group block w-[210px] sm:w-[220px] flex-shrink-0 snap-start touch-manipulation">
       <Card interactive className="h-full overflow-hidden border-border/50 rounded-2xl">
         <div className="relative aspect-[16/10] overflow-hidden bg-muted">
           {item.cover_image_url ? (

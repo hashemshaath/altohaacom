@@ -89,7 +89,7 @@ export const CommunityRightSidebar = memo(function CommunityRightSidebar({ right
                     <div
                       key={profile.user_id}
                       className="flex items-center gap-2.5 px-3 py-2.5 hover:bg-muted/20 transition-colors cursor-pointer"
-                      onClick={() => navigate(`/chef/${profile.user_id}`)}
+                      onClick={() => navigate(`/${profile.username || profile.user_id}`)}
                       role="button"
                       tabIndex={0}
                     >
