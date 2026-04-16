@@ -101,10 +101,11 @@
     --space-24:  96px;
     --space-32:  128px;
 
-    /* Section Padding — responsive scale */
-    --section-y-mobile:   32px;
-    --section-y-tablet:   48px;
-    --section-y-desktop:  96px;
+    /* Section vertical padding — top+bottom (4px grid)
+       Spec: 80 desktop / 64 tablet / 48 mobile */
+    --section-y-desktop:  80px;
+    --section-y-tablet:   64px;
+    --section-y-mobile:   48px;
 
     /* Container */
     --container-max:      1280px;
