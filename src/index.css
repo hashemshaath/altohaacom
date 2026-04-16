@@ -138,7 +138,7 @@
     /* ═══ SHADCN/TAILWIND SEMANTIC TOKENS ═══════════
        These map to the new palette so existing components
        using hsl(var(--primary)) etc. keep working.         */
-    --background: 0 0% 100%;          /* #FFFFFF — clean white */
+    --background: 36 47% 94%;          /* #F5F0E8 — warm stone */
     --foreground: 0 0% 24%;          /* --color-body #3D3D3D */
 
     --card: 0 0% 100%;

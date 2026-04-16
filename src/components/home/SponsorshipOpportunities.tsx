@@ -62,24 +62,6 @@ export const SponsorshipOpportunities = forwardRef<HTMLElement>(function Sponsor
         .order("sort_order")
         .limit(4);
 
-      if (isLoading) return (
-
-        <section className="container py-6">
-
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-
-            {Array.from({ length: 4 }).map((_, i) => <SkeletonCard key={i} />)}
-
-          </div>
-
-        </section>
-
-      );
-
-
-      if (isError) return null;
-
-
       return (competitions || []).map((c) => ({
         ...c,
         currentSponsors: c.competition_sponsors?.length || 0,
@@ -90,6 +72,16 @@ export const SponsorshipOpportunities = forwardRef<HTMLElement>(function Sponsor
     gcTime: 1000 * 60 * 30,
     refetchOnWindowFocus: false,
   });
+
+  if (isLoading) return (
+    <section className="container py-6">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+        {Array.from({ length: 4 }).map((_, i) => <SkeletonCard key={i} />)}
+      </div>
+    </section>
+  );
+
+  if (isError) return null;
 
   if (opportunities.length === 0) return null;
 

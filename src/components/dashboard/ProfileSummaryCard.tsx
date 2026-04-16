@@ -34,7 +34,7 @@ export const ProfileSummaryCard = memo(function ProfileSummaryCard() {
     ...CACHE.medium,
   });
 
-  const { data: stats , isError , isLoading } = useQuery({
+  const { data: stats , isError: statsError , isLoading: statsLoading } = useQuery({
     queryKey: ["profile-summary-stats-v2", user?.id],
     queryFn: async () => {
       if (!user) return null;

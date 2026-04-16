@@ -71,7 +71,7 @@ function formatDateParts(value: string, isAr: boolean) {
 export const HomeEventsCalendarPreview = memo(function HomeEventsCalendarPreview() {
   const isAr = useIsAr();
   const [selectedFilter, setSelectedFilter] = useState<GlobalEventType | null>(null);
-  const { data: events = [] } = useGlobalEventsCalendar();
+  const { data: events = [], isLoading, isError } = useGlobalEventsCalendar();
   const sectionConfig = useSectionConfig();
   const itemCount = sectionConfig?.item_count || 6;
   const scrollRef = useRef<HTMLDivElement>(null);
