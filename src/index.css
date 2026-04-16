@@ -1291,3 +1291,139 @@ html:not(.dark) .logo-dark-invert { filter: none; }
     .scroll-snap-x { gap: 24px; }
   }
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   VISUAL QA UTILITIES — Common Issue Fixes
+   Addresses: CLS, card heights, text overflow, image fill,
+   RTL alignment, mobile hero sizing, dot centering, alternating bg
+   ═══════════════════════════════════════════════════════════════ */
+@layer utilities {
+
+  /* ── ISSUE 1: Layout Shift Prevention ─────────────────── */
+  .img-stable {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+  }
+  .aspect-card    { aspect-ratio: 4 / 3; }
+  .aspect-hero    { aspect-ratio: 16 / 9; }
+  .aspect-square  { aspect-ratio: 1 / 1; }
+  .aspect-portrait{ aspect-ratio: 3 / 4; }
+  .aspect-wide    { aspect-ratio: 21 / 9; }
+
+  .hero-min-h {
+    min-height: clamp(420px, 60vh, 720px);
+  }
+
+  /* ── ISSUE 2: Equal Card Heights ──────────────────────── */
+  .grid-stretch     { align-items: stretch; }
+  .card-flex {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+  .card-flex > .card-body,
+  .card-body-grow   { flex: 1 1 auto; }
+  .card-cta-bottom  { margin-top: auto; }
+
+  /* ── ISSUE 3: Text Overflow Clamping ──────────────────── */
+  .clamp-1 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    word-break: break-word;
+  }
+  .clamp-2 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    word-break: break-word;
+  }
+  .clamp-3 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    word-break: break-word;
+  }
+  .clamp-4 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    word-break: break-word;
+  }
+
+  /* ── ISSUE 4: Card Images Fill Container ──────────────── */
+  .card-image-wrap {
+    position: relative;
+    overflow: hidden;
+    aspect-ratio: 4 / 3;
+    background: hsl(var(--muted) / 0.4);
+  }
+  .card-image-wrap > img,
+  .card-image {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  /* ── ISSUE 5: Section Header RTL Alignment ────────────── */
+  .section-header-row {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  [dir="rtl"] .section-header-row { text-align: right; }
+  [dir="ltr"] .section-header-row { text-align: left; }
+  .section-header-cta { margin-inline-start: auto; }
+
+  /* ── ISSUE 6: Mobile Hero Heading ─────────────────────── */
+  @media (max-width: 480px) {
+    .hero-heading-mobile {
+      max-width: 320px;
+      margin-inline: auto;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+    }
+  }
+
+  /* ── ISSUE 7: Slider Dot Centering ────────────────────── */
+  .dots-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+  }
+  .dot {
+    height: 6px;
+    border-radius: 9999px;
+    background: hsl(var(--muted-foreground) / 0.3);
+    transition: width 300ms ease, background-color 300ms ease;
+    width: 6px;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+  }
+  .dot[data-active="true"],
+  .dot.is-active {
+    width: 24px;
+    background: hsl(var(--primary));
+  }
+
+  /* ── ISSUE 8: Alternating Section Backgrounds ─────────── */
+  .section-rhythm > section:nth-child(odd),
+  .bg-rhythm-odd  { background-color: #F5F0E8; }
+  .section-rhythm > section:nth-child(even),
+  .bg-rhythm-even { background-color: #FEFCF8; }
+}
