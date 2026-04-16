@@ -101,10 +101,11 @@
     --space-24:  96px;
     --space-32:  128px;
 
-    /* Section Padding — responsive scale */
-    --section-y-mobile:   32px;
-    --section-y-tablet:   48px;
-    --section-y-desktop:  96px;
+    /* Section vertical padding — top+bottom (4px grid)
+       Spec: 80 desktop / 64 tablet / 48 mobile */
+    --section-y-desktop:  80px;
+    --section-y-tablet:   64px;
+    --section-y-mobile:   48px;
 
     /* Container */
     --container-max:      1280px;
@@ -1010,4 +1011,130 @@ html:not(.dark) .logo-dark-invert { filter: none; }
     padding-left: max(20px, env(safe-area-inset-left));
     padding-right: max(20px, env(safe-area-inset-right));
   }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SPACING POLICY — ALTOHA DESIGN SYSTEM
+   ───────────────────────────────────────────────────────────────
+   SINGLE SOURCE OF TRUTH for vertical rhythm.
+   All values are multiples of 4px. Do not use odd values
+   (7, 11, 13, 17px). Use these utility classes or the
+   --space-* tokens above instead of arbitrary margins.
+
+   SECTION RHYTHM
+     overline → title         8px   (.mb-overline)
+     title → subtitle         12px  (.mb-title-sm)
+     title → content          40px  (.mb-title-lg)
+     subtitle → content       40px desktop / 28px mobile (.mb-subtitle)
+     section ↕ section        80 / 64 / 48px  (.section-y)
+
+   CARD INTERNAL
+     badge                    10px  (.mb-card-badge)
+     title                    8px   (.mb-card-title)
+     description              12px  (.mb-card-desc)
+     meta row                 16px  (.mb-card-meta)
+     padding standard         20px  (.card-pad)
+     padding featured         28px  (.card-pad-lg)
+
+   DETAIL PAGE
+     hero → header            32px  (.mt-detail-header)
+     badge → title            12px  (.mb-detail-badge)
+     title → meta             16px  (.mb-detail-title)
+     meta → body              32px  (.mb-detail-meta)
+     paragraph                24px  (.detail-prose > p)
+     before H2/H3             40px  (.detail-prose h2/h3)
+     after heading            16px
+     between steps            24px  (.detail-steps > * + *)
+     ingredient rows          16px + 1px divider (.ingredient-list > li)
+
+   FORM
+     field groups             24px  (.form-group + .form-group)
+     label → input            6px   (.form-group label)
+     input → error            6px   (.form-error)
+     last field → submit      32px  (.form-submit)
+
+   FOOTER
+     columns gap              48px
+     col heading → links      16px
+     link gap                 10px
+     content → copyright      40px
+   ═══════════════════════════════════════════════════════════════ */
+
+@layer utilities {
+
+  /* ── Section vertical padding (responsive) ── */
+  .section-y {
+    padding-top: var(--section-y-mobile);
+    padding-bottom: var(--section-y-mobile);
+  }
+  @media (min-width: 768px) {
+    .section-y {
+      padding-top: var(--section-y-tablet);
+      padding-bottom: var(--section-y-tablet);
+    }
+  }
+  @media (min-width: 1024px) {
+    .section-y {
+      padding-top: var(--section-y-desktop);
+      padding-bottom: var(--section-y-desktop);
+    }
+  }
+
+  /* ── Section header rhythm ── */
+  .mb-overline   { margin-bottom: 8px; }
+  .mb-title-sm   { margin-bottom: 12px; }
+  .mb-title-lg   { margin-bottom: 40px; }
+  .mb-subtitle   { margin-bottom: 28px; }
+  @media (min-width: 768px) {
+    .mb-subtitle { margin-bottom: 40px; }
+  }
+
+  /* ── Card internal spacing ── */
+  .mb-card-badge { margin-bottom: 10px; }
+  .mb-card-title { margin-bottom: 8px; }
+  .mb-card-desc  { margin-bottom: 12px; }
+  .mb-card-meta  { margin-bottom: 16px; }
+  .card-pad      { padding: 20px; }
+  .card-pad-lg   { padding: 28px; }
+  .card-cta      { margin-top: auto; }
+
+  /* ── Detail page rhythm ── */
+  .mt-detail-header { margin-top: 32px; }
+  .mb-detail-badge  { margin-bottom: 12px; }
+  .mb-detail-title  { margin-bottom: 16px; }
+  .mb-detail-meta   { margin-bottom: 32px; }
+
+  .detail-prose > * + *   { margin-top: 24px; }
+  .detail-prose > h2,
+  .detail-prose > h3      { margin-top: 40px; margin-bottom: 16px; }
+  .detail-prose > h2 + *,
+  .detail-prose > h3 + *  { margin-top: 16px; }
+
+  .detail-steps > * + *   { margin-top: 24px; }
+
+  .ingredient-list > li {
+    padding-top: 8px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid hsl(var(--border));
+  }
+  .ingredient-list > li + li {
+    margin-top: 16px;
+  }
+
+  /* ── Form spacing ── */
+  .form-group + .form-group { margin-top: 24px; }
+  .form-group > label,
+  .form-group > .label      { display: block; margin-bottom: 6px; }
+  .form-group > .form-error,
+  .form-group > [role="alert"] { margin-top: 6px; }
+  .form-submit              { margin-top: 32px; }
+
+  /* ── Footer spacing ── */
+  .footer-grid {
+    display: grid;
+    gap: 48px;
+  }
+  .footer-col-heading { margin-bottom: 16px; }
+  .footer-links > li + li { margin-top: 10px; }
+  .footer-copyright { margin-top: 40px; }
 }
