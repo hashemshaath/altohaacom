@@ -224,7 +224,8 @@ export const SearchBar = memo(function SearchBar({
   const showRecents = trimmed.length < 2;
   const showResults = trimmed.length >= 2;
   const hasResults = flatResults.length > 0;
-  const showEmpty = showResults && !isLoading && !hasResults;
+  const showError = showResults && !isLoading && !!error;
+  const showEmpty = showResults && !isLoading && !hasResults && !error;
 
   // ── Handlers ──
   const handleClear = useCallback(() => {
