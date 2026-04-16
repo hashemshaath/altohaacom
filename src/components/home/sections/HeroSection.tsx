@@ -2,7 +2,7 @@ import { useIsAr } from "@/hooks/useIsAr";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Link } from "react-router-dom";
-import { ArrowRight, ChevronLeft, ChevronRight, Sparkles, Check } from "lucide-react";
+import { ArrowRight, ChevronLeft, ChevronRight, Sparkles, Check, Trophy, Globe, Users } from "lucide-react";
 import { useState, useEffect, useCallback, useRef } from "react";
 import { cn } from "@/lib/utils";
 import { CACHE } from "@/lib/queryConfig";
@@ -73,62 +73,106 @@ function useSwipe(onLeft: () => void, onRight: () => void) {
   };
 }
 
+/* ── Trust indicator stats ── */
+function TrustStats({ isAr }: { isAr: boolean }) {
+  const stats = isAr
+    ? [
+        { icon: Users, value: "15,000+", label: "طاهٍ مسجّل" },
+        { icon: Trophy, value: "200+", label: "مسابقة عالمية" },
+        { icon: Globe, value: "85+", label: "دولة" },
+      ]
+    : [
+        { icon: Users, value: "15,000+", label: "Registered Chefs" },
+        { icon: Trophy, value: "200+", label: "Global Competitions" },
+        { icon: Globe, value: "85+", label: "Countries" },
+      ];
+
+  return (
+    <div className="flex items-center gap-6 sm:gap-8">
+      {stats.map((s) => (
+        <div key={s.label} className="flex items-center gap-2">
+          <s.icon className="h-4 w-4 text-brand-primary shrink-0 hidden sm:block" />
+          <div>
+            <p className="text-sm sm:text-base font-bold" style={{ color: "#C05B2E" }}>{s.value}</p>
+            <p className="text-[0.75rem] leading-tight" style={{ color: "#6B6560" }}>{s.label}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+/* ── Fallback Hero (no slides) ── */
 function FallbackHero() {
   const isAr = useIsAr();
   return (
-    <section className="relative overflow-hidden bg-gradient-to-br from-primary/5 via-background to-accent/5" dir={isAr ? "rtl" : "ltr"}>
-      <div className="container py-12 sm:py-16 lg:py-24">
-        <div className="lg:grid lg:grid-cols-2 lg:gap-16 lg:items-center">
-          <div className="text-center lg:text-start">
-            <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 text-primary text-sm font-semibold px-4 py-2 mb-6">
+    <section
+      className="relative overflow-hidden"
+      style={{ background: "#F5F0E8", minHeight: "85vh" }}
+      dir={isAr ? "rtl" : "ltr"}
+    >
+      <div className="container h-full flex items-center py-12 lg:py-0" style={{ minHeight: "inherit" }}>
+        <div className="grid grid-cols-1 lg:grid-cols-[55fr_45fr] gap-8 lg:gap-12 items-center w-full">
+          {/* Text column */}
+          <div className="order-2 lg:order-1 text-center lg:text-start space-y-6">
+            <div className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold" style={{ background: "rgba(192,91,46,0.1)", color: "#C05B2E" }}>
               <Sparkles className="h-4 w-4" />
               {isAr ? "مجتمع الطهاة العالمي" : "Global Chef Community"}
             </div>
-            <h1 className="text-4xl lg:text-6xl font-extrabold tracking-tight text-foreground mb-4 leading-[1.1]">
+
+            <h1
+              className="text-[2rem] lg:text-[3rem] font-bold leading-[1.15] tracking-[-0.02em]"
+              style={{ color: "#1C1C1A" }}
+            >
               {isAr ? "مجتمع الطهاة العالمي" : "The Global Culinary Community"}
             </h1>
-            <p className="text-lg text-muted-foreground max-w-md mx-auto lg:mx-0 mb-8">
-              {isAr ? "انضم إلى أفضل الطهاة والحكام والمنظمين حول العالم" : "Join the finest chefs, judges, and organizers worldwide"}
+
+            <p
+              className="text-[1.125rem] leading-relaxed max-w-[480px] mx-auto lg:mx-0"
+              style={{ color: "#6B6560" }}
+            >
+              {isAr
+                ? "انضم إلى أفضل الطهاة والحكام والمنظمين حول العالم"
+                : "Join the finest chefs, judges, and organizers worldwide"}
             </p>
+
             <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start">
-              <Link to="/register" className="inline-flex items-center justify-center rounded-xl bg-primary text-primary-foreground font-bold px-7 py-3.5 text-base hover:opacity-90 transition-all active:scale-[0.98] shadow-lg shadow-primary/25">
+              <Link
+                to="/register"
+                className="inline-flex items-center justify-center font-bold text-base transition-all active:scale-[0.98] w-full sm:w-auto"
+                style={{
+                  background: "#C05B2E",
+                  color: "#FEFCF8",
+                  padding: "14px 32px",
+                  borderRadius: "8px",
+                }}
+                onMouseEnter={(e) => (e.currentTarget.style.background = "#A34D24")}
+                onMouseLeave={(e) => (e.currentTarget.style.background = "#C05B2E")}
+              >
                 {isAr ? "انضم الآن مجاناً" : "Join Now — Free"}
               </Link>
-              <Link to="/competitions" className="inline-flex items-center justify-center rounded-xl border-2 border-border text-foreground font-semibold px-7 py-3.5 text-base hover:bg-muted/50 transition-all active:scale-[0.98]">
+              <Link
+                to="/competitions"
+                className="inline-flex items-center justify-center font-semibold text-base transition-all active:scale-[0.98] w-full sm:w-auto"
+                style={{
+                  border: "1.5px solid #C05B2E",
+                  color: "#C05B2E",
+                  background: "transparent",
+                  padding: "14px 32px",
+                  borderRadius: "8px",
+                }}
+              >
                 {isAr ? "استكشف المسابقات" : "Explore Competitions"}
               </Link>
             </div>
-            <div className="flex justify-center lg:justify-start gap-4 flex-wrap mt-8">
-              {(isAr ? ["مجاني تماماً", "مجتمع عالمي", "بدون بطاقة ائتمان"] : ["Completely Free", "Global Community", "No Credit Card"]).map((item) => (
-                <span key={item} className="flex items-center gap-1.5 text-sm text-muted-foreground">
-                  <Check className="h-4 w-4 text-semantic-success" />
-                  {item}
-                </span>
-              ))}
-            </div>
+
+            <TrustStats isAr={isAr} />
           </div>
-          <div className="hidden lg:flex items-center justify-center">
-            <div className="w-full max-w-sm rounded-3xl bg-gradient-to-br from-primary/10 to-accent/10 border border-border/50 p-10 text-center space-y-4">
-              <Sparkles className="h-14 w-14 text-primary mx-auto opacity-40 animate-pulse" />
-              <p className="text-xl font-bold text-foreground">{isAr ? "منصة الطهاة الأولى" : "The #1 Culinary Platform"}</p>
-              <div className="flex flex-col items-center gap-3">
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <span className="inline-block h-2 w-2 rounded-full bg-semantic-success animate-pulse" />
-                  {isAr ? "جاري التحميل..." : "Loading..."}
-                </div>
-                <div className="grid grid-cols-3 gap-3 w-full">
-                  {[
-                    { l: isAr ? "الأعضاء" : "Members" },
-                    { l: isAr ? "الفعاليات" : "Events" },
-                    { l: isAr ? "المنظمون" : "Organizers" },
-                  ].map((s) => (
-                    <div key={s.l} className="text-center">
-                      <div className="h-6 w-12 mx-auto rounded bg-muted/50 animate-pulse mb-1" />
-                      <p className="text-[0.6875rem] text-muted-foreground">{s.l}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
+
+          {/* Image column */}
+          <div className="order-1 lg:order-2 flex items-center justify-center">
+            <div className="w-full max-w-md lg:max-w-none aspect-[4/3] rounded-2xl overflow-hidden bg-gradient-to-br from-brand-primary/10 to-brand-secondary/10 flex items-center justify-center">
+              <Sparkles className="h-16 w-16 text-brand-primary opacity-30 animate-pulse" />
             </div>
           </div>
         </div>
@@ -137,6 +181,7 @@ function FallbackHero() {
   );
 }
 
+/* ── Main Hero ── */
 export function HeroSection() {
   const isAr = useIsAr();
   const [current, setCurrent] = useState(0);
@@ -168,7 +213,6 @@ export function HeroSection() {
     const firstUrl = slides[0]?.image_url;
     if (!firstUrl) return;
     const href = heroImgUrl(firstUrl, 1200, 80);
-    // Avoid duplicate preload links
     if (document.querySelector(`link[rel="preload"][href="${CSS.escape(href)}"]`)) return;
     const link = document.createElement("link");
     link.rel = "preload";
@@ -230,98 +274,199 @@ export function HeroSection() {
 
   const safeCurrent = ((current % slides.length) + slides.length) % slides.length;
   const slide = slides[safeCurrent];
-  const opacity = Math.max((slide?.overlay_opacity || 50) / 100, 0.4);
   const isFirstRender = !hasInteracted && safeCurrent === 0;
 
   return (
     <section
       className="relative overflow-hidden"
+      style={{ background: "#F5F0E8" }}
       dir={isAr ? "rtl" : "ltr"}
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
       {...swipe}
     >
-      <div className="relative aspect-[3/4] sm:aspect-[16/9] lg:aspect-[21/8]">
-        {slides.map((s, idx) => (
-          <div
-            key={s.id}
-            className={cn(
-              "absolute inset-0 will-change-[opacity,transform]",
-              idx === 0 && isFirstRender
-                ? "opacity-100 scale-100"
-                : idx === safeCurrent
-                ? "opacity-100 scale-100 transition-all duration-1200 ease-in-out"
-                : "opacity-0 scale-[1.03] pointer-events-none transition-all duration-1200 ease-in-out"
-            )}
-          >
-            <img
-              src={idx === 0 ? heroImgUrl(s.image_url, 800) : s.image_url}
-              srcSet={idx === 0 ? heroSrcSet(s.image_url) : undefined}
-              sizes={idx === 0 ? "100vw" : undefined}
-              alt={isAr ? s.title_ar || s.title : s.title}
-              className="h-full w-full object-cover"
-              width={1200}
-              height={600}
-              loading={idx === 0 ? "eager" : "lazy"}
-              decoding={idx === 0 ? "sync" : "async"}
-              fetchPriority={idx === 0 ? "high" : undefined}
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-black/5" style={{ opacity }} />
-            <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-transparent to-transparent rtl:bg-gradient-to-l" />
-          </div>
-        ))}
+      <div className="h-[85vh] lg:h-screen max-h-[900px] min-h-[600px]">
+        <div className="container h-full">
+          <div className="grid grid-cols-1 lg:grid-cols-[55fr_45fr] gap-6 lg:gap-10 h-full items-center">
 
-        {/* Content overlay */}
-        <div className="container relative flex h-full items-end pb-12 sm:pb-16 lg:pb-20">
-          <div key={slide.id} className="max-w-xl space-y-3" style={isFirstRender ? undefined : { animation: "heroFadeUp 0.8s cubic-bezier(0.16,1,0.3,1) forwards" }}>
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 backdrop-blur-md border border-white/20 px-3.5 py-1.5 text-label uppercase tracking-widest text-primary-foreground">
-              <Sparkles className="h-3 w-3" />
-              {isAr ? "مميّز" : "Featured"}
-            </span>
-            <h1 className="text-h1 sm:text-display font-extrabold tracking-tight leading-[1.1] text-primary-foreground drop-shadow-lg">
-              {isAr ? slide.title_ar || slide.title : slide.title}
-            </h1>
-            {(slide.subtitle || slide.subtitle_ar) && (
-              <p className="text-body-sm sm:text-body lg:text-body-lg max-w-md leading-relaxed text-white/80 line-clamp-2 font-light">
-                {isAr ? slide.subtitle_ar || slide.subtitle : slide.subtitle}
-              </p>
-            )}
-            {slide.link_url && (
-              <Link to={slide.link_url} className="inline-flex items-center gap-2 rounded-xl bg-primary text-primary-foreground font-bold px-5 py-2.5 text-sm hover:opacity-90 transition-all active:scale-[0.98] shadow-lg shadow-primary/30">
-                {isAr ? slide.link_label_ar || slide.link_label || "اكتشف المزيد" : slide.link_label || "Learn More"}
-                <ArrowRight className="h-4 w-4 rtl:rotate-180" />
-              </Link>
-            )}
+            {/* ── Text column ── */}
+            <div className="order-2 lg:order-1 text-center lg:text-start space-y-5 py-8 lg:py-0">
+              <div
+                key={`badge-${slide.id}`}
+                className={cn(!isFirstRender && "animate-[heroFadeUp_0.6s_ease-out_forwards]")}
+              >
+                <span
+                  className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-label font-bold uppercase tracking-widest"
+                  style={{ background: "rgba(192,91,46,0.1)", color: "#C05B2E" }}
+                >
+                  <Sparkles className="h-3.5 w-3.5" />
+                  {isAr ? "مميّز" : "Featured"}
+                </span>
+              </div>
+
+              <div
+                key={`title-${slide.id}`}
+                className={cn(!isFirstRender && "animate-[heroFadeUp_0.7s_ease-out_forwards]")}
+              >
+                <h1
+                  className="text-[2rem] lg:text-[3rem] font-bold leading-[1.15] tracking-[-0.02em]"
+                  style={{ color: "#1C1C1A" }}
+                >
+                  {isAr ? slide.title_ar || slide.title : slide.title}
+                </h1>
+              </div>
+
+              {(slide.subtitle || slide.subtitle_ar) && (
+                <div
+                  key={`sub-${slide.id}`}
+                  className={cn(!isFirstRender && "animate-[heroFadeUp_0.8s_ease-out_forwards]")}
+                >
+                  <p
+                    className="text-[1.125rem] leading-relaxed max-w-[480px] mx-auto lg:mx-0 line-clamp-3"
+                    style={{ color: "#6B6560" }}
+                  >
+                    {isAr ? slide.subtitle_ar || slide.subtitle : slide.subtitle}
+                  </p>
+                </div>
+              )}
+
+              {/* CTA Buttons */}
+              <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start pt-2">
+                {slide.link_url && (
+                  <Link
+                    to={slide.link_url}
+                    className="inline-flex items-center justify-center gap-2 font-bold text-base transition-all active:scale-[0.98] w-full sm:w-auto"
+                    style={{
+                      background: "#C05B2E",
+                      color: "#FEFCF8",
+                      padding: "14px 32px",
+                      borderRadius: "8px",
+                    }}
+                    onMouseEnter={(e) => (e.currentTarget.style.background = "#A34D24")}
+                    onMouseLeave={(e) => (e.currentTarget.style.background = "#C05B2E")}
+                  >
+                    {isAr ? slide.link_label_ar || slide.link_label || "اكتشف المزيد" : slide.link_label || "Learn More"}
+                    <ArrowRight className="h-4 w-4 rtl:rotate-180" />
+                  </Link>
+                )}
+                <Link
+                  to="/competitions"
+                  className="inline-flex items-center justify-center font-semibold text-base transition-all active:scale-[0.98] w-full sm:w-auto"
+                  style={{
+                    border: "1.5px solid #C05B2E",
+                    color: "#C05B2E",
+                    background: "transparent",
+                    padding: "14px 32px",
+                    borderRadius: "8px",
+                  }}
+                >
+                  {isAr ? "استكشف المسابقات" : "Explore Competitions"}
+                </Link>
+              </div>
+
+              {/* Trust Stats */}
+              <div className="pt-4">
+                <TrustStats isAr={isAr} />
+              </div>
+            </div>
+
+            {/* ── Image column ── */}
+            <div className="order-1 lg:order-2 relative h-[40vh] lg:h-[80%] min-h-[250px]">
+              <div className="relative h-full w-full rounded-2xl lg:rounded-3xl overflow-hidden shadow-2xl">
+                {slides.map((s, idx) => (
+                  <div
+                    key={s.id}
+                    className={cn(
+                      "absolute inset-0 will-change-[opacity,transform]",
+                      idx === 0 && isFirstRender
+                        ? "opacity-100 scale-100"
+                        : idx === safeCurrent
+                        ? "opacity-100 scale-100 transition-all duration-1200 ease-in-out"
+                        : "opacity-0 scale-[1.03] pointer-events-none transition-all duration-1200 ease-in-out"
+                    )}
+                  >
+                    <img
+                      src={idx === 0 ? heroImgUrl(s.image_url, 800) : s.image_url}
+                      srcSet={idx === 0 ? heroSrcSet(s.image_url) : undefined}
+                      sizes={idx === 0 ? "(max-width: 1024px) 100vw, 45vw" : undefined}
+                      alt={isAr ? s.title_ar || s.title : s.title}
+                      className="h-full w-full object-cover"
+                      width={1200}
+                      height={600}
+                      loading={idx === 0 ? "eager" : "lazy"}
+                      decoding={idx === 0 ? "sync" : "async"}
+                      fetchPriority={idx === 0 ? "high" : undefined}
+                    />
+                  </div>
+                ))}
+
+                {/* Slide counter */}
+                {slides.length > 1 && (
+                  <div className="absolute top-4 end-4 flex items-center gap-1.5 rounded-full bg-black/30 backdrop-blur-xl px-2.5 py-1 text-xs font-mono text-white/85">
+                    <span className="font-bold">{String(safeCurrent + 1).padStart(2, "0")}</span>
+                    <span className="text-white/40">/</span>
+                    <span className="text-white/60">{String(slides.length).padStart(2, "0")}</span>
+                  </div>
+                )}
+              </div>
+
+              {/* Navigation arrows */}
+              {slides.length > 1 && (
+                <>
+                  <button
+                    onClick={prev}
+                    className="absolute start-3 top-1/2 -translate-y-1/2 hidden sm:flex h-10 w-10 items-center justify-center rounded-full bg-white/80 backdrop-blur-sm shadow-md transition-all hover:bg-white active:scale-95"
+                    style={{ color: "#1C1C1A" }}
+                    aria-label="Previous"
+                  >
+                    <ChevronLeft className="h-5 w-5 rtl:rotate-180" />
+                  </button>
+                  <button
+                    onClick={next}
+                    className="absolute end-3 top-1/2 -translate-y-1/2 hidden sm:flex h-10 w-10 items-center justify-center rounded-full bg-white/80 backdrop-blur-sm shadow-md transition-all hover:bg-white active:scale-95"
+                    style={{ color: "#1C1C1A" }}
+                    aria-label="Next"
+                  >
+                    <ChevronRight className="h-5 w-5 rtl:rotate-180" />
+                  </button>
+                </>
+              )}
+
+              {/* Dot indicators */}
+              {slides.length > 1 && (
+                <div className="flex items-center justify-center gap-2 mt-4" role="tablist">
+                  {slides.map((_, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => goTo(idx)}
+                      role="tab"
+                      aria-selected={idx === safeCurrent}
+                      className={cn(
+                        "relative rounded-full transition-all duration-500",
+                        idx === safeCurrent ? "w-8 h-2" : "w-2 h-2 hover:bg-brand-primary/40"
+                      )}
+                      style={{
+                        background: idx === safeCurrent ? "rgba(192,91,46,0.2)" : "rgba(28,28,26,0.15)",
+                      }}
+                      aria-label={`Slide ${idx + 1}`}
+                    >
+                      {idx === safeCurrent && (
+                        <span
+                          className="absolute inset-y-0 start-0 rounded-full"
+                          style={{
+                            background: "#C05B2E",
+                            width: `${progress}%`,
+                            transition: "width 80ms linear",
+                          }}
+                        />
+                      )}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         </div>
-
-        {/* Navigation */}
-        {slides.length > 1 && (
-          <>
-            <div className="absolute top-4 end-4 sm:top-5 sm:end-5 flex items-center gap-1.5 rounded-full bg-black/30 backdrop-blur-xl px-2.5 py-1 text-xs font-mono text-white/85">
-              <span className="font-bold">{String(safeCurrent + 1).padStart(2, "0")}</span>
-              <span className="text-white/40">/</span>
-              <span className="text-white/60">{String(slides.length).padStart(2, "0")}</span>
-            </div>
-            <button onClick={prev} className="absolute start-3 sm:start-5 top-1/2 -translate-y-1/2 hidden sm:flex h-11 w-11 items-center justify-center rounded-full bg-white/15 backdrop-blur-xl text-primary-foreground transition-all hover:bg-white/30 active:scale-95" aria-label="Previous">
-              <ChevronLeft className="h-5 w-5 rtl:rotate-180" />
-            </button>
-            <button onClick={next} className="absolute end-3 sm:end-5 top-1/2 -translate-y-1/2 hidden sm:flex h-11 w-11 items-center justify-center rounded-full bg-white/15 backdrop-blur-xl text-primary-foreground transition-all hover:bg-white/30 active:scale-95" aria-label="Next">
-              <ChevronRight className="h-5 w-5 rtl:rotate-180" />
-            </button>
-            <div className="absolute bottom-4 sm:bottom-6 start-1/2 -translate-x-1/2 flex items-center gap-2 rounded-full bg-black/30 backdrop-blur-xl px-3 py-2" role="tablist">
-              {slides.map((_, idx) => (
-                <button key={idx} onClick={() => goTo(idx)} role="tab" aria-selected={idx === safeCurrent} className={cn("relative h-6 rounded-full transition-all duration-500 flex items-center justify-center", idx === safeCurrent ? "w-9" : "w-6 hover:bg-white/20")} aria-label={`Slide ${idx + 1}`}>
-                  <span className={cn("block rounded-full", idx === safeCurrent ? "h-1.5 w-8 bg-white/20 relative overflow-hidden" : "h-1.5 w-1.5 bg-white/40")}>
-                    {idx === safeCurrent && (
-                      <span className="absolute inset-y-0 start-0 rounded-full bg-primary" style={{ width: `${progress}%`, transition: "width 80ms linear" }} />
-                    )}
-                  </span>
-                </button>
-              ))}
-            </div>
-          </>
-        )}
       </div>
     </section>
   );
