@@ -89,13 +89,14 @@ function TrustStats({ isAr }: { isAr: boolean }) {
       ];
 
   return (
-    <div className="flex items-center gap-6 sm:gap-8">
-      {stats.map((s) => (
+    <div className="flex items-center gap-5 sm:gap-7">
+      {stats.map((s, i) => (
         <div key={s.label} className="flex items-center gap-2">
-          <s.icon className="h-4 w-4 text-brand-primary shrink-0 hidden sm:block" />
+          {i > 0 && <div className="w-px h-8 bg-[#1C1C1A]/10 -ms-3 me-2 hidden sm:block" />}
+          <s.icon className="h-4 w-4 shrink-0 hidden sm:block" style={{ color: "#C05B2E" }} />
           <div>
-            <p className="text-sm sm:text-base font-bold" style={{ color: "#C05B2E" }}>{s.value}</p>
-            <p className="text-[0.75rem] leading-tight" style={{ color: "#6B6560" }}>{s.label}</p>
+            <p className="text-sm sm:text-base font-bold tracking-tight" style={{ color: "#C05B2E" }}>{s.value}</p>
+            <p className="text-[0.7rem] sm:text-xs leading-tight" style={{ color: "#6B6560" }}>{s.label}</p>
           </div>
         </div>
       ))}
