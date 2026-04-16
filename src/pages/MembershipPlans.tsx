@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useMemo } from "react";
 import { SEOHead } from "@/components/SEOHead";
@@ -123,7 +124,7 @@ export default function MembershipPlans() {
 
   const handleUpgrade = (tier: string) => {
     if (!user) {
-      navigate("/login");
+      navigate(ROUTES.login);
     } else {
       navigate(`/membership/checkout?tier=${tier}`);
     }
@@ -341,7 +342,7 @@ export default function MembershipPlans() {
                             className="w-full gap-1.5 text-xs text-muted-foreground"
                             disabled={startTrial.isPending}
                             onClick={() => {
-                              if (!user) { navigate("/login"); return; }
+                              if (!user) { navigate(ROUTES.login); return; }
                               startTrial.mutate({ tier: tier.id });
                             }}
                           >

@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { CACHE } from "@/lib/queryConfig";
 import { useIsAr } from "@/hooks/useIsAr";
 import { memo, forwardRef } from "react";
@@ -59,7 +60,7 @@ export const UserDropdown = memo(forwardRef<HTMLDivElement>(function UserDropdow
     return (
       <div className="hidden items-center gap-2 lg:flex">
         <Link
-          to="/login"
+          to={ROUTES.login}
           className="inline-flex items-center justify-center font-semibold transition-all"
           style={{
             border: "1.5px solid rgba(28,28,26,0.2)",
@@ -72,7 +73,7 @@ export const UserDropdown = memo(forwardRef<HTMLDivElement>(function UserDropdow
           {t("signIn")}
         </Link>
         <Link
-          to="/register"
+          to={ROUTES.register}
           className="inline-flex items-center justify-center font-bold transition-all active:scale-[0.98]"
           style={{
             background: "#C05B2E",
@@ -178,7 +179,7 @@ export const UserDropdown = memo(forwardRef<HTMLDivElement>(function UserDropdow
               <DropdownMenuSeparator style={{ background: "rgba(28,28,26,0.06)" }} />
               <div className="py-1">
                 <DropdownMenuItem asChild className="mx-1 rounded-lg">
-                  <Link to="/admin" className="flex items-center gap-2.5 px-3 py-2">
+                  <Link to={ROUTES.admin} className="flex items-center gap-2.5 px-3 py-2">
                     <Shield className="h-4 w-4" style={{ color: "#9E9890" }} />
                     <span className="text-[0.8125rem]" style={{ color: "#1C1C1A" }}>{t("adminPanel")}</span>
                   </Link>

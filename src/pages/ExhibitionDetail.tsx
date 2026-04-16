@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { useIsAr } from "@/hooks/useIsAr";
 import { useParams, Link, useSearchParams } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -323,7 +324,7 @@ export default function ExhibitionDetail() {
           </div>
           <p className="text-lg font-semibold">{isAr ? "الحدث غير موجود" : "Event not found"}</p>
           <Button variant="outline" className="mt-4" asChild>
-            <Link to="/exhibitions"><Calendar className="me-2 h-4 w-4" />{isAr ? "العودة للفعاليات" : "Back to Events"}</Link>
+            <Link to={ROUTES.exhibitions}><Calendar className="me-2 h-4 w-4" />{isAr ? "العودة للفعاليات" : "Back to Events"}</Link>
           </Button>
         </main>
         <Footer />

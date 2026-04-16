@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { CACHE } from "@/lib/queryConfig";
 import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
@@ -78,7 +79,7 @@ export const WalletBalanceWidget = memo(function WalletBalanceWidget() {
             <span className="text-xs font-bold">{isAr ? "المحفظة" : "Wallet"}</span>
           </div>
           <Button variant="ghost" size="sm" className="h-7 text-xs gap-1 text-muted-foreground" asChild>
-            <Link to="/profile?tab=wallet">
+            <Link to={`${ROUTES.profileDashboard}?tab=wallet`}>
               {isAr ? "عرض" : "View"}
               <ArrowRight className="h-3 w-3 rtl:rotate-180 transition-transform group-hover/wallet:translate-x-0.5 rtl:group-hover/wallet:-translate-x-0.5" />
             </Link>

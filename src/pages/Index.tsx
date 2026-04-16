@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { useIsAr } from "@/hooks/useIsAr";
 import { useMemo } from "react";
 import { Link } from "react-router-dom";
@@ -29,10 +30,10 @@ function HomeEmergencyHero({ language }: { language: string }) {
           {isAr ? "اكتشف المسابقات والمعارض والطهاة حول العالم" : "Discover competitions, exhibitions, and chefs worldwide"}
         </p>
         <div className="flex gap-3 justify-center">
-          <Link to="/competitions" className="inline-flex items-center justify-center rounded-xl bg-primary text-primary-foreground font-semibold px-6 py-3 text-sm hover:opacity-90 transition-opacity">
+          <Link to={ROUTES.competitions} className="inline-flex items-center justify-center rounded-xl bg-primary text-primary-foreground font-semibold px-6 py-3 text-sm hover:opacity-90 transition-opacity">
             {isAr ? "المسابقات" : "Competitions"}
           </Link>
-          <Link to="/exhibitions" className="inline-flex items-center justify-center rounded-xl border border-border text-foreground font-semibold px-6 py-3 text-sm hover:bg-muted/50 transition-opacity">
+          <Link to={ROUTES.exhibitions} className="inline-flex items-center justify-center rounded-xl border border-border text-foreground font-semibold px-6 py-3 text-sm hover:bg-muted/50 transition-opacity">
             {isAr ? "المعارض" : "Exhibitions"}
           </Link>
         </div>

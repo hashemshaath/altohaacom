@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
@@ -113,7 +114,7 @@ export default function CreateExhibition() {
       <Header />
       <main className="container flex-1 py-8">
         <EventCreationGate eventType="exhibition">
-        <Button variant="ghost" size="sm" onClick={() => navigate("/exhibitions")} className="mb-4">
+        <Button variant="ghost" size="sm" onClick={() => navigate(ROUTES.exhibitions)} className="mb-4">
           <ArrowLeft className="me-2 h-4 w-4" />
           {isAr ? "العودة للفعاليات" : "Back to Events"}
         </Button>

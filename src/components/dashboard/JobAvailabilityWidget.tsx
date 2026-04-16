@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useAuth } from "@/contexts/AuthContext";
@@ -79,7 +80,7 @@ export const JobAvailabilityWidget = memo(function JobAvailabilityWidget() {
           />
         </div>
         <Link
-          to="/profile?tab=edit"
+          to={`${ROUTES.profileDashboard}?tab=edit`}
           className="flex items-center justify-between text-xs text-muted-foreground hover:text-foreground transition-colors py-1"
         >
           {isAr ? "إدارة التفضيلات" : "Manage preferences"}

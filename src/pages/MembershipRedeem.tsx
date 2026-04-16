@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { useIsAr } from "@/hooks/useIsAr";
 import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
@@ -234,7 +235,7 @@ export default function MembershipRedeem() {
                 <Button variant="outline" className="flex-1" onClick={() => navigate("/profile?tab=membership")}>
                   {isAr ? "عضويتي" : "My Membership"}
                 </Button>
-                <Button className="flex-1" onClick={() => navigate("/dashboard")}>
+                <Button className="flex-1" onClick={() => navigate(ROUTES.dashboard)}>
                   {isAr ? "لوحة التحكم" : "Dashboard"}
                 </Button>
               </div>

@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -58,7 +59,7 @@ export const MasterclassProgressWidget = memo(function MasterclassProgressWidget
           {isAr ? "دوراتي التعليمية" : "My Courses"}
         </h3>
         <Button variant="ghost" size="sm" className="gap-1 text-xs h-7" asChild>
-          <Link to="/masterclasses">
+          <Link to={ROUTES.masterclasses}>
             {isAr ? "عرض الكل" : "View All"}
             <ArrowRight className="h-3 w-3" />
           </Link>
@@ -112,7 +113,7 @@ export const MasterclassProgressWidget = memo(function MasterclassProgressWidget
               {isAr ? "لم تسجل في أي دورة بعد" : "No courses enrolled yet"}
             </p>
             <Button variant="outline" size="sm" className="mt-3" asChild>
-              <Link to="/masterclasses">
+              <Link to={ROUTES.masterclasses}>
                 {isAr ? "استكشف الدورات" : "Explore Courses"}
               </Link>
             </Button>

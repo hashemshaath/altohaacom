@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { Link } from "react-router-dom";
@@ -36,7 +37,7 @@ export const AdminHeader = memo(function AdminHeader() {
         {/* Left */}
         <div className="flex items-center gap-3">
           <AdminMobileNavDrawer />
-          <Link to="/admin" className="flex items-center gap-2.5 group">
+          <Link to={ROUTES.admin} className="flex items-center gap-2.5 group">
             <div className="flex h-8 w-8 items-center justify-center rounded-md bg-primary transition-all duration-200 group-hover:scale-105">
               <img loading="lazy" decoding="async" src={brandCfg.logoUrl || "/altoha-logo.png"} alt={brandCfg.siteName || "Altoha"} className="h-5 w-auto brightness-0 invert" />
             </div>
@@ -64,7 +65,7 @@ export const AdminHeader = memo(function AdminHeader() {
           <Tooltip>
             <TooltipTrigger asChild>
               <Button variant="ghost" size="icon" asChild className="rounded-md h-8 w-8 hover:bg-muted transition-all active:scale-95" aria-label={isAr ? "العودة للموقع" : "Back to site"}>
-                <Link to="/dashboard">
+                <Link to={ROUTES.dashboard}>
                   <Home className="h-4 w-4" />
                 </Link>
               </Button>

@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { useIsAr } from "@/hooks/useIsAr";
 import { CACHE } from "@/lib/queryConfig";
 import { useState } from "react";
@@ -288,7 +289,7 @@ export default function AdvertiseWithUs() {
                   <CardContent className="flex flex-col items-center py-10 text-center gap-3">
                     <Megaphone className="h-10 w-10 text-muted-foreground/30" />
                     <p className="font-medium">{isAr ? "يجب تسجيل الدخول أولاً" : "Sign in required"}</p>
-                    <Button asChild><Link to="/login">{isAr ? "تسجيل الدخول" : "Sign In"}</Link></Button>
+                    <Button asChild><Link to={ROUTES.login}>{isAr ? "تسجيل الدخول" : "Sign In"}</Link></Button>
                   </CardContent>
                 </Card>
               ) : !company ? (

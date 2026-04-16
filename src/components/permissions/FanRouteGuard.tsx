@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { memo } from "react";
 import { Navigate } from "react-router-dom";
 import { useAccountType } from "@/hooks/useAccountType";
@@ -20,8 +21,8 @@ export const FanRouteGuard = memo(function FanRouteGuard({ children }: { childre
     );
   }
 
-  if (!user) return <Navigate to="/login" replace />;
-  if (isFan) return <Navigate to="/dashboard" replace />;
+  if (!user) return <Navigate to={ROUTES.login} replace />;
+  if (isFan) return <Navigate to={ROUTES.dashboard} replace />;
 
   return <>{children}</>;
 });

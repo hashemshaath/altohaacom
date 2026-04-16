@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
@@ -592,7 +593,7 @@ export default function CompanyLogin() {
           <button
             type="button"
             className="font-medium text-primary underline-offset-2 hover:underline"
-            onClick={() => navigate("/login")}
+            onClick={() => navigate(ROUTES.login)}
           >
             {isAr ? "تسجيل الدخول هنا" : "Sign in here"}
           </button>

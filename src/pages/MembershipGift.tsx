@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { useIsAr } from "@/hooks/useIsAr";
 import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
@@ -113,7 +114,7 @@ export default function MembershipGift() {
   };
 
   if (!user) {
-    navigate("/login");
+    navigate(ROUTES.login);
     return null;
   }
 
@@ -360,7 +361,7 @@ export default function MembershipGift() {
                 <Separator />
 
                 <div className="flex gap-3">
-                  <Button variant="outline" className="flex-1" onClick={() => navigate("/membership")}>
+                  <Button variant="outline" className="flex-1" onClick={() => navigate(ROUTES.membership)}>
                     {isAr ? "خطط العضوية" : "Membership Plans"}
                   </Button>
                   <Button className="flex-1" onClick={() => { setStep("select"); setGiftCode(""); setMessage(""); setRecipientName(""); setRecipientEmail(""); }}>

@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { useIsAr } from "@/hooks/useIsAr";
 import { useParams, Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -104,7 +105,7 @@ export default function ShopProduct() {
           </div>
           <p className="font-semibold">{isAr ? "المنتج غير موجود" : "Product not found"}</p>
           <Button asChild variant="outline" size="sm" className="mt-5">
-            <Link to="/shop">
+            <Link to={ROUTES.shop}>
               <ArrowLeft className="me-1.5 h-4 w-4" />
               {isAr ? "العودة للمتجر" : "Back to Shop"}
             </Link>
@@ -171,7 +172,7 @@ export default function ShopProduct() {
 
       <main className="container flex-1 py-4 md:py-8 pb-24 sm:pb-8">
         <Button variant="ghost" size="sm" asChild className="mb-3 sm:mb-4 -ms-2 touch-manipulation">
-          <Link to="/shop">
+          <Link to={ROUTES.shop}>
             <ArrowLeft className="me-1.5 h-4 w-4" />
             {isAr ? "المتجر" : "Shop"}
           </Link>

@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { memo } from "react";
 import { Link } from "react-router-dom";
 import { AddToCalendarButton } from "@/components/ui/AddToCalendarButton";
@@ -95,7 +96,7 @@ export const ExhibitionHero = memo(function ExhibitionHero({
             className="h-9 sm:h-10 rounded-xl bg-background/80 backdrop-blur-sm text-foreground shadow-sm hover:bg-background/90 text-sm font-medium"
             asChild
           >
-            <Link to="/exhibitions">
+            <Link to={ROUTES.exhibitions}>
               <ArrowLeft className="me-1.5 h-4 w-4 rtl:rotate-180" />
               {isAr ? "جميع الفعاليات" : "All Events"}
             </Link>

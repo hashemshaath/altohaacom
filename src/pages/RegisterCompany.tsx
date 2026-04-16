@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { useIsAr } from "@/hooks/useIsAr";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -132,7 +133,7 @@ export default function RegisterCompany() {
   const handleSubmit = async () => {
     if (!user) {
       toast({ title: isAr ? "يرجى تسجيل الدخول أولاً" : "Please sign in first", variant: "destructive" });
-      navigate("/login");
+      navigate(ROUTES.login);
       return;
     }
 
@@ -230,7 +231,7 @@ export default function RegisterCompany() {
                 : "Your company registration has been received and is under review. We'll notify you via email once your account is activated."}
             </p>
             <div className="mt-8 flex justify-center gap-3">
-              <Button onClick={() => navigate("/dashboard")}>{isAr ? "لوحة التحكم" : "Dashboard"}</Button>
+              <Button onClick={() => navigate(ROUTES.dashboard)}>{isAr ? "لوحة التحكم" : "Dashboard"}</Button>
               <Button variant="outline" onClick={() => navigate("/")}>{isAr ? "الرئيسية" : "Home"}</Button>
             </div>
           </div>

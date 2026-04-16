@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { useIsAr } from "@/hooks/useIsAr";
 import { memo, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
@@ -88,7 +89,7 @@ export const AdPlacementsTab = memo(function AdPlacementsTab({ placements, onTog
               );
             })}
             <Button size="sm" variant="outline" className="h-6 text-xs rounded-xl gap-1" asChild>
-              <Link to="/admin/design/homepage">
+              <Link to={ROUTES.adminDesignHomepage}>
                 <Home className="h-3 w-3" />
                 {isAr ? "تصميم الرئيسية" : "Homepage Design"}
                 <ExternalLink className="h-2.5 w-2.5" />

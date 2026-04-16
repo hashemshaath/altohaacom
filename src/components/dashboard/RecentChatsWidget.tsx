@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { CACHE } from "@/lib/queryConfig";
 import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
@@ -78,7 +79,7 @@ export const RecentChatsWidget = memo(function RecentChatsWidget() {
           const initials = name.slice(0, 2).toUpperCase();
 
           return (
-            <Link key={chat.id} to="/messages" className="block">
+            <Link key={chat.id} to={ROUTES.messages} className="block">
               <div className={`flex items-center gap-2.5 rounded-xl p-2 transition-all hover:bg-muted/50 active:scale-[0.98] ${chat.isUnread ? "bg-primary/5 border border-primary/10" : ""}`}>
                 <div className="relative">
                   <Avatar className="h-9 w-9 ring-1 ring-border/30">

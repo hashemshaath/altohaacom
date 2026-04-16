@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { useIsAr } from "@/hooks/useIsAr";
 import React, { memo, useState, useMemo, useRef } from "react";
 import {
@@ -211,7 +212,7 @@ export const HomeEventsCalendarPreview = memo(function HomeEventsCalendarPreview
               className="rounded-xl gap-1 text-xs font-semibold text-primary h-8 px-3"
               asChild
             >
-              <Link to="/events-calendar">
+              <Link to={ROUTES.eventsCalendar}>
                 {isAr ? "عرض الكل" : "View all"}
                 <ArrowRight className="h-3 w-3 rtl:rotate-180" />
               </Link>

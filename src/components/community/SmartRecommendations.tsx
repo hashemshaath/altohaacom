@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -74,7 +75,7 @@ export const SmartRecommendations = memo(function SmartRecommendations() {
             <Sparkles className="h-4 w-4 text-primary" />
             {isAr ? "مقترح لك بالذكاء الاصطناعي" : "AI Recommendations"}
           </CardTitle>
-          <Link to="/for-you">
+          <Link to={ROUTES.forYou}>
             <Button variant="ghost" size="sm" className="text-xs h-6 gap-1">
               {isAr ? "عرض الكل" : "View All"}
               <ArrowRight className="h-2.5 w-2.5 rtl:rotate-180" />

@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -49,7 +50,7 @@ export const CompanyRecentOrdersWidget = memo(function CompanyRecentOrdersWidget
           {isAr ? "أحدث الطلبيات" : "Recent Orders"}
         </h3>
         <Button variant="ghost" size="sm" asChild className="text-xs">
-          <Link to="/company/orders">
+          <Link to={ROUTES.companyOrders}>
             {isAr ? "عرض الكل" : "View All"}
             <ArrowUpRight className="ms-1 h-3 w-3" />
           </Link>

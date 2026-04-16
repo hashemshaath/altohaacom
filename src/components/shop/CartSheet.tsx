@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { useIsAr } from "@/hooks/useIsAr";
 import { memo, useState, useCallback } from "react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
@@ -196,7 +197,7 @@ export const CartSheet = memo(function CartSheet({ open, onOpenChange, cart }: C
         title: isAr ? "تم تقديم الطلب بنجاح! ✅" : "Order placed successfully! ✅",
         description: isAr ? `رقم الطلب: ${order.order_number}` : `Order #${order.order_number}`,
       });
-      navigate("/shop/orders");
+      navigate(ROUTES.shopOrders);
     } catch (error: unknown) {
       toast({
         title: isAr ? "خطأ في تقديم الطلب" : "Error placing order",

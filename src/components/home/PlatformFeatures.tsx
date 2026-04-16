@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { Link } from "react-router-dom";
@@ -118,7 +119,7 @@ export const PlatformFeatures = memo(function PlatformFeatures() {
           {!user && (
             <div className="mt-6 text-center">
               <Button size="lg" className="h-12 px-6 text-[15px] sm:text-base touch-manipulation" asChild>
-                <Link to="/register">
+                <Link to={ROUTES.register}>
                   {isAr ? "سجّل مجاناً وابدأ الآن" : "Sign Up Free & Get Started"}
                   <ArrowRight className="ms-2 h-4 w-4" />
                 </Link>
@@ -173,10 +174,10 @@ export const PlatformFeatures = memo(function PlatformFeatures() {
               </p>
               <div className="flex flex-wrap gap-2">
                 <Button size="sm" asChild>
-                  <Link to="/sponsors">{isAr ? "فرص الرعاية" : "Sponsorship"}<ArrowRight className="ms-1 h-3 w-3" /></Link>
+                  <Link to={ROUTES.forSponsors}>{isAr ? "فرص الرعاية" : "Sponsorship"}<ArrowRight className="ms-1 h-3 w-3" /></Link>
                 </Button>
                 <Button size="sm" variant="outline" asChild>
-                  <Link to="/for-companies">{isAr ? "حلول الشركات" : "For Companies"}</Link>
+                  <Link to={ROUTES.forCompanies}>{isAr ? "حلول الشركات" : "For Companies"}</Link>
                 </Button>
               </div>
             </CardContent>
@@ -193,7 +194,7 @@ export const PlatformFeatures = memo(function PlatformFeatures() {
                 {isAr ? "أدوات رقمية متكاملة لإنشاء وإدارة مسابقات طهوية احترافية بلا عناء." : "Integrated digital tools to create & manage professional culinary competitions effortlessly."}
               </p>
               <Button size="sm" variant="secondary" asChild>
-                <Link to="/for-organizers">{isAr ? "ابدأ التنظيم" : "Start Organizing"}<ArrowRight className="ms-1 h-3 w-3" /></Link>
+                <Link to={ROUTES.forOrganizers}>{isAr ? "ابدأ التنظيم" : "Start Organizing"}<ArrowRight className="ms-1 h-3 w-3" /></Link>
               </Button>
             </CardContent>
           </Card>
@@ -217,13 +218,13 @@ export const PlatformFeatures = memo(function PlatformFeatures() {
             </p>
             <div className="flex flex-wrap justify-center gap-3">
               <Button size="lg" className="shadow-lg shadow-primary/20 h-12 px-6 text-[15px] sm:text-base touch-manipulation" asChild>
-                <Link to="/register">
+                <Link to={ROUTES.register}>
                   {isAr ? "أنشئ حسابك المجاني" : "Create Your Free Account"}
                   <ArrowRight className="ms-2 h-4 w-4" />
                 </Link>
               </Button>
               <Button size="lg" variant="outline" className="h-12 px-6 text-[15px] sm:text-base touch-manipulation" asChild>
-                <Link to="/competitions">{isAr ? "تصفح المسابقات" : "Browse Competitions"}</Link>
+                <Link to={ROUTES.competitions}>{isAr ? "تصفح المسابقات" : "Browse Competitions"}</Link>
               </Button>
             </div>
             <div className="mt-7 flex flex-wrap items-center justify-center gap-5 text-[0.8125rem] sm:text-xs text-muted-foreground">

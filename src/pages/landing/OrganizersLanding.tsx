@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { useIsAr } from "@/hooks/useIsAr";
 import { useState } from "react";
 import { Calendar, Users, BarChart3, Shield, CheckCircle, ArrowRight, Star, Sparkles } from "lucide-react";
@@ -137,13 +138,13 @@ export default function OrganizersLanding() {
             </p>
             <div className="mt-6 flex gap-3 justify-center">
               <Button size="lg" className="gap-2" asChild>
-                <Link to="/register">
+                <Link to={ROUTES.register}>
                   {isAr ? "ابدأ مجاناً" : "Start Free"}
                   <ArrowRight className="h-4 w-4" />
                 </Link>
               </Button>
               <Button size="lg" variant="outline" asChild>
-                <Link to="/competitions">
+                <Link to={ROUTES.competitions}>
                   {isAr ? "شاهد المسابقات" : "View Competitions"}
                 </Link>
               </Button>

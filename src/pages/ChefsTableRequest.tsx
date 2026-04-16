@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
@@ -168,7 +169,7 @@ export default function ChefsTableRequest() {
       };
       await createRequest.mutateAsync(requestData);
       toast.success(isAr ? "تم إرسال طلبك بنجاح! سنتواصل معك قريبًا." : "Your request has been submitted! We'll be in touch soon.");
-      navigate("/chefs-table");
+      navigate(ROUTES.chefsTable);
     } catch {
       toast.error(isAr ? "حدث خطأ، يرجى المحاولة مرة أخرى" : "Something went wrong, please try again");
     } finally {
@@ -182,7 +183,7 @@ export default function ChefsTableRequest() {
       <div className="min-h-screen bg-background">
         <Header />
         <main className="container mx-auto max-w-3xl px-4 py-8">
-          <Button variant="ghost" size="sm" onClick={() => navigate("/chefs-table")} className="mb-6 gap-1.5 text-muted-foreground">
+          <Button variant="ghost" size="sm" onClick={() => navigate(ROUTES.chefsTable)} className="mb-6 gap-1.5 text-muted-foreground">
             <ArrowLeft className="h-4 w-4" />
             {isAr ? "العودة" : "Back"}
           </Button>

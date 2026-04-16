@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -92,7 +93,7 @@ export const CompanyDashboardWidget = memo(function CompanyDashboardWidget() {
           {isAr ? "لوحة الشركات" : "Company Dashboard"}
         </CardTitle>
         <Button variant="outline" size="sm" asChild className="text-xs gap-1.5">
-          <Link to="/admin/companies">
+          <Link to={ROUTES.adminCompanies}>
             {isAr ? "عرض الكل" : "View All"} <ArrowRight className="h-3 w-3" />
           </Link>
         </Button>

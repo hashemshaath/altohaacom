@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -84,7 +85,7 @@ export const AchievementsChallengesWidget = memo(function AchievementsChallenges
             </div>
             {isAr ? "الإنجازات والتحديات" : "Achievements & Challenges"}
           </CardTitle>
-          <Link to="/rewards">
+          <Link to={ROUTES.rewards}>
             <Button variant="ghost" size="sm" className="text-xs gap-1 h-7">
               {isAr ? "عرض الكل" : "View All"}
               <ChevronRight className="h-3 w-3 rtl:rotate-180" />

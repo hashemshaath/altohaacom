@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { useIsAr } from "@/hooks/useIsAr";
 import { useState, memo, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
@@ -211,7 +212,7 @@ export const OnboardingWizard = memo(function OnboardingWizard({ onComplete }: O
         onClose={() => {
           setShowCelebration(false);
           if (onComplete) onComplete();
-          else navigate("/dashboard");
+          else navigate(ROUTES.dashboard);
         }}
       />
 

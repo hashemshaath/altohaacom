@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useNavigate } from "react-router-dom";
@@ -29,7 +30,7 @@ export const UpgradePrompt = memo(function UpgradePrompt({
 
   const handleUpgrade = () => {
     if (!user) {
-      navigate("/login");
+      navigate(ROUTES.login);
     } else {
       navigate("/membership/checkout");
     }

@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { useIsAr } from "@/hooks/useIsAr";
 import { formatWeekdayShort } from "@/lib/dateUtils";
 import { lazy, Suspense, useEffect, useRef, memo } from "react";
@@ -311,7 +312,7 @@ const HeroWelcome = memo(function HeroWelcome({
       <div className="relative p-5 sm:p-7 md:p-8">
         <div className="flex items-start gap-4 sm:gap-5">
           {/* Avatar with tier ring */}
-          <Link to="/profile" className="shrink-0 hidden sm:block">
+          <Link to={ROUTES.profileDashboard} className="shrink-0 hidden sm:block">
             <div className={`h-16 w-16 sm:h-[72px] sm:w-[72px] rounded-2xl p-[2.5px] shadow-xl transition-all duration-300 hover:scale-105 hover:shadow-primary/25 ${
               membershipTier === "enterprise" ? "bg-gradient-to-br from-chart-4 via-primary to-chart-3" :
               membershipTier === "professional" ? "bg-gradient-to-br from-primary to-primary-glow" :

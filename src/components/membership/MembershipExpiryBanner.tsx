@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useAuth } from "@/contexts/AuthContext";
@@ -92,7 +93,7 @@ export const MembershipExpiryBanner = memo(function MembershipExpiryBanner({ cla
       <Button
         size="sm"
         variant={isExpired ? "destructive" : "default"}
-        onClick={() => navigate("/membership")}
+        onClick={() => navigate(ROUTES.membership)}
         className="shrink-0 gap-1.5 rounded-xl text-xs"
       >
         <Crown className="h-3.5 w-3.5" />

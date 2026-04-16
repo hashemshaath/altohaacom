@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { useIsAr } from "@/hooks/useIsAr";
 import { memo, forwardRef } from "react";
 import { Link } from "react-router-dom";
@@ -51,14 +52,14 @@ const PremiumCTASection = memo(forwardRef<HTMLElement>(function PremiumCTASectio
           {/* CTA buttons */}
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Link
-              to="/membership"
+              to={ROUTES.membership}
               className="inline-flex items-center justify-center gap-2 rounded-xl bg-primary text-primary-foreground font-bold px-7 py-3.5 text-base hover:opacity-90 transition-all active:scale-[0.98] shadow-lg shadow-primary/25"
             >
               <Sparkles className="h-4 w-4" />
               {isAr ? "استكشف العضوية" : "Explore Membership"}
             </Link>
             <Link
-              to="/register"
+              to={ROUTES.register}
               className="inline-flex items-center justify-center gap-2 rounded-xl border-2 border-border text-foreground font-semibold px-7 py-3.5 text-base hover:bg-muted/50 transition-all active:scale-[0.98]"
             >
               {isAr ? "انضم مجاناً" : "Join Free"}

@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { Badge } from "@/components/ui/badge";
@@ -50,7 +51,7 @@ export const ShopHero = memo(function ShopHero({ productCount, cart, onCartOpen 
             </Badge>
             {user && (
               <Button variant="outline" size="sm" asChild className="hidden sm:flex">
-                <Link to="/shop/my-products">
+                <Link to={ROUTES.shopMyProducts}>
                   <Package className="me-1.5 h-4 w-4" />
                   {isAr ? "منتجاتي" : "My Products"}
                 </Link>

@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { useIsAr } from "@/hooks/useIsAr";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -138,7 +139,7 @@ function FallbackHero() {
 
             <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start">
               <Link
-                to="/register"
+                to={ROUTES.register}
                 className="inline-flex items-center justify-center font-bold text-base transition-all active:scale-[0.98] w-full sm:w-auto"
                 style={{
                   background: "#C05B2E",
@@ -152,7 +153,7 @@ function FallbackHero() {
                 {isAr ? "انضم الآن مجاناً" : "Join Now — Free"}
               </Link>
               <Link
-                to="/competitions"
+                to={ROUTES.competitions}
                 className="inline-flex items-center justify-center font-semibold text-base transition-all active:scale-[0.98] w-full sm:w-auto"
                 style={{
                   border: "1.5px solid #C05B2E",
@@ -350,7 +351,7 @@ export function HeroSection() {
                   </Link>
                 )}
                 <Link
-                  to="/competitions"
+                  to={ROUTES.competitions}
                   className="inline-flex items-center justify-center font-semibold text-base transition-all active:scale-[0.98] w-full sm:w-auto"
                   style={{
                     border: "1.5px solid #C05B2E",

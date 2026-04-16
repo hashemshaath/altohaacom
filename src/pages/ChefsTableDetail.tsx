@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { useIsAr } from "@/hooks/useIsAr";
 import { useParams, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -121,7 +122,7 @@ export default function ChefsTableDetail() {
         <div className="container py-16 text-center">
           <ChefHat className="mx-auto h-12 w-12 text-muted-foreground/30" />
           <p className="mt-4 text-lg font-medium">{isAr ? "الجلسة غير موجودة" : "Session not found"}</p>
-          <Button variant="ghost" onClick={() => navigate("/chefs-table")} className="mt-4 gap-2">
+          <Button variant="ghost" onClick={() => navigate(ROUTES.chefsTable)} className="mt-4 gap-2">
             <ArrowLeft className="h-4 w-4" />
             {isAr ? "العودة" : "Go Back"}
           </Button>
@@ -136,7 +137,7 @@ export default function ChefsTableDetail() {
       <div className="min-h-screen bg-background">
         <Header />
         <main className="container py-8">
-          <Button variant="ghost" onClick={() => navigate("/chefs-table")} className="mb-4 gap-2">
+          <Button variant="ghost" onClick={() => navigate(ROUTES.chefsTable)} className="mb-4 gap-2">
             <ArrowLeft className="h-4 w-4" />
             {isAr ? "طاولة الشيف" : "Chef's Table"}
           </Button>

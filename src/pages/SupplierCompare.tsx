@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useMemo } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
@@ -253,7 +254,7 @@ export default function SupplierCompare() {
                       )}
                     </div>
                     <p className="font-semibold text-sm">{isAr && s.name_ar ? s.name_ar : s.name}</p>
-                    <Button variant="ghost" size="sm" className="text-xs" onClick={() => navigate(`/pro-suppliers/${s.id}`)}>
+                    <Button variant="ghost" size="sm" className="text-xs" onClick={() => navigate(ROUTES.proSupplier(s.id))}>
                       {isAr ? "عرض الملف" : "View Profile"}
                     </Button>
                   </div>

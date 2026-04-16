@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { useIsAr } from "@/hooks/useIsAr";
 import React, { useState, useRef } from "react";
 import { Bell, BellOff, ShoppingCart, CheckCircle, Trophy, FileText, Heart, MessageCircle, UserPlus, Radio, Eye, Flame, Settings, Volume2, VolumeX } from "lucide-react";
@@ -273,7 +274,7 @@ export const NotificationBell = React.forwardRef<HTMLButtonElement, Record<strin
                       "flex items-start gap-3 p-3 cursor-pointer transition-colors focus:bg-muted/50",
                       anyUnread && "bg-primary/5"
                     )}
-                    onClick={() => navigate("/notifications")}
+                    onClick={() => navigate(ROUTES.notifications)}
                   >
                     {/* Stacked avatars */}
                     <div className="relative shrink-0 w-9 h-9 mt-0.5">
@@ -365,7 +366,7 @@ export const NotificationBell = React.forwardRef<HTMLButtonElement, Record<strin
             <DropdownMenuSeparator />
             <DropdownMenuItem
               className="justify-center py-2.5 text-primary font-medium text-sm"
-              onClick={() => navigate("/notifications")}
+              onClick={() => navigate(ROUTES.notifications)}
             >
               {isAr ? "عرض جميع الإشعارات" : "View all notifications"}
             </DropdownMenuItem>

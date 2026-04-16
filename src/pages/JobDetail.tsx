@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { useIsAr } from "@/hooks/useIsAr";
 import { useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
@@ -399,7 +400,7 @@ export default function JobDetail() {
                   <div className="text-center space-y-3 py-2">
                     <ChefHat className="h-8 w-8 mx-auto text-muted-foreground/20" />
                     <p className="text-xs text-muted-foreground">{isAr ? "سجّل دخولك للتقديم على هذه الوظيفة" : "Sign in to apply for this job"}</p>
-                    <Link to="/login" className="block">
+                    <Link to={ROUTES.login} className="block">
                       <Button className="rounded-xl w-full">{isAr ? "تسجيل الدخول" : "Sign In"}</Button>
                     </Link>
                   </div>

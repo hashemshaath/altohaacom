@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
@@ -230,7 +231,7 @@ export default function Checkout() {
         <Header />
         <main className="container flex-1 py-6 md:py-10">
           <Button variant="ghost" size="sm" asChild className="mb-6 -ms-2">
-            <Link to="/shop"><ArrowLeft className="me-1.5 h-4 w-4" />{isAr ? "العودة للمتجر" : "Back to Shop"}</Link>
+            <Link to={ROUTES.shop}><ArrowLeft className="me-1.5 h-4 w-4" />{isAr ? "العودة للمتجر" : "Back to Shop"}</Link>
           </Button>
           <StepIndicator />
           <div className="grid gap-6 lg:grid-cols-3">
@@ -240,7 +241,7 @@ export default function Checkout() {
                 <Card><CardContent className="flex flex-col items-center py-12 text-center">
                   <ShoppingBag className="h-10 w-10 text-muted-foreground/30 mb-3" />
                   <p className="font-medium text-muted-foreground">{isAr ? "السلة فارغة" : "Your cart is empty"}</p>
-                  <Button className="mt-4" asChild><Link to="/shop">{isAr ? "تسوق الآن" : "Shop Now"}</Link></Button>
+                  <Button className="mt-4" asChild><Link to={ROUTES.shop}>{isAr ? "تسوق الآن" : "Shop Now"}</Link></Button>
                 </CardContent></Card>
               ) : (
                 <div className="space-y-3">
@@ -440,10 +441,10 @@ export default function Checkout() {
           )}
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Button asChild>
-              <Link to="/shop/orders">{isAr ? "عرض طلباتي" : "View My Orders"}</Link>
+              <Link to={ROUTES.shopOrders}>{isAr ? "عرض طلباتي" : "View My Orders"}</Link>
             </Button>
             <Button variant="outline" asChild>
-              <Link to="/shop">{isAr ? "مواصلة التسوق" : "Continue Shopping"}</Link>
+              <Link to={ROUTES.shop}>{isAr ? "مواصلة التسوق" : "Continue Shopping"}</Link>
             </Button>
           </div>
         </div>

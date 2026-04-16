@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { CACHE } from "@/lib/queryConfig";
 import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
@@ -332,7 +333,7 @@ export const BehaviorAnalytics = memo(function BehaviorAnalytics() {
               {isAr ? "محفزات الأتمتة" : "Lifecycle Triggers"}
             </CardTitle>
             <Button variant="ghost" size="sm" asChild className="gap-1 text-xs">
-              <Link to="/admin/communications">
+              <Link to={ROUTES.adminCommunications}>
                 {isAr ? "إدارة" : "Manage"}
                 <ArrowUpRight className="h-3 w-3" />
               </Link>

@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { useIsAr } from "@/hooks/useIsAr";
 import { useState, memo } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -95,7 +96,7 @@ export const CompetitionHistory = memo(function CompetitionHistory({ userId }: C
         <p className="mt-1 text-sm text-muted-foreground max-w-sm mx-auto">
           {isAr ? "سجل في مسابقة للبدء في رحلتك التنافسية" : "Register for a competition to start your competitive journey"}
         </p>
-        <Link to="/competitions">
+        <Link to={ROUTES.competitions}>
           <Button className="mt-4 gap-2">
             <Trophy className="h-4 w-4" />
             {isAr ? "استعرض المسابقات" : "Browse Competitions"}

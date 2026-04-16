@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { CACHE } from "@/lib/queryConfig";
 import { useIsAr } from "@/hooks/useIsAr";
 import { useState, memo } from "react";
@@ -307,7 +308,7 @@ export default function SystemSettings() {
                     <p className="text-sm text-muted-foreground mt-1">{isAr ? "تم نقل إدارة أقسام الصفحة الرئيسية إلى صفحة مخصصة للتحكم الكامل" : "Homepage section management has moved to a dedicated page for full control"}</p>
                   </div>
                   <Button className="gap-2" asChild>
-                    <Link to="/admin/design/homepage">
+                    <Link to={ROUTES.adminDesignHomepage}>
                       {isAr ? "فتح إدارة الصفحة الرئيسية" : "Open Homepage Manager"}
                       <ArrowRight className="h-4 w-4" />
                     </Link>

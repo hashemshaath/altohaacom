@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -46,7 +47,7 @@ export const FanTrendingWidget = memo(function FanTrendingWidget() {
       </CardHeader>
       <CardContent className="space-y-3">
         {trendingPosts.map((post) => (
-          <Link key={post.id} to="/community" className="block group">
+          <Link key={post.id} to={ROUTES.community} className="block group">
             <div className="flex items-start gap-3 rounded-xl p-2 transition-colors hover:bg-muted/50">
               <Avatar className="h-8 w-8 shrink-0">
                 <AvatarImage src={post.author?.avatar_url || undefined} />

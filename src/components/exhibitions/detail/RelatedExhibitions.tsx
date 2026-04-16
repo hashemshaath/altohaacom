@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -73,7 +74,7 @@ export const RelatedExhibitions = memo(function RelatedExhibitions({ exhibitionI
     <section className="mt-10 border-t border-border/30 pt-8">
       <div className="flex items-center justify-between mb-5">
         <h2 className="text-lg font-bold">{isAr ? "فعاليات ذات صلة" : "Related Events"}</h2>
-        <Link to="/exhibitions" className="text-xs text-primary font-medium flex items-center gap-1 hover:underline">
+        <Link to={ROUTES.exhibitions} className="text-xs text-primary font-medium flex items-center gap-1 hover:underline">
           {isAr ? "عرض الكل" : "View all"} <ArrowRight className="h-3 w-3" />
         </Link>
       </div>

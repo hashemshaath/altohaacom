@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { useIsAr } from "@/hooks/useIsAr";
 import { useMemo, useEffect, useState, memo } from "react";
 import { useAuth } from "@/contexts/AuthContext";
@@ -64,7 +65,7 @@ export const ChefScheduleWidget = memo(function ChefScheduleWidget() {
             {isAr ? "جدولي القادم" : "My Schedule"}
             <Badge variant="outline" className="text-xs">{upcoming.length}</Badge>
           </CardTitle>
-          <Link to="/profile?tab=schedule">
+          <Link to={`${ROUTES.profileDashboard}?tab=schedule`}>
             <Button variant="ghost" size="sm" className="h-7 text-xs">{isAr ? "عرض الكل" : "View All"}</Button>
           </Link>
         </div>

@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { CACHE } from "@/lib/queryConfig";
 import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
@@ -77,7 +78,7 @@ export const ProfileCompletionCard = memo(function ProfileCompletionCard() {
         </div>
 
         {nextIncomplete && (
-          <Link to="/profile?tab=edit">
+          <Link to={`${ROUTES.profileDashboard}?tab=edit`}>
             <Button variant="outline" size="sm" className="w-full gap-1.5 text-xs h-8">
               <nextIncomplete.icon className="h-3 w-3" />
               {isAr ? `أضف ${nextIncomplete.labelAr}` : `Add ${nextIncomplete.labelEn}`}

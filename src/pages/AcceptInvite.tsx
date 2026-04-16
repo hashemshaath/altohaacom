@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { useIsAr } from "@/hooks/useIsAr";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { useQuery, useMutation } from "@tanstack/react-query";
@@ -66,7 +67,7 @@ export default function AcceptInvite() {
       const { error } = await supabase.from("company_employee_invites").update({ status: "declined" }).eq("id", invite.id);
       if (error) throw handleSupabaseError(error);
     },
-    onSuccess: () => { toast({ title: isAr ? "تم رفض الدعوة" : "Invitation declined" }); navigate("/dashboard"); },
+    onSuccess: () => { toast({ title: isAr ? "تم رفض الدعوة" : "Invitation declined" }); navigate(ROUTES.dashboard); },
   });
 
   const isExpired = invite?.expires_at && new Date(invite.expires_at) < new Date();

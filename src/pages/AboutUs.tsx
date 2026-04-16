@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { useIsAr } from "@/hooks/useIsAr";
 import { PageShell } from "@/components/PageShell";
 import { Card, CardContent } from "@/components/ui/card";
@@ -91,7 +92,7 @@ export default function AboutUs() {
               {isAr ? "كن جزءاً من أكبر مجتمع طهي عربي وعالمي" : "Be part of the largest Arab and global culinary community"}
             </p>
             <Button asChild>
-              <Link to="/register">{isAr ? "سجل الآن" : "Register Now"} <ArrowRight className="ms-2 h-4 w-4" /></Link>
+              <Link to={ROUTES.register}>{isAr ? "سجل الآن" : "Register Now"} <ArrowRight className="ms-2 h-4 w-4" /></Link>
             </Button>
           </CardContent>
         </Card>

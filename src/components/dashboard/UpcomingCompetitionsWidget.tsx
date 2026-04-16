@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -56,7 +57,7 @@ export const UpcomingCompetitionsWidget = memo(function UpcomingCompetitionsWidg
           {t("upcomingCompetitions")}
         </h3>
         <Button variant="ghost" size="sm" className="gap-1.5 text-xs h-8 font-semibold hover:bg-primary/5 hover:text-primary transition-all rounded-xl" asChild>
-          <Link to="/competitions">
+          <Link to={ROUTES.competitions}>
             {isAr ? "عرض الكل" : "View All"}
             <ArrowRight className="h-3.5 w-3.5" />
           </Link>
@@ -122,7 +123,7 @@ export const UpcomingCompetitionsWidget = memo(function UpcomingCompetitionsWidg
             </div>
             <p className="text-sm text-muted-foreground">{t("noCompetitionsFound")}</p>
             <Button variant="outline" size="sm" className="mt-3" asChild>
-              <Link to="/competitions">
+              <Link to={ROUTES.competitions}>
                 {isAr ? "استكشف المسابقات" : "Explore Competitions"}
               </Link>
             </Button>

@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { useIsAr } from "@/hooks/useIsAr";
 import { useState, forwardRef, useMemo, lazy, Suspense } from "react";
 import { Link } from "react-router-dom";
@@ -246,7 +247,7 @@ const AdvertisingAdmin = forwardRef<HTMLDivElement>(function AdvertisingAdmin(_p
               </Badge>
             )}
             <Button size="sm" variant="outline" className="h-8 text-xs rounded-xl gap-1" asChild>
-              <Link to="/advertise">
+              <Link to={ROUTES.advertise}>
                 <ExternalLink className="h-3 w-3" />
                 {isAr ? "بوابة المعلنين" : "Advertiser Portal"}
               </Link>

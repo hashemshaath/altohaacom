@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { useState, useCallback, useMemo, lazy, Suspense } from "react";
 import { categoryBadgeText } from "@/lib/categoryUtils";
 import { AnimatedCounter as SharedAnimatedCounter } from "@/components/ui/animated-counter";
@@ -204,7 +205,7 @@ export default function CompetitionDetail() {
           </div>
           <p className="font-semibold text-lg">{isAr ? "المسابقة غير موجودة" : "Competition not found"}</p>
           <Button asChild variant="outline" size="sm" className="mt-4 rounded-xl">
-            <Link to="/competitions"><ArrowLeft className="me-1.5 h-4 w-4" />{isAr ? "العودة" : "Back"}</Link>
+            <Link to={ROUTES.competitions}><ArrowLeft className="me-1.5 h-4 w-4" />{isAr ? "العودة" : "Back"}</Link>
           </Button>
         </main>
         <Footer />
@@ -936,7 +937,7 @@ export default function CompetitionDetail() {
                     </Button>
                   ) : !user ? (
                     <Button asChild className="w-full rounded-xl h-9 text-xs" variant="outline">
-                      <Link to="/login">{isAr ? "سجل الدخول" : "Sign in to Register"}</Link>
+                      <Link to={ROUTES.login}>{isAr ? "سجل الدخول" : "Sign in to Register"}</Link>
                     </Button>
                   ) : (
                     <p className="text-xs text-muted-foreground text-center py-1">{isAr ? "التسجيل مغلق" : "Registration closed"}</p>

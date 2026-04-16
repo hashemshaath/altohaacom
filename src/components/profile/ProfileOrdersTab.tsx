@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -54,7 +55,7 @@ export const ProfileOrdersTab = memo(function ProfileOrdersTab({ userId, isAr }:
         title={isAr ? "لا توجد طلبات بعد" : "No orders yet"}
         description={isAr ? "تصفح المتجر واطلب المنتجات" : "Browse the shop and place your first order"}
         action={
-          <Link to="/shop">
+          <Link to={ROUTES.shop}>
             <Button size="sm">{isAr ? "تسوق الآن" : "Shop Now"}</Button>
           </Link>
         }
@@ -66,7 +67,7 @@ export const ProfileOrdersTab = memo(function ProfileOrdersTab({ userId, isAr }:
     <div className="space-y-3">
       <div className="flex items-center justify-between mb-4">
         <h3 className="font-semibold">{isAr ? `${orders.length} طلبات` : `${orders.length} Orders`}</h3>
-        <Link to="/shop/orders">
+        <Link to={ROUTES.shopOrders}>
           <Button variant="outline" size="sm" className="gap-1.5 text-xs">
             <ExternalLink className="h-3 w-3" />
             {isAr ? "عرض الكل" : "View All"}

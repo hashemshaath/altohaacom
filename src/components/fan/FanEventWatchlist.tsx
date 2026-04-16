@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { useIsAr } from "@/hooks/useIsAr";
 import { useState, memo } from "react";
 import { useAuth } from "@/contexts/AuthContext";
@@ -90,8 +91,8 @@ export const FanEventWatchlist = memo(function FanEventWatchlist() {
                 <Bookmark className="h-8 w-8 mx-auto text-muted-foreground/30 mb-2" />
                 <p className="text-xs text-muted-foreground">{isAr ? "لم تضف أحداثاً بعد" : "No events saved yet"}</p>
                 <div className="flex gap-2 justify-center mt-3">
-                  <Link to="/competitions"><Button variant="outline" size="sm" className="text-xs h-7 gap-1"><Trophy className="h-3 w-3" />{isAr ? "المسابقات" : "Competitions"}</Button></Link>
-                  <Link to="/exhibitions"><Button variant="outline" size="sm" className="text-xs h-7 gap-1"><Landmark className="h-3 w-3" />{isAr ? "المعارض" : "Exhibitions"}</Button></Link>
+                  <Link to={ROUTES.competitions}><Button variant="outline" size="sm" className="text-xs h-7 gap-1"><Trophy className="h-3 w-3" />{isAr ? "المسابقات" : "Competitions"}</Button></Link>
+                  <Link to={ROUTES.exhibitions}><Button variant="outline" size="sm" className="text-xs h-7 gap-1"><Landmark className="h-3 w-3" />{isAr ? "المعارض" : "Exhibitions"}</Button></Link>
                 </div>
               </div>
             ) : (

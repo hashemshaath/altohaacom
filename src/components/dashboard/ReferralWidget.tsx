@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { useIsAr } from "@/hooks/useIsAr";
 import { useMemo, memo } from "react";
 import { Card, CardContent } from "@/components/ui/card";
@@ -112,7 +113,7 @@ export const ReferralWidget = memo(function ReferralWidget() {
             <Copy className="h-3.5 w-3.5" />
             {isAr ? "نسخ" : "Copy"}
           </Button>
-          <Link to="/referrals" className="flex-1">
+          <Link to={ROUTES.referrals} className="flex-1">
             <Button size="sm" className="w-full gap-1.5 text-xs">
               <Share2 className="h-3.5 w-3.5" />
               {isAr ? "التفاصيل" : "Details"}

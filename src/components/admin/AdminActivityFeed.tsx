@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useVisibleRefetchInterval } from "@/hooks/useVisibleRefetchInterval";
@@ -106,7 +107,7 @@ export const AdminActivityFeed = memo(function AdminActivityFeed() {
           {isAr ? "آخر الأنشطة (24 ساعة)" : "Activity Feed (24h)"}
         </CardTitle>
         <Button variant="ghost" size="sm" asChild>
-          <Link to="/admin/audit">
+          <Link to={ROUTES.adminAudit}>
             {isAr ? "السجل الكامل" : "Full Log"} <ArrowRight className="ms-1.5 h-3.5 w-3.5" />
           </Link>
         </Button>

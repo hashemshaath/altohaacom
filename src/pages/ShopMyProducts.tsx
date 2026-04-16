@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { useIsAr } from "@/hooks/useIsAr";
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -125,7 +126,7 @@ export default function ShopMyProducts() {
 
       <main className="container flex-1 py-8 md:py-12">
         <Button variant="ghost" size="sm" asChild className="mb-4 -ms-2">
-          <Link to="/shop"><ArrowLeft className="me-1.5 h-4 w-4" />{isAr ? "المتجر" : "Shop"}</Link>
+          <Link to={ROUTES.shop}><ArrowLeft className="me-1.5 h-4 w-4" />{isAr ? "المتجر" : "Shop"}</Link>
         </Button>
 
         <div className="mb-8 flex items-end justify-between gap-4">

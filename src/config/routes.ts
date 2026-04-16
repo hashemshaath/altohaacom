@@ -174,6 +174,19 @@ export const ROUTES = {
   adminOrganizers: '/admin/organizers',
   adminSettings: '/admin/settings',
   adminAnalytics: '/admin/analytics',
+  adminAudit: '/admin/audit',
+  adminCommunications: '/admin/communications',
+  adminCompanies: '/admin/companies',
+  adminDeduplication: '/admin/deduplication',
+  adminDesign: '/admin/design',
+  adminDesignHomepage: '/admin/design/homepage',
+  adminMemberships: '/admin/memberships',
+  adminModeration: '/admin/moderation',
+  adminSecurity: '/admin/security',
+  adminSmartImport: '/admin/smart-import',
+
+  // ── Company ────────────────────────────────────────
+  companyOrders: '/company/orders',
 
   // ── Misc ──────────────────────────────────────────
   evaluationReport: (token: string) => `/evaluation-report/${token}`,

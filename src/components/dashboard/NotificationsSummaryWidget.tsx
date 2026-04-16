@@ -1,3 +1,4 @@
+import { ROUTES } from "@/config/routes";
 import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useNotifications } from "@/hooks/useNotifications";
@@ -70,7 +71,7 @@ export const NotificationsSummaryWidget = memo(function NotificationsSummaryWidg
           )}
         </h3>
         <Button variant="ghost" size="sm" className="gap-1 text-xs h-7" asChild>
-          <Link to="/notifications">
+          <Link to={ROUTES.notifications}>
             {isAr ? "عرض الكل" : "View All"}
             <ArrowRight className="h-3 w-3" />
           </Link>
