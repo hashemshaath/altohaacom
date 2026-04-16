@@ -958,3 +958,56 @@ html:not(.dark) .logo-dark-invert { filter: none; }
     content-visibility: visible;
   }
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   PAGE CONTAINERS — Standardized horizontal layout
+   ───────────────────────────────────────────────────────────────
+   Use .page-container on every page wrapper for consistent
+   max-width (1280px) and equal responsive horizontal padding.
+   Use .content-container for narrow detail pages (max 800px).
+   Hero / full-width banners must NOT use these — they fill viewport.
+   ═══════════════════════════════════════════════════════════════ */
+
+.page-container {
+  width: 100%;
+  max-width: 1280px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.content-container {
+  width: 100%;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+@media (min-width: 768px) {
+  .page-container,
+  .content-container {
+    padding-left: 32px;
+    padding-right: 32px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .page-container,
+  .content-container {
+    padding-left: 64px;
+    padding-right: 64px;
+  }
+}
+
+/* Safety net: any direct child of <main> that isn't a full-bleed
+   section gets minimum mobile padding so content never touches the
+   screen edge. Opt out with class `full-bleed`. */
+@media (max-width: 767px) {
+  main > section:not(.full-bleed):not(.hero-slider) {
+    padding-left: max(20px, env(safe-area-inset-left));
+    padding-right: max(20px, env(safe-area-inset-right));
+  }
+}
