@@ -48,7 +48,7 @@ export const AdminRoute = memo(function AdminRoute({ children }: { children: Rea
               ? (isAr ? "هذه الصفحة متاحة فقط للمسؤول الأعلى (Super Admin)." : "This page is restricted to Super Admins only.")
               : (isAr ? "ليس لديك صلاحية للوصول إلى هذه الصفحة." : "You don't have permission to access this page.")}
           </p>
-          <Link to={ROUTES.adminDashboard} className="inline-flex items-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors">
+          <Link to={ROUTES.admin} className="inline-flex items-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors">
             {isAr ? "العودة للوحة التحكم" : "Back to Dashboard"}
           </Link>
         </div>
