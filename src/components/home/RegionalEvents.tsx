@@ -152,23 +152,23 @@ const EventCard = forwardRef<HTMLAnchorElement, { item: any }>(function EventCar
 
   return (
     <Link ref={ref} to={ROUTES.competition(item.slug || item.id)} className="group block w-[210px] sm:w-[220px] flex-shrink-0 snap-start touch-manipulation">
-      <Card interactive className="h-full overflow-hidden border-border/50 rounded-2xl">
-        <div className="relative aspect-[16/10] overflow-hidden bg-muted">
+      <Card interactive className="card-flex overflow-hidden border-border/50 rounded-2xl">
+        <div className="card-image-wrap" style={{ aspectRatio: "16 / 10" }}>
           {item.cover_image_url ? (
-            <SafeImage src={item.cover_image_url} alt={title} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+            <SafeImage src={item.cover_image_url} alt={title} width={400} height={250} className="card-image transition-transform duration-500 group-hover:scale-105" />
           ) : (
-            <div className="flex h-full items-center justify-center bg-gradient-to-br from-primary/10 to-primary/5">
+            <div className="card-image flex items-center justify-center bg-gradient-to-br from-primary/10 to-primary/5">
               <Trophy className="h-8 w-8 text-primary/30" />
             </div>
           )}
-          <Badge className={cn("absolute end-2 top-2 text-xs gap-1 shadow-sm", s.cls)}>
+          <Badge className={cn("absolute end-2 top-2 z-10 text-xs gap-1 shadow-sm", s.cls)}>
             {StatusIcon && <StatusIcon className="h-2.5 w-2.5" />}
             {isAr ? s.labelAr : s.label}
           </Badge>
         </div>
-        <CardContent className="p-3">
-          <h3 className="mb-1 line-clamp-2 typo-card-title group-hover:text-primary transition-colors">{title}</h3>
-          <div className="flex items-center gap-3 typo-card-meta text-muted-foreground">
+        <CardContent className="card-body-grow flex flex-col p-3">
+          <h3 className="mb-1 clamp-2 typo-card-title group-hover:text-primary transition-colors">{title}</h3>
+          <div className="card-cta-bottom flex items-center gap-3 typo-card-meta text-muted-foreground">
             {item.competition_start && (
               <span className="flex items-center gap-1">
                 <Calendar className="h-3 w-3" />
