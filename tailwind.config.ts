@@ -105,6 +105,17 @@ export default {
           focus: '#C05B2E',
         },
       },
+      fontSize: {
+        'display': ['3rem', { lineHeight: '1.15', fontWeight: '700', letterSpacing: '-0.02em' }],
+        'h1': ['2.25rem', { lineHeight: '1.2', fontWeight: '700', letterSpacing: '-0.015em' }],
+        'h2': ['1.75rem', { lineHeight: '1.25', fontWeight: '600', letterSpacing: '-0.01em' }],
+        'h3': ['1.375rem', { lineHeight: '1.3', fontWeight: '600' }],
+        'h4': ['1.125rem', { lineHeight: '1.4', fontWeight: '600' }],
+        'body-lg': ['1.0625rem', { lineHeight: '1.7' }],
+        'body': ['1rem', { lineHeight: '1.65' }],
+        'body-sm': ['0.875rem', { lineHeight: '1.6' }],
+        'label': ['0.6875rem', { lineHeight: '1.4', fontWeight: '500', letterSpacing: '0.06em' }],
+      },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",

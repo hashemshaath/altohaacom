@@ -274,15 +274,15 @@ export function HeroSection() {
         {/* Content overlay */}
         <div className="container relative flex h-full items-end pb-12 sm:pb-16 lg:pb-20">
           <div key={slide.id} className="max-w-xl space-y-3" style={isFirstRender ? undefined : { animation: "heroFadeUp 0.8s cubic-bezier(0.16,1,0.3,1) forwards" }}>
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 backdrop-blur-md border border-white/20 px-3.5 py-1.5 text-xs font-bold uppercase tracking-widest text-primary-foreground">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 backdrop-blur-md border border-white/20 px-3.5 py-1.5 text-label uppercase tracking-widest text-primary-foreground">
               <Sparkles className="h-3 w-3" />
               {isAr ? "مميّز" : "Featured"}
             </span>
-            <h1 className="text-2xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight leading-[1.1] text-primary-foreground drop-shadow-lg">
+            <h1 className="text-h1 sm:text-display font-extrabold tracking-tight leading-[1.1] text-primary-foreground drop-shadow-lg">
               {isAr ? slide.title_ar || slide.title : slide.title}
             </h1>
             {(slide.subtitle || slide.subtitle_ar) && (
-              <p className="text-sm sm:text-base lg:text-lg max-w-md leading-relaxed text-white/80 line-clamp-2 font-light">
+              <p className="text-body-sm sm:text-body lg:text-body-lg max-w-md leading-relaxed text-white/80 line-clamp-2 font-light">
                 {isAr ? slide.subtitle_ar || slide.subtitle : slide.subtitle}
               </p>
             )}
