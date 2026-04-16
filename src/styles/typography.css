@@ -1,0 +1,32 @@
+/* ═══════════════════════════════════════════════════════════════
+   ALTOHA TYPOGRAPHY SYSTEM — Responsive font scaling
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Mobile-first responsive overrides ── */
+@media (max-width: 768px) {
+  .text-display {
+    font-size: 2rem !important;
+  }
+  .text-h1 {
+    font-size: 1.75rem !important;
+  }
+  .text-h2 {
+    font-size: 1.375rem !important;
+  }
+  .text-h3 {
+    font-size: 1.125rem !important;
+  }
+}
+
+/* ── Utility: prose-like defaults for long-form content ── */
+@layer utilities {
+  .prose-body {
+    @apply text-body text-foreground;
+  }
+  .prose-body-sm {
+    @apply text-body-sm text-muted-foreground;
+  }
+  .prose-label {
+    @apply text-label uppercase tracking-widest text-muted-foreground;
+  }
+}
