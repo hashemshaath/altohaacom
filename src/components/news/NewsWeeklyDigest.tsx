@@ -55,7 +55,7 @@ export const NewsWeeklyDigest = memo(function NewsWeeklyDigest({
           <Newspaper className="h-4 w-4 text-primary" />
           <h3 className="text-sm font-bold">{isAr ? "ملخص الأسبوع" : "Weekly Digest"}</h3>
         </div>
-        <p className="text-xs text-muted-foreground flex items-center gap-1">
+        <p className="text-sm text-muted-foreground flex items-center gap-1">
           <Calendar className="h-2.5 w-2.5" />
           {weekLabel}
         </p>
@@ -101,10 +101,10 @@ export const NewsWeeklyDigest = memo(function NewsWeeklyDigest({
                     </div>
                   )}
                   <div className="flex-1 min-w-0">
-                    <h4 className="text-xs font-semibold line-clamp-2 group-hover:text-primary transition-colors leading-snug">
+                    <h4 className="text-sm font-semibold line-clamp-2 group-hover:text-primary transition-colors leading-snug">
                       {isAr && digest.editorPick.title_ar ? digest.editorPick.title_ar : digest.editorPick.title}
                     </h4>
-                    <div className="flex items-center gap-2 mt-1 text-xs text-muted-foreground">
+                    <div className="flex items-center gap-2 mt-1 text-sm text-muted-foreground">
                       <span className="flex items-center gap-0.5"><Eye className="h-2 w-2" />{digest.editorPick.view_count}</span>
                     </div>
                   </div>
@@ -135,10 +135,10 @@ export const NewsWeeklyDigest = memo(function NewsWeeklyDigest({
                     )}>
                       {i + 1}
                     </span>
-                    <span className="text-xs font-medium line-clamp-1 group-hover:text-primary transition-colors flex-1">
+                    <span className="text-sm font-medium line-clamp-1 group-hover:text-primary transition-colors flex-1">
                       {artTitle}
                     </span>
-                    <span className="text-xs text-muted-foreground tabular-nums shrink-0">
+                    <span className="text-sm text-muted-foreground tabular-nums shrink-0">
                       {(article.view_count || 0).toLocaleString()}
                     </span>
                   </Link>

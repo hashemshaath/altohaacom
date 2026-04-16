@@ -166,7 +166,7 @@ export const AuthHeroPanel = memo(function AuthHeroPanel({
         {isSignUpFlow && currentStep !== undefined && (
           <div className="space-y-2">
             <StepDots current={currentStep} total={totalSteps} />
-            <p className="text-xs text-white/50">
+            <p className="text-sm text-white/50">
               {isAr ? `الخطوة ${currentStep + 1} من ${totalSteps}` : `Step ${currentStep + 1} of ${totalSteps}`}
             </p>
           </div>
@@ -176,7 +176,7 @@ export const AuthHeroPanel = memo(function AuthHeroPanel({
           {features.map((f) => (
             <div
               key={f.labelEn}
-              className="flex items-center gap-2 rounded-full border border-white/10 bg-white/10 px-3 py-1.5 text-xs font-medium text-white/85 backdrop-blur-md"
+              className="flex items-center gap-2 rounded-full border border-white/10 bg-white/10 px-3 py-1.5 text-sm font-medium text-white/85 backdrop-blur-md"
             >
               <f.icon className="h-3.5 w-3.5 text-primary" />
               {isAr ? f.labelAr : f.labelEn}
@@ -184,7 +184,7 @@ export const AuthHeroPanel = memo(function AuthHeroPanel({
           ))}
         </div>
 
-        <div className="flex items-center gap-2 text-xs text-white/45">
+        <div className="flex items-center gap-2 text-sm text-white/45">
           <CheckCircle className="h-3.5 w-3.5 text-primary shrink-0" />
           {isAr
             ? "مجاني بالكامل · بدون بطاقة ائتمان · إعداد في دقائق"

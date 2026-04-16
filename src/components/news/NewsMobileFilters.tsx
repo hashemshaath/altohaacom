@@ -69,14 +69,14 @@ export const NewsMobileFilters = memo(function NewsMobileFilters({
               </Button>
             )}
           </SheetTitle>
-          <SheetDescription className="text-xs">
+          <SheetDescription className="text-sm">
             {isAr ? "تصفية المقالات حسب معايير مختلفة" : "Filter articles by various criteria"}
           </SheetDescription>
         </SheetHeader>
         <div className="space-y-5 mt-4">
           {/* Category */}
           <div>
-            <label className="text-xs font-semibold text-muted-foreground mb-2 block">
+            <label className="text-sm font-semibold text-muted-foreground mb-2 block">
               {isAr ? "التصنيف" : "Category"}
             </label>
             <Select value={selectedCategory} onValueChange={onCategoryChange}>
@@ -96,7 +96,7 @@ export const NewsMobileFilters = memo(function NewsMobileFilters({
 
           {/* Sort */}
           <div>
-            <label className="text-xs font-semibold text-muted-foreground mb-2 block">
+            <label className="text-sm font-semibold text-muted-foreground mb-2 block">
               {isAr ? "الترتيب" : "Sort by"}
             </label>
             <Select value={sortBy} onValueChange={onSortChange}>
@@ -116,7 +116,7 @@ export const NewsMobileFilters = memo(function NewsMobileFilters({
           {/* Tags */}
           {tags.length > 0 && (
             <div>
-              <label className="text-xs font-semibold text-muted-foreground mb-2 block">
+              <label className="text-sm font-semibold text-muted-foreground mb-2 block">
                 {isAr ? "الوسوم" : "Tags"}
               </label>
               <NewsTagsFilter tags={tags} selectedTags={selectedTags} onToggleTag={onToggleTag} isAr={isAr} />

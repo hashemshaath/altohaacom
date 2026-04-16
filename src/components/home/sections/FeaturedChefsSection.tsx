@@ -140,12 +140,12 @@ const FeaturedChefsSection = memo(forwardRef<HTMLElement>(function FeaturedChefs
                       <div className="text-center min-w-0 w-full">
                         <h3 className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors truncate">{name || (isAr ? "طاهٍ" : "Chef")}</h3>
                         {spec && (
-                          <p className="mt-0.5 text-xs text-muted-foreground truncate flex items-center justify-center gap-1">
+                          <p className="mt-0.5 text-sm text-muted-foreground truncate flex items-center justify-center gap-1">
                             <ChefHat className="h-3 w-3 shrink-0" />
                             {spec}
                           </p>
                         )}
-                        {countryName && <p className="mt-0.5 text-xs text-muted-foreground/60 truncate">{countryFlag(chef.country_code)} {countryName}</p>}
+                        {countryName && <p className="mt-0.5 text-sm text-muted-foreground/60 truncate">{countryFlag(chef.country_code)} {countryName}</p>}
                       </div>
                       {hasMedals && (
                         <div className="flex items-center justify-center gap-1.5 text-xs">

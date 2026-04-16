@@ -116,7 +116,7 @@ export const PinSetupDialog = memo(function PinSetupDialog({ open, onOpenChange,
         {step === "create" && (
           <div className="space-y-4 pt-2">
             <div className="space-y-1.5">
-              <Label htmlFor="pin-create" className="text-xs">{isAr ? "رمز PIN (6 أرقام)" : "PIN Code (6 digits)"}</Label>
+              <Label htmlFor="pin-create" className="text-sm">{isAr ? "رمز PIN (6 أرقام)" : "PIN Code (6 digits)"}</Label>
               <Input
                 id="pin-create"
                 type="password"
@@ -130,13 +130,13 @@ export const PinSetupDialog = memo(function PinSetupDialog({ open, onOpenChange,
                 autoFocus
               />
             </div>
-            <div className="space-y-1 text-xs text-muted-foreground">
+            <div className="space-y-1 text-sm text-muted-foreground">
               <p>• {isAr ? "6 أرقام بالضبط" : "Exactly 6 digits"}</p>
               <p>• {isAr ? "لا أرقام متسلسلة (مثل 123456)" : "No sequential numbers (e.g. 123456)"}</p>
               <p>• {isAr ? "لا أرقام متكررة (مثل 111111)" : "No repeated digits (e.g. 111111)"}</p>
             </div>
             {error && (
-              <p className="flex items-center gap-1 text-xs text-destructive">
+              <p className="flex items-center gap-1 text-sm text-destructive">
                 <AlertCircle className="h-3 w-3" />{error}
               </p>
             )}
@@ -149,7 +149,7 @@ export const PinSetupDialog = memo(function PinSetupDialog({ open, onOpenChange,
         {step === "confirm" && (
           <div className="space-y-4 pt-2">
             <div className="space-y-1.5">
-              <Label htmlFor="pin-confirm" className="text-xs">{isAr ? "تأكيد الرمز" : "Confirm PIN"}</Label>
+              <Label htmlFor="pin-confirm" className="text-sm">{isAr ? "تأكيد الرمز" : "Confirm PIN"}</Label>
               <Input
                 id="pin-confirm"
                 type="password"
@@ -164,7 +164,7 @@ export const PinSetupDialog = memo(function PinSetupDialog({ open, onOpenChange,
               />
             </div>
             {error && (
-              <p className="flex items-center gap-1 text-xs text-destructive">
+              <p className="flex items-center gap-1 text-sm text-destructive">
                 <AlertCircle className="h-3 w-3" />{error}
               </p>
             )}
