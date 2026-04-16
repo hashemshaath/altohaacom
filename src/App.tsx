@@ -102,7 +102,7 @@ function AppRoutes() {
     <SectionErrorBoundary name="app-routes">
       <MaintenanceGuard>
         <Suspense fallback={RouteSpinner}>
-          <div id="main-content" className="min-h-screen pb-16 md:pb-0">
+          <div id="main-content" className="min-h-screen pb-20 md:pb-0">
             <PageTransition>
               <Routes>
                 {publicRoutes}
