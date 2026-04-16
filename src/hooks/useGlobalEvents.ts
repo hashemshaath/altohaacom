@@ -1,0 +1,114 @@
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { CACHE } from "@/lib/queryConfig";
+
+export interface GlobalEventRecord {
+  id: string;
+  type: string;
+  title: string;
+  title_ar: string | null;
+  description: string | null;
+  description_ar: string | null;
+  start_date: string;
+  end_date: string | null;
+  all_day: boolean;
+  start_time: string | null;
+  end_time: string | null;
+  timezone: string;
+  city: string | null;
+  country_code: string | null;
+  venue: string | null;
+  venue_ar: string | null;
+  organizer: string | null;
+  organizer_ar: string | null;
+  link: string | null;
+  image_url: string | null;
+  is_international: boolean;
+  is_recurring: boolean;
+  recurrence_rule: string | null;
+  target_audience: string[];
+  tags: string[];
+  color: string | null;
+  status: string;
+  priority: number;
+  created_by: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export function useGlobalEvents(filters?: { status?: string }) {
+  return useQuery({
+    queryKey: ["admin-global-events", filters],
+    queryFn: async () => {
+      let query = supabase
+        .from("global_events")
+        .select("id, type, title, title_ar, description, description_ar, start_date, end_date, all_day, start_time, end_time, timezone, city, country_code, venue, venue_ar, organizer, organizer_ar, link, image_url, is_international, is_recurring, recurrence_rule, target_audience, tags, color, status, priority, created_by, created_at, updated_at")
+        .order("start_date", { ascending: true });
+
+      if (filters?.status && filters.status !== "all") {
+        query = query.eq("status", filters.status);
+      }
+
+      const { data, error } = await query;
+      if (error) throw error;
+      return (data || []) as GlobalEventRecord[];
+    },
+    ...CACHE.default,
+  });
+}
+
+export function useCreateGlobalEvent() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (event: Partial<GlobalEventRecord>) => {
+      const { data, error } = await supabase
+        .from("global_events")
+        .insert(event as any)
+        .select()
+        .single();
+      if (error) throw error;
+      return data as GlobalEventRecord;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["admin-global-events"] });
+      queryClient.invalidateQueries({ queryKey: ["global-events-calendar"] });
+    },
+  });
+}
+
+export function useUpdateGlobalEvent() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id, ...updates }: Partial<GlobalEventRecord> & { id: string }) => {
+      const { data, error } = await supabase
+        .from("global_events")
+        .update(updates)
+        .eq("id", id)
+        .select()
+        .single();
+      if (error) throw error;
+      return data as GlobalEventRecord;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["admin-global-events"] });
+      queryClient.invalidateQueries({ queryKey: ["global-events-calendar"] });
+    },
+  });
+}
+
+export function useDeleteGlobalEvent() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase
+        .from("global_events")
+        .delete()
+        .eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["admin-global-events"] });
+      queryClient.invalidateQueries({ queryKey: ["global-events-calendar"] });
+    },
+  });
+}
