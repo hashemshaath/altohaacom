@@ -324,7 +324,7 @@ async function fetchAll(filters: SearchFilters, signal?: AbortSignal): Promise<S
       let scored = (data || []).map((r: Record<string, unknown>) => ({
         ...r,
         _relevance: countMatchingWords(words, r.full_name as string, r.full_name_ar as string, r.display_name as string, r.display_name_ar as string, r.username as string, r.bio as string, r.bio_ar as string, r.specialization as string, r.specialization_ar as string, r.location as string),
-      }));
+      })) as Array<Record<string, unknown> & { _relevance: number }>;
       if (filters.memberRole && filters.memberRole !== "all" && scored.length > 0) {
         const userIds = scored.map((m) => m.user_id as string);
         const { data: rolesData } = await supabase
