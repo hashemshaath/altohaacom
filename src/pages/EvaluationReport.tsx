@@ -114,6 +114,11 @@ export default function EvaluationReport() {
   const radarData = scoreCategories.map(c => ({ category: isAr ? c.name_ar : c.name, score: c.avg, fullMark: 10 }));
   const barData = scoreCategories.map(c => ({ name: isAr ? c.name_ar : c.name, score: c.avg }));
 
+  const { recommendedCount, recommendRate } = useMemo(() => {
+    const count = evaluations.filter(e => e.is_recommended).length;
+    return { recommendedCount: count, recommendRate: evaluations.length ? Math.round((count / evaluations.length) * 100) : 0 };
+  }, [evaluations]);
+
   if (isLoading) return <div className="max-w-4xl mx-auto p-8"><Skeleton className="h-96 rounded-xl" /></div>;
   
   if (error || !session) {
@@ -125,11 +130,6 @@ export default function EvaluationReport() {
       </div>
     );
   }
-
-  const { recommendedCount, recommendRate } = useMemo(() => {
-    const count = evaluations.filter(e => e.is_recommended).length;
-    return { recommendedCount: count, recommendRate: evaluations.length ? Math.round((count / evaluations.length) * 100) : 0 };
-  }, [evaluations]);
 
   return (
     <div className="max-w-4xl mx-auto p-4 md:p-8 space-y-6">

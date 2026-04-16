@@ -16,6 +16,7 @@ interface SearchResult {
   title: string;
   subtitle?: string;
   avatar?: string | null;
+  slug?: string;
 }
 
 type SearchFilter = "all" | "users" | "posts" | "recipes" | "groups";
@@ -64,7 +65,7 @@ export const CommunitySearch = memo(function CommunitySearch() {
             .is("reply_to_post_id", null).order("created_at", { ascending: false }).limit(3) : { data: [] },
         // Recipes
         (activeFilter === "all" || activeFilter === "recipes") ?
-          supabase.from("recipes").select("id, title, title_ar, image_url")
+          supabase.from("recipes").select("id, title, title_ar, image_url, slug")
             .eq("is_published", true)
             .or(`title.ilike.${pattern},title_ar.ilike.${pattern}`).limit(3) : { data: [] },
         // Groups
@@ -91,6 +92,7 @@ export const CommunitySearch = memo(function CommunitySearch() {
         type: "recipe", id: r.id,
         title: (isAr && r.title_ar) ? r.title_ar : r.title,
         avatar: r.image_url,
+        slug: r.slug || undefined,
       }));
 
       (groupsRes.data || []).forEach((g) => all.push({
@@ -125,7 +127,7 @@ export const CommunitySearch = memo(function CommunitySearch() {
     if (result.type === "user") navigate(`/${result.id}`);
     else if (result.type === "post") navigate(`/community?post=${result.id}`);
     else if (result.type === "hashtag") navigate(`/community?tag=${result.id}`);
-    else if (result.type === "recipe") navigate(`/recipes/${result.id}`);
+    else if (result.type === "recipe") navigate(`/recipes/${result.slug || result.id}`);
     else if (result.type === "group") navigate(`/community?tab=groups&group=${result.id}`);
   };
 

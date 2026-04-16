@@ -116,14 +116,14 @@ export const CommandPalette = memo(function CommandPalette() {
       const q = debouncedQuery;
 
       const [comps, recipes, articles, chefs] = await Promise.all([
-        supabase.from("competitions").select("id, title, title_ar").or(`title.ilike.%${q}%,title_ar.ilike.%${q}%`).limit(3),
-        supabase.from("recipes").select("id, title, title_ar, category").or(`title.ilike.%${q}%,title_ar.ilike.%${q}%`).eq("is_published", true).limit(3),
+        supabase.from("competitions").select("id, title, title_ar, slug").or(`title.ilike.%${q}%,title_ar.ilike.%${q}%`).limit(3),
+        supabase.from("recipes").select("id, title, title_ar, category, slug").or(`title.ilike.%${q}%,title_ar.ilike.%${q}%`).eq("is_published", true).limit(3),
         supabase.from("articles").select("id, title, title_ar, slug").or(`title.ilike.%${q}%,title_ar.ilike.%${q}%`).eq("status", "published").limit(3),
         supabase.from("profiles").select("user_id, full_name, full_name_ar, username").or(`full_name.ilike.%${q}%,full_name_ar.ilike.%${q}%`).eq("is_chef_visible", true).limit(3),
       ]);
 
-      comps.data?.forEach(c => results.push({ id: c.id, title: isAr && c.title_ar ? c.title_ar : c.title, type: "competition", href: ROUTES.competition(c.id) }));
-      recipes.data?.forEach(r => results.push({ id: r.id, title: isAr && r.title_ar ? r.title_ar : r.title, type: "recipe", href: ROUTES.recipe(r.id), subtitle: r.category || undefined }));
+      comps.data?.forEach(c => results.push({ id: c.id, title: isAr && c.title_ar ? c.title_ar : c.title, type: "competition", href: ROUTES.competition(c.slug || c.id) }));
+      recipes.data?.forEach(r => results.push({ id: r.id, title: isAr && r.title_ar ? r.title_ar : r.title, type: "recipe", href: ROUTES.recipe(r.slug || r.id), subtitle: r.category || undefined }));
       articles.data?.forEach(a => results.push({ id: a.id, title: isAr && a.title_ar ? a.title_ar : a.title, type: "article", href: ROUTES.article(a.slug) }));
       chefs.data?.forEach(c => results.push({ id: c.user_id, title: isAr && c.full_name_ar ? c.full_name_ar : c.full_name || c.username || "", type: "chef", href: ROUTES.publicProfile(c.username || "") }));
 

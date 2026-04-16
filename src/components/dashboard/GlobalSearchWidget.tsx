@@ -41,17 +41,17 @@ export const GlobalSearchWidget = memo(function GlobalSearchWidget() {
       const searchResults: SearchResult[] = [];
 
       const [comps, recipes, articles, chefs] = await Promise.all([
-        supabase.from("competitions").select("id, title, title_ar, country_code").or(`title.ilike.%${debouncedQuery}%,title_ar.ilike.%${debouncedQuery}%`).limit(3),
-        supabase.from("recipes").select("id, title, title_ar, category").or(`title.ilike.%${debouncedQuery}%,title_ar.ilike.%${debouncedQuery}%`).eq("is_published", true).limit(3),
+        supabase.from("competitions").select("id, title, title_ar, country_code, slug").or(`title.ilike.%${debouncedQuery}%,title_ar.ilike.%${debouncedQuery}%`).limit(3),
+        supabase.from("recipes").select("id, title, title_ar, category, slug").or(`title.ilike.%${debouncedQuery}%,title_ar.ilike.%${debouncedQuery}%`).eq("is_published", true).limit(3),
         supabase.from("articles").select("id, title, title_ar, slug, type").or(`title.ilike.%${debouncedQuery}%,title_ar.ilike.%${debouncedQuery}%`).eq("status", "published").limit(3),
         supabase.from("profiles").select("user_id, full_name, full_name_ar, username, specialization").or(`full_name.ilike.%${debouncedQuery}%,full_name_ar.ilike.%${debouncedQuery}%,username.ilike.%${debouncedQuery}%`).eq("is_chef_visible", true).limit(3),
       ]);
 
       comps.data?.forEach(c => searchResults.push({
-        id: c.id, title: isAr && c.title_ar ? c.title_ar : c.title, type: "competition", href: ROUTES.competition(c.id), subtitle: c.country_code || undefined,
+        id: c.id, title: isAr && c.title_ar ? c.title_ar : c.title, type: "competition", href: ROUTES.competition(c.slug || c.id), subtitle: c.country_code || undefined,
       }));
       recipes.data?.forEach(r => searchResults.push({
-        id: r.id, title: isAr && r.title_ar ? r.title_ar : r.title, type: "recipe", href: ROUTES.recipe(r.id), subtitle: r.category || undefined,
+        id: r.id, title: isAr && r.title_ar ? r.title_ar : r.title, type: "recipe", href: ROUTES.recipe(r.slug || r.id), subtitle: r.category || undefined,
       }));
       articles.data?.forEach(a => searchResults.push({
         id: a.id, title: isAr && a.title_ar ? a.title_ar : a.title, type: "article", href: ROUTES.article(a.slug), subtitle: a.type,
