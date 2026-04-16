@@ -125,7 +125,7 @@ export const CommunitySearch = memo(function CommunitySearch() {
     if (result.type === "user") navigate(`/${result.id}`);
     else if (result.type === "post") navigate(`/community?post=${result.id}`);
     else if (result.type === "hashtag") navigate(`/community?tag=${result.id}`);
-    else if (result.type === "recipe") navigate(`/recipes/${result.id}`);
+    else if (result.type === "recipe") navigate(`/recipes/${result.slug || result.id}`);
     else if (result.type === "group") navigate(`/community?tab=groups&group=${result.id}`);
   };
 
