@@ -32,6 +32,15 @@ export function clearRecentSearches(): void {
   }
 }
 
+export function removeRecentSearch(query: string): void {
+  try {
+    const recent = getRecentSearches().filter((q) => q !== query);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(recent));
+  } catch {
+    // noop
+  }
+}
+
 /** Saved/pinned searches that persist across sessions */
 export function getSavedSearches(): string[] {
   try {
