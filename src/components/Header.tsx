@@ -1,6 +1,6 @@
 import { ROUTES } from "@/config/routes";
 import { useIsAr } from "@/hooks/useIsAr";
-import { forwardRef } from "react";
+import { forwardRef, useState, useEffect } from "react";
 import { useScrolled } from "@/hooks/useScrolled";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -12,8 +12,9 @@ import { NotificationBell } from "./notifications/NotificationBell";
 import { DesktopNav } from "./header/DesktopNav";
 import { UserDropdown } from "./header/UserDropdown";
 import { MobileMenu } from "./header/MobileMenu";
+import { SearchBar } from "./features/SearchBar";
 import { cn } from "@/lib/utils";
-import { Search } from "lucide-react";
+import { Search, X } from "lucide-react";
 import {
   Trophy, Users, GraduationCap, Landmark, Newspaper,
   ShoppingBag, UtensilsCrossed, Building2, Star, BookOpen,
