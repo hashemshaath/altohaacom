@@ -12,7 +12,7 @@ import { NotificationBell } from "./notifications/NotificationBell";
 import { DesktopNav } from "./header/DesktopNav";
 import { UserDropdown } from "./header/UserDropdown";
 import { MobileMenu } from "./header/MobileMenu";
-import { SearchBar } from "./features/SearchBar";
+import { SearchBarLazy as SearchBar } from "./features/SearchBarLazy";
 import { cn } from "@/lib/utils";
 import { Search, X } from "lucide-react";
 import {

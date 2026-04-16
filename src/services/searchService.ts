@@ -1,6 +1,24 @@
 /**
- * Search Service — In-memory cached, parallel Supabase queries.
- * Replaces per-category useQuery hooks with a single Promise.all call.
+ * Search Service — Stale-while-revalidate cache + parallel Supabase queries.
+ *
+ * Cache strategy:
+ *   • age <  60s  → return cached, NO network
+ *   • 60s–5min   → return stale immediately, refresh in background (SWR)
+ *   • > 5min     → fresh fetch (cache evicted)
+ *
+ * Rate limiting: 100ms minimum gap between Supabase round-trips. Newer calls
+ * supersede older queued calls (intermediate calls discarded).
+ *
+ * Recommended Postgres indexes for trigram-accelerated ILIKE:
+ *   CREATE EXTENSION IF NOT EXISTS pg_trgm;
+ *   CREATE INDEX CONCURRENTLY idx_recipes_title_trgm        ON recipes        USING gin(title        gin_trgm_ops);
+ *   CREATE INDEX CONCURRENTLY idx_recipes_title_ar_trgm     ON recipes        USING gin(title_ar     gin_trgm_ops);
+ *   CREATE INDEX CONCURRENTLY idx_competitions_title_trgm   ON competitions   USING gin(title        gin_trgm_ops);
+ *   CREATE INDEX CONCURRENTLY idx_articles_title_trgm       ON articles       USING gin(title        gin_trgm_ops);
+ *   CREATE INDEX CONCURRENTLY idx_profiles_full_name_trgm   ON profiles       USING gin(full_name    gin_trgm_ops);
+ *   CREATE INDEX CONCURRENTLY idx_profiles_username_trgm    ON profiles       USING gin(username     gin_trgm_ops);
+ *   CREATE INDEX CONCURRENTLY idx_exhibitions_title_trgm    ON exhibitions    USING gin(title        gin_trgm_ops);
+ *   CREATE INDEX CONCURRENTLY idx_culinary_entities_name_trgm ON culinary_entities USING gin(name gin_trgm_ops);
  */
 import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
@@ -16,19 +34,23 @@ import type {
   ExhibitionResult,
 } from "@/hooks/useGlobalSearch";
 
-// ── Cache ────────────────────────────────────────────────
-const CACHE_TTL_MS = 60_000;
+// ── Cache (SWR) ──────────────────────────────────────────
+const FRESH_TTL_MS = 60_000;       // < 60s   : serve cache, no network
+const STALE_TTL_MS = 5 * 60_000;   // < 5min  : serve cache + revalidate in background
+const MAX_CACHE = 50;
 
 interface CacheEntry {
   results: SearchResults;
   timestamp: number;
+  revalidating?: boolean;
 }
 
 const cache = new Map<string, CacheEntry>();
+const inflight = new Map<string, Promise<SearchResults>>();
 
 function cacheKey(filters: SearchFilters): string {
   return JSON.stringify({
-    q: filters.query,
+    q: filters.query.trim().toLowerCase(),
     t: filters.type,
     cs: filters.competitionStatus,
     iv: filters.isVirtual,
@@ -41,16 +63,8 @@ function cacheKey(filters: SearchFilters): string {
   });
 }
 
-function getCached(key: string): SearchResults | null {
-  const entry = cache.get(key);
-  if (entry && Date.now() - entry.timestamp < CACHE_TTL_MS) return entry.results;
-  if (entry) cache.delete(key);
-  return null;
-}
-
 function setCache(key: string, results: SearchResults) {
-  // Cap cache size at 50 entries
-  if (cache.size >= 50) {
+  if (cache.size >= MAX_CACHE) {
     const oldest = cache.keys().next().value;
     if (oldest) cache.delete(oldest);
   }
@@ -59,6 +73,24 @@ function setCache(key: string, results: SearchResults) {
 
 export function clearSearchCache() {
   cache.clear();
+  inflight.clear();
+}
+
+// ── Rate limiter (100ms min gap between fetches) ─────────
+const MIN_INTERVAL_MS = 100;
+let lastFetchAt = 0;
+let pendingTimer: ReturnType<typeof setTimeout> | null = null;
+
+function scheduleFetch<T>(fn: () => Promise<T>): Promise<T> {
+  return new Promise((resolve, reject) => {
+    const wait = Math.max(0, MIN_INTERVAL_MS - (Date.now() - lastFetchAt));
+    if (pendingTimer) clearTimeout(pendingTimer);
+    pendingTimer = setTimeout(() => {
+      lastFetchAt = Date.now();
+      pendingTimer = null;
+      fn().then(resolve, reject);
+    }, wait);
+  });
 }
 
 // ── Search helpers ───────────────────────────────────────
@@ -70,9 +102,7 @@ function buildFlexibleFilter(words: string[], columns: string[]): string {
   const parts: string[] = [];
   for (const word of words) {
     const escaped = word.replace(/[%_]/g, "\\$&");
-    for (const col of columns) {
-      parts.push(`${col}.ilike.%${escaped}%`);
-    }
+    for (const col of columns) parts.push(`${col}.ilike.%${escaped}%`);
   }
   return parts.join(",");
 }
@@ -87,43 +117,20 @@ function sortByRelevance<T extends { _relevance?: number }>(items: T[]): T[] {
   return items.sort((a, b) => (b._relevance || 0) - (a._relevance || 0));
 }
 
-// ── Main search function ─────────────────────────────────
+// ── Core fetch (parallel queries, specific columns only) ─
 type CompetitionStatus = Database["public"]["Enums"]["competition_status"];
 
-export async function searchAll(
-  filters: SearchFilters,
-  signal?: AbortSignal
-): Promise<SearchResults> {
+async function fetchAll(filters: SearchFilters, signal?: AbortSignal): Promise<SearchResults> {
   const words = getSearchWords(filters.query);
   const empty: SearchResults = {
-    competitions: [],
-    articles: [],
-    members: [],
-    posts: [],
-    entities: [],
-    recipes: [],
-    exhibitions: [],
+    competitions: [], articles: [], members: [], posts: [],
+    entities: [], recipes: [], exhibitions: [],
   };
+  if (words.length === 0 || signal?.aborted) return empty;
 
-  if (words.length === 0) return empty;
-
-  // Check cache
-  const key = cacheKey(filters);
-  const cached = getCached(key);
-  if (cached) return cached;
-
-  // Check abort before starting
-  if (signal?.aborted) return empty;
-
-  // Build all queries in parallel
   const [
-    competitionsRes,
-    articlesRes,
-    membersRes,
-    postsRes,
-    entitiesRes,
-    recipesRes,
-    exhibitionsRes,
+    competitionsRes, articlesRes, membersRes, postsRes,
+    entitiesRes, recipesRes, exhibitionsRes,
   ] = await Promise.all([
     // ── Competitions ──
     (async () => {
@@ -138,12 +145,10 @@ export async function searchAll(
       if (filters.isVirtual !== null && filters.isVirtual !== undefined)
         q = q.eq("is_virtual", filters.isVirtual);
       const { data } = await q.order("competition_start", { ascending: false }).limit(30);
-      return sortByRelevance(
-        (data || []).map((r) => ({
-          ...r,
-          _relevance: countMatchingWords(words, r.title, r.title_ar, r.description, r.description_ar, r.city, r.venue, r.venue_ar, r.country),
-        }))
-      ) as CompetitionResult[];
+      return sortByRelevance((data || []).map((r) => ({
+        ...r,
+        _relevance: countMatchingWords(words, r.title, r.title_ar, r.description, r.description_ar, r.city, r.venue, r.venue_ar, r.country),
+      }))) as CompetitionResult[];
     })(),
 
     // ── Articles ──
@@ -157,12 +162,10 @@ export async function searchAll(
       if (filters.articleStatus && filters.articleStatus !== "all") q = q.eq("status", filters.articleStatus);
       else q = q.eq("status", "published");
       const { data } = await q.order("published_at", { ascending: false }).limit(30);
-      return sortByRelevance(
-        (data || []).map((r) => ({
-          ...r,
-          _relevance: countMatchingWords(words, r.title, r.title_ar, r.excerpt, r.excerpt_ar),
-        }))
-      ) as ArticleResult[];
+      return sortByRelevance((data || []).map((r) => ({
+        ...r,
+        _relevance: countMatchingWords(words, r.title, r.title_ar, r.excerpt, r.excerpt_ar),
+      }))) as ArticleResult[];
     })(),
 
     // ── Members ──
@@ -216,23 +219,18 @@ export async function searchAll(
         .select("user_id, full_name, username, avatar_url")
         .in("user_id", authorIds);
       const profileMap = new Map(profiles?.map((p) => [p.user_id, p]) || []);
-      return sortByRelevance(
-        scored.map((p) => {
-          const profile = profileMap.get(p.author_id);
-          return {
-            id: p.id,
-            content: p.content,
-            image_url: p.image_url,
-            video_url: p.video_url || null,
-            created_at: p.created_at,
-            author_id: p.author_id,
-            author_name: profile?.full_name || null,
-            author_username: profile?.username || null,
-            author_avatar: profile?.avatar_url || null,
-            _relevance: p._relevance,
-          };
-        })
-      ) as PostResult[];
+      return sortByRelevance(scored.map((p) => {
+        const profile = profileMap.get(p.author_id);
+        return {
+          id: p.id, content: p.content, image_url: p.image_url,
+          video_url: p.video_url || null, created_at: p.created_at,
+          author_id: p.author_id,
+          author_name: profile?.full_name || null,
+          author_username: profile?.username || null,
+          author_avatar: profile?.avatar_url || null,
+          _relevance: p._relevance,
+        };
+      })) as PostResult[];
     })(),
 
     // ── Entities (culinary_entities + establishments + companies) ──
@@ -272,12 +270,10 @@ export async function searchAll(
         .or(buildFlexibleFilter(words, cols))
         .order("created_at", { ascending: false })
         .limit(30);
-      return sortByRelevance(
-        (data || []).map((r: any) => ({
-          ...r,
-          _relevance: countMatchingWords(words, r.title, r.title_ar, r.description, r.description_ar),
-        }))
-      ) as RecipeResult[];
+      return sortByRelevance((data || []).map((r: any) => ({
+        ...r,
+        _relevance: countMatchingWords(words, r.title, r.title_ar, r.description, r.description_ar),
+      }))) as RecipeResult[];
     })(),
 
     // ── Exhibitions ──
@@ -290,19 +286,16 @@ export async function searchAll(
         .or(buildFlexibleFilter(words, cols))
         .order("start_date", { ascending: false })
         .limit(20);
-      return sortByRelevance(
-        (data || []).map((r) => ({
-          ...r,
-          _relevance: countMatchingWords(words, r.title, r.title_ar, r.description, r.description_ar, r.venue, r.city, r.country),
-        }))
-      ) as ExhibitionResult[];
+      return sortByRelevance((data || []).map((r) => ({
+        ...r,
+        _relevance: countMatchingWords(words, r.title, r.title_ar, r.description, r.description_ar, r.venue, r.city, r.country),
+      }))) as ExhibitionResult[];
     })(),
   ]);
 
-  // Check abort after fetch
   if (signal?.aborted) return empty;
 
-  const results: SearchResults = {
+  return {
     competitions: competitionsRes,
     articles: articlesRes,
     members: membersRes,
@@ -311,7 +304,99 @@ export async function searchAll(
     recipes: recipesRes,
     exhibitions: exhibitionsRes,
   };
+}
 
-  setCache(key, results);
+// ── Public API: SWR-aware searchAll ──────────────────────
+export async function searchAll(
+  filters: SearchFilters,
+  signal?: AbortSignal
+): Promise<SearchResults> {
+  const empty: SearchResults = {
+    competitions: [], articles: [], members: [], posts: [],
+    entities: [], recipes: [], exhibitions: [],
+  };
+  if (getSearchWords(filters.query).length === 0) return empty;
+
+  const key = cacheKey(filters);
+  const entry = cache.get(key);
+  const now = Date.now();
+
+  // Fresh: serve cache, no network
+  if (entry && now - entry.timestamp < FRESH_TTL_MS) {
+    return entry.results;
+  }
+
+  // Stale (60s–5min): serve cache + revalidate in background (SWR)
+  if (entry && now - entry.timestamp < STALE_TTL_MS) {
+    if (!entry.revalidating) {
+      entry.revalidating = true;
+      // Fire-and-forget — cannot use the caller's signal (background)
+      scheduleFetch(() => fetchAll(filters))
+        .then((fresh) => setCache(key, fresh))
+        .catch(() => { /* swallow background errors */ })
+        .finally(() => { entry.revalidating = false; });
+    }
+    return entry.results;
+  }
+
+  // Expired or missing: dedupe in-flight, then fresh fetch through rate limiter
+  const existing = inflight.get(key);
+  if (existing) return existing;
+
+  const promise = scheduleFetch(() => fetchAll(filters, signal))
+    .then((fresh) => {
+      if (!signal?.aborted) setCache(key, fresh);
+      return fresh;
+    })
+    .finally(() => { inflight.delete(key); });
+
+  inflight.set(key, promise);
+  return promise;
+}
+
+// ── Popular preload (focus-fetch, no query) ──────────────
+let popularCache: { results: SearchResults; timestamp: number } | null = null;
+const POPULAR_TTL_MS = 5 * 60_000;
+
+export async function fetchPopularPreload(signal?: AbortSignal): Promise<SearchResults> {
+  const empty: SearchResults = {
+    competitions: [], articles: [], members: [], posts: [],
+    entities: [], recipes: [], exhibitions: [],
+  };
+  if (popularCache && Date.now() - popularCache.timestamp < POPULAR_TTL_MS) {
+    return popularCache.results;
+  }
+  if (signal?.aborted) return empty;
+
+  const [recipesRes, competitionsRes, membersRes] = await Promise.all([
+    (supabase
+      .from("recipes")
+      .select("id, title, title_ar, description, description_ar, image_url, prep_time, cook_time, average_rating, slug") as any)
+      .eq("status", "published")
+      .order("average_rating", { ascending: false, nullsFirst: false })
+      .limit(4),
+    supabase
+      .from("competitions")
+      .select("id, title, title_ar, description, description_ar, cover_image_url, status, competition_start, competition_end, venue, venue_ar, city, country, is_virtual")
+      .in("status", ["registration_open", "upcoming"] as CompetitionStatus[])
+      .order("competition_start", { ascending: true })
+      .limit(2),
+    supabase
+      .from("profiles")
+      .select("id, user_id, full_name, full_name_ar, display_name, display_name_ar, username, avatar_url, bio, bio_ar, specialization, specialization_ar, experience_level, location, is_verified")
+      .eq("account_status", "active")
+      .eq("is_verified", true)
+      .limit(2),
+  ]);
+
+  if (signal?.aborted) return empty;
+
+  const results: SearchResults = {
+    ...empty,
+    recipes: ((recipesRes as any).data || []) as RecipeResult[],
+    competitions: (competitionsRes.data || []) as CompetitionResult[],
+    members: (membersRes.data || []) as MemberResult[],
+  };
+  popularCache = { results, timestamp: Date.now() };
   return results;
 }

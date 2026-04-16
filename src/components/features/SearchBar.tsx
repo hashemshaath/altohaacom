@@ -53,7 +53,7 @@ export const SearchBar = memo(function SearchBar({
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const [recents, setRecents] = useState<string[]>([]);
 
-  const { filters, updateFilter, results, isLoading } = useGlobalSearch();
+  const { filters, updateFilter, results, isLoading, preloadPopular } = useGlobalSearch();
   const query = filters.query;
   const trimmed = query.trim();
 
@@ -272,7 +272,7 @@ export const SearchBar = memo(function SearchBar({
           aria-autocomplete="list"
           value={query}
           onChange={(e) => updateFilter("query", e.target.value)}
-          onFocus={() => setOpen(true)}
+          onFocus={() => { setOpen(true); preloadPopular(); }}
           onKeyDown={handleKeyDown}
           placeholder={placeholderText}
           className={cn(

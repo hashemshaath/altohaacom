@@ -2,7 +2,7 @@ import { useState, useCallback, useMemo, useEffect, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import type { Database } from "@/integrations/supabase/types";
 import { CACHE } from "@/lib/queryConfig";
-import { searchAll } from "@/services/searchService";
+import { searchAll, fetchPopularPreload } from "@/services/searchService";
 
 type CompetitionStatus = Database["public"]["Enums"]["competition_status"];
 
@@ -168,6 +168,8 @@ export function useGlobalSearch() {
   const [filters, setFilters] = useState<SearchFilters>(DEFAULT_FILTERS);
   const [debouncedQuery, setDebouncedQuery] = useState("");
   const abortRef = useRef<AbortController | null>(null);
+  const preloadedRef = useRef<SearchResults | null>(null);
+  const [hasPreloaded, setHasPreloaded] = useState(false);
 
   // Debounce the query
   useEffect(() => {
@@ -186,6 +188,17 @@ export function useGlobalSearch() {
 
   const resetFilters = useCallback(() => {
     setFilters(DEFAULT_FILTERS);
+  }, []);
+
+  // Preload popular content on input focus (call once)
+  const preloadPopular = useCallback(() => {
+    if (preloadedRef.current) return;
+    fetchPopularPreload()
+      .then((res) => {
+        preloadedRef.current = res;
+        setHasPreloaded(true);
+      })
+      .catch(() => { /* silent */ });
   }, []);
 
   // Stable filters snapshot for the query key (excludes the raw query, uses debounced)
@@ -208,22 +221,34 @@ export function useGlobalSearch() {
     ...CACHE.short,
   });
 
+  // While first real query is loading, surface preloaded popular results
+  // to avoid an empty flash. Only used as placeholder when no results yet.
+  const displayResults = useMemo<SearchResults>(() => {
+    const hasAny =
+      results.competitions.length + results.articles.length + results.members.length +
+      results.posts.length + results.entities.length + results.recipes.length +
+      results.exhibitions.length > 0;
+    if (isLoading && !hasAny && preloadedRef.current) return preloadedRef.current;
+    return results;
+  }, [results, isLoading, hasPreloaded]);
+
   const totalResults =
-    results.competitions.length +
-    results.articles.length +
-    results.members.length +
-    results.posts.length +
-    results.entities.length +
-    results.recipes.length +
-    results.exhibitions.length;
+    displayResults.competitions.length +
+    displayResults.articles.length +
+    displayResults.members.length +
+    displayResults.posts.length +
+    displayResults.entities.length +
+    displayResults.recipes.length +
+    displayResults.exhibitions.length;
 
   return {
     filters,
     setFilters,
     updateFilter,
     resetFilters,
-    results,
+    results: displayResults,
     totalResults,
     isLoading,
+    preloadPopular,
   };
 }
