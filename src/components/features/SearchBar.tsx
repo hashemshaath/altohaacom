@@ -25,6 +25,7 @@ import {
   getRecentSearches,
   addRecentSearch,
   removeRecentSearch,
+  subscribeRecentSearches,
 } from "@/lib/recentSearches";
 import { ROUTES } from "@/config/routes";
 import { cn } from "@/lib/utils";
