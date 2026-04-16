@@ -1,24 +1,55 @@
 /**
- * Search Service — Stale-while-revalidate cache + parallel Supabase queries.
+ * Search Service — Postgres FTS (with ILIKE fallback) + SWR cache + parallel queries.
  *
- * Cache strategy:
- *   • age <  60s  → return cached, NO network
- *   • 60s–5min   → return stale immediately, refresh in background (SWR)
- *   • > 5min     → fresh fetch (cache evicted)
+ * ── Strategy ──────────────────────────────────────────────
+ * Strategy A (preferred): Postgres full-text search via `.textSearch('search_vector', q, { type: 'websearch', config: 'simple' })`
+ *   • requires a `search_vector tsvector` column + GIN index on the table
+ *   • orders of magnitude faster than ILIKE on large tables
  *
- * Rate limiting: 100ms minimum gap between Supabase round-trips. Newer calls
- * supersede older queued calls (intermediate calls discarded).
+ * Strategy B (fallback): legacy ILIKE on text columns
+ *   • used automatically when FTS errors (column missing, malformed query, etc.)
  *
- * Recommended Postgres indexes for trigram-accelerated ILIKE:
- *   CREATE EXTENSION IF NOT EXISTS pg_trgm;
- *   CREATE INDEX CONCURRENTLY idx_recipes_title_trgm        ON recipes        USING gin(title        gin_trgm_ops);
- *   CREATE INDEX CONCURRENTLY idx_recipes_title_ar_trgm     ON recipes        USING gin(title_ar     gin_trgm_ops);
- *   CREATE INDEX CONCURRENTLY idx_competitions_title_trgm   ON competitions   USING gin(title        gin_trgm_ops);
- *   CREATE INDEX CONCURRENTLY idx_articles_title_trgm       ON articles       USING gin(title        gin_trgm_ops);
- *   CREATE INDEX CONCURRENTLY idx_profiles_full_name_trgm   ON profiles       USING gin(full_name    gin_trgm_ops);
- *   CREATE INDEX CONCURRENTLY idx_profiles_username_trgm    ON profiles       USING gin(username     gin_trgm_ops);
- *   CREATE INDEX CONCURRENTLY idx_exhibitions_title_trgm    ON exhibitions    USING gin(title        gin_trgm_ops);
- *   CREATE INDEX CONCURRENTLY idx_culinary_entities_name_trgm ON culinary_entities USING gin(name gin_trgm_ops);
+ * The first failure for a given table is remembered in `ftsCapability` so we
+ * stop hitting Strategy A for the rest of the session.
+ *
+ * ── Cache ─────────────────────────────────────────────────
+ *   • age <  60s : serve cached, NO network
+ *   • 60s–5min   : serve stale, refresh in background (SWR)
+ *   • > 5min     : fresh fetch (cache evicted)
+ *
+ * ── Rate limiting ─────────────────────────────────────────
+ * 100ms minimum gap between Supabase round-trips. Newer queued calls
+ * supersede older ones (intermediate calls discarded).
+ *
+ * ── Required SQL (run once in Supabase SQL editor) ────────
+ *   ALTER TABLE recipes            ADD COLUMN IF NOT EXISTS search_vector tsvector;
+ *   ALTER TABLE competitions       ADD COLUMN IF NOT EXISTS search_vector tsvector;
+ *   ALTER TABLE articles           ADD COLUMN IF NOT EXISTS search_vector tsvector;
+ *   ALTER TABLE profiles           ADD COLUMN IF NOT EXISTS search_vector tsvector;
+ *   ALTER TABLE exhibitions        ADD COLUMN IF NOT EXISTS search_vector tsvector;
+ *   ALTER TABLE culinary_entities  ADD COLUMN IF NOT EXISTS search_vector tsvector;
+ *
+ *   -- Backfill (example for recipes):
+ *   UPDATE recipes SET search_vector = to_tsvector('simple',
+ *     coalesce(title,'') || ' ' || coalesce(description,'') || ' ' || coalesce(category,''));
+ *
+ *   -- GIN indexes:
+ *   CREATE INDEX IF NOT EXISTS idx_recipes_search           ON recipes           USING gin(search_vector);
+ *   CREATE INDEX IF NOT EXISTS idx_competitions_search      ON competitions      USING gin(search_vector);
+ *   CREATE INDEX IF NOT EXISTS idx_articles_search          ON articles          USING gin(search_vector);
+ *   CREATE INDEX IF NOT EXISTS idx_profiles_search          ON profiles          USING gin(search_vector);
+ *   CREATE INDEX IF NOT EXISTS idx_exhibitions_search       ON exhibitions       USING gin(search_vector);
+ *   CREATE INDEX IF NOT EXISTS idx_culinary_entities_search ON culinary_entities USING gin(search_vector);
+ *
+ *   -- Plus an `auto-update` trigger per table to keep search_vector in sync.
+ *
+ *   -- Optional analytics table for trending tags:
+ *   CREATE TABLE IF NOT EXISTS search_logs (
+ *     id uuid primary key default gen_random_uuid(),
+ *     query text not null, result_count int not null default 0,
+ *     search_type text not null default 'global', user_id uuid,
+ *     created_at timestamptz not null default now()
+ *   );
  */
 import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
@@ -35,8 +66,8 @@ import type {
 } from "@/hooks/useGlobalSearch";
 
 // ── Cache (SWR) ──────────────────────────────────────────
-const FRESH_TTL_MS = 60_000;       // < 60s   : serve cache, no network
-const STALE_TTL_MS = 5 * 60_000;   // < 5min  : serve cache + revalidate in background
+const FRESH_TTL_MS = 60_000;
+const STALE_TTL_MS = 5 * 60_000;
 const MAX_CACHE = 50;
 
 interface CacheEntry {
@@ -93,6 +124,25 @@ function scheduleFetch<T>(fn: () => Promise<T>): Promise<T> {
   });
 }
 
+// ── FTS capability tracking (per table) ──────────────────
+// Once a table fails Strategy A we permanently fall back to ILIKE for the
+// rest of the session to avoid wasted round-trips.
+type FtsTable = "recipes" | "competitions" | "articles" | "profiles" | "exhibitions" | "culinary_entities";
+const ftsCapability = new Map<FtsTable, boolean>();
+
+function ftsAvailable(table: FtsTable): boolean {
+  return ftsCapability.get(table) !== false; // unknown = try
+}
+function markFtsFailed(table: FtsTable, err?: unknown) {
+  if (ftsCapability.get(table) !== false) {
+    ftsCapability.set(table, false);
+    if (import.meta.env.DEV) {
+      // eslint-disable-next-line no-console
+      console.info(`[search] FTS unavailable for ${table}, falling back to ILIKE`, err);
+    }
+  }
+}
+
 // ── Search helpers ───────────────────────────────────────
 function getSearchWords(query: string): string[] {
   return query.trim().split(/\s+/).filter((w) => w.length >= 2);
@@ -107,6 +157,12 @@ function buildFlexibleFilter(words: string[], columns: string[]): string {
   return parts.join(",");
 }
 
+/** Build a websearch FTS query: each whitespace-separated word becomes ANDed. */
+function buildFtsQuery(words: string[]): string {
+  // websearch syntax handles unquoted words as AND. Strip control chars.
+  return words.map((w) => w.replace(/["()\\]/g, " ").trim()).filter(Boolean).join(" ");
+}
+
 function countMatchingWords(words: string[], ...fields: (string | null | undefined)[]): number {
   if (words.length === 0) return 0;
   const combined = fields.filter(Boolean).join(" ").toLowerCase();
@@ -115,6 +171,41 @@ function countMatchingWords(words: string[], ...fields: (string | null | undefin
 
 function sortByRelevance<T extends { _relevance?: number }>(items: T[]): T[] {
   return items.sort((a, b) => (b._relevance || 0) - (a._relevance || 0));
+}
+
+/**
+ * Generic FTS-with-ILIKE-fallback runner.
+ * Builds a base PostgREST query, tries `.textSearch('search_vector', ...)` first,
+ * and on error/empty-config falls back to OR-of-ILIKE on the provided columns.
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type Builder = any;
+async function runWithFtsFallback(
+  table: FtsTable,
+  baseBuilder: Builder,
+  words: string[],
+  ilikeColumns: string[],
+): Promise<{ data: Record<string, unknown>[] | null; error: unknown }> {
+  if (ftsAvailable(table)) {
+    try {
+      const ftsQuery = buildFtsQuery(words);
+      const res = await baseBuilder.textSearch("search_vector", ftsQuery, {
+        type: "websearch",
+        config: "simple",
+      });
+      if (res.error) {
+        markFtsFailed(table, res.error);
+      } else {
+        return { data: res.data, error: null };
+      }
+    } catch (err) {
+      markFtsFailed(table, err);
+    }
+  }
+  // Fallback — caller passed a fresh builder factory? No, we re-issue from same supabase client below.
+  // Since PostgREST builders are not reusable after a failed call, we re-build via the columns we know.
+  // The fallback path is wired at the call site (each table has its own builder factory).
+  return { data: null, error: new Error("FTS_FALLBACK_REQUIRED") };
 }
 
 // ── Core fetch (parallel queries, specific columns only) ─
@@ -128,6 +219,8 @@ async function fetchAll(filters: SearchFilters, signal?: AbortSignal): Promise<S
   };
   if (words.length === 0 || signal?.aborted) return empty;
 
+  const ftsQ = buildFtsQuery(words);
+
   const [
     competitionsRes, articlesRes, membersRes, postsRes,
     entitiesRes, recipesRes, exhibitionsRes,
@@ -135,69 +228,117 @@ async function fetchAll(filters: SearchFilters, signal?: AbortSignal): Promise<S
     // ── Competitions ──
     (async () => {
       if (filters.type !== "all" && filters.type !== "competitions") return [];
-      let q = supabase
-        .from("competitions")
-        .select("id, title, title_ar, description, description_ar, cover_image_url, status, competition_start, competition_end, venue, venue_ar, city, country, is_virtual")
-        .neq("status", "draft")
-        .or(buildFlexibleFilter(words, ["title", "title_ar", "description", "description_ar", "city", "venue", "venue_ar", "country"]));
-      if (filters.competitionStatus && filters.competitionStatus !== "all")
-        q = q.eq("status", filters.competitionStatus);
-      if (filters.isVirtual !== null && filters.isVirtual !== undefined)
-        q = q.eq("is_virtual", filters.isVirtual);
-      const { data } = await q.order("competition_start", { ascending: false }).limit(30);
-      return sortByRelevance((data || []).map((r) => ({
+      const baseCols = "id, title, title_ar, description, description_ar, cover_image_url, status, competition_start, competition_end, venue, venue_ar, city, country, is_virtual";
+      const ilikeCols = ["title", "title_ar", "description", "description_ar", "city", "venue", "venue_ar", "country"];
+      const applyFilters = (q: Builder) => {
+        let qq = q.neq("status", "draft");
+        if (filters.competitionStatus && filters.competitionStatus !== "all")
+          qq = qq.eq("status", filters.competitionStatus);
+        if (filters.isVirtual !== null && filters.isVirtual !== undefined)
+          qq = qq.eq("is_virtual", filters.isVirtual);
+        return qq;
+      };
+      let data: Record<string, unknown>[] | null = null;
+      if (ftsAvailable("competitions")) {
+        const r = await applyFilters(
+          (supabase.from("competitions").select(baseCols) as Builder)
+            .textSearch("search_vector", ftsQ, { type: "websearch", config: "simple" })
+        ).order("competition_start", { ascending: false }).limit(30);
+        if (r.error) markFtsFailed("competitions", r.error);
+        else data = r.data;
+      }
+      if (data === null) {
+        const r = await applyFilters(
+          supabase.from("competitions").select(baseCols)
+            .or(buildFlexibleFilter(words, ilikeCols))
+        ).order("competition_start", { ascending: false }).limit(30);
+        data = r.data;
+      }
+      return sortByRelevance((data || []).map((r: Record<string, unknown>) => ({
         ...r,
-        _relevance: countMatchingWords(words, r.title, r.title_ar, r.description, r.description_ar, r.city, r.venue, r.venue_ar, r.country),
+        _relevance: countMatchingWords(words, r.title as string, r.title_ar as string, r.description as string, r.description_ar as string, r.city as string, r.venue as string, r.venue_ar as string, r.country as string),
       }))) as CompetitionResult[];
     })(),
 
     // ── Articles ──
     (async () => {
       if (filters.type !== "all" && filters.type !== "articles") return [];
-      let q = supabase
-        .from("articles")
-        .select("id, title, title_ar, excerpt, excerpt_ar, featured_image_url, type, status, published_at, slug, view_count")
-        .or(buildFlexibleFilter(words, ["title", "title_ar", "excerpt", "excerpt_ar", "content", "content_ar"]));
-      if (filters.articleType && filters.articleType !== "all") q = q.eq("type", filters.articleType);
-      if (filters.articleStatus && filters.articleStatus !== "all") q = q.eq("status", filters.articleStatus);
-      else q = q.eq("status", "published");
-      const { data } = await q.order("published_at", { ascending: false }).limit(30);
-      return sortByRelevance((data || []).map((r) => ({
+      const baseCols = "id, title, title_ar, excerpt, excerpt_ar, featured_image_url, type, status, published_at, slug, view_count";
+      const ilikeCols = ["title", "title_ar", "excerpt", "excerpt_ar", "content", "content_ar"];
+      const applyFilters = (q: Builder) => {
+        let qq = q;
+        if (filters.articleType && filters.articleType !== "all") qq = qq.eq("type", filters.articleType);
+        if (filters.articleStatus && filters.articleStatus !== "all") qq = qq.eq("status", filters.articleStatus);
+        else qq = qq.eq("status", "published");
+        return qq;
+      };
+      let data: Record<string, unknown>[] | null = null;
+      if (ftsAvailable("articles")) {
+        const r = await applyFilters(
+          (supabase.from("articles").select(baseCols) as Builder)
+            .textSearch("search_vector", ftsQ, { type: "websearch", config: "simple" })
+        ).order("published_at", { ascending: false }).limit(30);
+        if (r.error) markFtsFailed("articles", r.error);
+        else data = r.data;
+      }
+      if (data === null) {
+        const r = await applyFilters(
+          supabase.from("articles").select(baseCols)
+            .or(buildFlexibleFilter(words, ilikeCols))
+        ).order("published_at", { ascending: false }).limit(30);
+        data = r.data;
+      }
+      return sortByRelevance((data || []).map((r: Record<string, unknown>) => ({
         ...r,
-        _relevance: countMatchingWords(words, r.title, r.title_ar, r.excerpt, r.excerpt_ar),
+        _relevance: countMatchingWords(words, r.title as string, r.title_ar as string, r.excerpt as string, r.excerpt_ar as string),
       }))) as ArticleResult[];
     })(),
 
     // ── Members ──
     (async () => {
       if (filters.type !== "all" && filters.type !== "members") return [];
-      const cols = ["full_name", "full_name_ar", "display_name", "display_name_ar", "username", "bio", "bio_ar", "specialization", "specialization_ar", "location"];
-      let q = supabase
-        .from("profiles")
-        .select("id, user_id, full_name, full_name_ar, display_name, display_name_ar, username, avatar_url, bio, bio_ar, specialization, specialization_ar, experience_level, location, is_verified")
-        .eq("account_status", "active")
-        .or(buildFlexibleFilter(words, cols));
-      if (filters.experienceLevel && filters.experienceLevel !== "all")
-        q = q.eq("experience_level", filters.experienceLevel);
-      const { data } = await q.limit(30);
-      let scored = (data || []).map((r) => ({
+      const baseCols = "id, user_id, full_name, full_name_ar, display_name, display_name_ar, username, avatar_url, bio, bio_ar, specialization, specialization_ar, experience_level, location, is_verified";
+      const ilikeCols = ["full_name", "full_name_ar", "display_name", "display_name_ar", "username", "bio", "bio_ar", "specialization", "specialization_ar", "location"];
+      const applyFilters = (q: Builder) => {
+        let qq = q.eq("account_status", "active");
+        if (filters.experienceLevel && filters.experienceLevel !== "all")
+          qq = qq.eq("experience_level", filters.experienceLevel);
+        return qq;
+      };
+      let data: Record<string, unknown>[] | null = null;
+      if (ftsAvailable("profiles")) {
+        const r = await applyFilters(
+          (supabase.from("profiles").select(baseCols) as Builder)
+            .textSearch("search_vector", ftsQ, { type: "websearch", config: "simple" })
+        ).limit(30);
+        if (r.error) markFtsFailed("profiles", r.error);
+        else data = r.data;
+      }
+      if (data === null) {
+        const r = await applyFilters(
+          supabase.from("profiles").select(baseCols)
+            .or(buildFlexibleFilter(words, ilikeCols))
+        ).limit(30);
+        data = r.data;
+      }
+      let scored = (data || []).map((r: Record<string, unknown>) => ({
         ...r,
-        _relevance: countMatchingWords(words, r.full_name, r.full_name_ar, r.display_name, r.display_name_ar, r.username, r.bio, r.bio_ar, r.specialization, r.specialization_ar, r.location),
+        _relevance: countMatchingWords(words, r.full_name as string, r.full_name_ar as string, r.display_name as string, r.display_name_ar as string, r.username as string, r.bio as string, r.bio_ar as string, r.specialization as string, r.specialization_ar as string, r.location as string),
       }));
       if (filters.memberRole && filters.memberRole !== "all" && scored.length > 0) {
-        const userIds = scored.map((m) => m.user_id);
+        const userIds = scored.map((m) => m.user_id as string);
         const { data: rolesData } = await supabase
           .from("user_roles")
           .select("user_id")
           .eq("role", filters.memberRole as Database["public"]["Enums"]["app_role"])
           .in("user_id", userIds);
         const filteredIds = new Set(rolesData?.map((r) => r.user_id) || []);
-        scored = scored.filter((m) => filteredIds.has(m.user_id));
+        scored = scored.filter((m) => filteredIds.has(m.user_id as string));
       }
-      return sortByRelevance(scored) as MemberResult[];
+      return sortByRelevance(scored) as unknown as MemberResult[];
     })(),
 
-    // ── Posts ──
+    // ── Posts (no search_vector column — keep ILIKE) ──
     (async () => {
       if (filters.type !== "all" && filters.type !== "posts") return [];
       const orParts = words.map((w) => `content.ilike.%${w.replace(/[%_]/g, "\\$&")}%`);
@@ -239,14 +380,33 @@ async function fetchAll(filters: SearchFilters, signal?: AbortSignal): Promise<S
       const entityCols = ["name", "name_ar", "description", "description_ar", "city", "country"];
       const estabCols = ["name", "name_ar", "description", "description_ar", "city", "cuisine_type", "cuisine_type_ar"];
       const companyCols = ["name", "name_ar", "description", "description_ar", "city", "country"];
+      const culinaryBase = "id, name, name_ar, type, description, description_ar, logo_url, city, country, is_verified";
+
+      // culinary_entities supports FTS
+      const culinaryPromise: Promise<{ data: Record<string, unknown>[] | null }> = (async () => {
+        if (ftsAvailable("culinary_entities")) {
+          const r = await (supabase.from("culinary_entities").select(culinaryBase) as Builder)
+            .eq("is_visible", true)
+            .textSearch("search_vector", ftsQ, { type: "websearch", config: "simple" })
+            .limit(15);
+          if (!r.error) return { data: r.data };
+          markFtsFailed("culinary_entities", r.error);
+        }
+        const r = await supabase.from("culinary_entities").select(culinaryBase)
+          .eq("is_visible", true)
+          .or(buildFlexibleFilter(words, entityCols))
+          .limit(15);
+        return { data: r.data };
+      })();
+
       const [entRes, estRes, compRes] = await Promise.all([
-        supabase.from("culinary_entities").select("id, name, name_ar, type, description, description_ar, logo_url, city, country, is_verified").eq("is_visible", true).or(buildFlexibleFilter(words, entityCols)).limit(15),
+        culinaryPromise,
         supabase.from("establishments").select("id, name, name_ar, type, description, description_ar, logo_url, city, city_ar, is_verified").eq("is_active", true).or(buildFlexibleFilter(words, estabCols)).limit(15),
         supabase.from("companies").select("id, name, name_ar, type, description, description_ar, logo_url, city, country").eq("status", "active").or(buildFlexibleFilter(words, companyCols)).limit(15),
       ]);
-      const entities: EntityResult[] = (entRes.data || []).map((e) => ({
-        id: e.id, name: e.name, name_ar: e.name_ar, type: e.type, description: e.description, description_ar: e.description_ar, logo_url: e.logo_url, city: e.city, country: e.country, is_verified: e.is_verified, source: "entity" as const,
-        _relevance: countMatchingWords(words, e.name, e.name_ar, e.description, e.description_ar, e.city, e.country),
+      const entities: EntityResult[] = ((entRes.data || []) as Record<string, unknown>[]).map((e) => ({
+        id: e.id as string, name: e.name as string, name_ar: e.name_ar as string, type: e.type as string, description: e.description as string, description_ar: e.description_ar as string, logo_url: e.logo_url as string, city: e.city as string, country: e.country as string, is_verified: e.is_verified as boolean, source: "entity" as const,
+        _relevance: countMatchingWords(words, e.name as string, e.name_ar as string, e.description as string, e.description_ar as string, e.city as string, e.country as string),
       }));
       const establishments: EntityResult[] = (estRes.data || []).map((e) => ({
         id: e.id, name: e.name, name_ar: e.name_ar, type: e.type, description: e.description, description_ar: e.description_ar, logo_url: e.logo_url, city: e.city, country: null, is_verified: e.is_verified, source: "establishment" as const,
@@ -262,33 +422,56 @@ async function fetchAll(filters: SearchFilters, signal?: AbortSignal): Promise<S
     // ── Recipes ──
     (async () => {
       if (filters.type !== "all" && filters.type !== "recipes") return [];
-      const cols = ["title", "title_ar", "description", "description_ar"];
-      const { data } = await (supabase
-        .from("recipes")
-        .select("id, title, title_ar, description, description_ar, image_url, prep_time, cook_time, average_rating, slug") as any)
-        .eq("status", "published")
-        .or(buildFlexibleFilter(words, cols))
-        .order("created_at", { ascending: false })
-        .limit(30);
-      return sortByRelevance((data || []).map((r: any) => ({
+      const baseCols = "id, title, title_ar, description, description_ar, image_url, prep_time, cook_time, average_rating, slug";
+      const ilikeCols = ["title", "title_ar", "description", "description_ar"];
+      let data: Record<string, unknown>[] | null = null;
+      if (ftsAvailable("recipes")) {
+        const r = await ((supabase.from("recipes").select(baseCols) as Builder)
+          .eq("status", "published")
+          .textSearch("search_vector", ftsQ, { type: "websearch", config: "simple" })
+          .order("created_at", { ascending: false })
+          .limit(30));
+        if (r.error) markFtsFailed("recipes", r.error);
+        else data = r.data;
+      }
+      if (data === null) {
+        const r = await ((supabase.from("recipes").select(baseCols) as Builder)
+          .eq("status", "published")
+          .or(buildFlexibleFilter(words, ilikeCols))
+          .order("created_at", { ascending: false })
+          .limit(30));
+        data = r.data;
+      }
+      return sortByRelevance((data || []).map((r: Record<string, unknown>) => ({
         ...r,
-        _relevance: countMatchingWords(words, r.title, r.title_ar, r.description, r.description_ar),
-      }))) as RecipeResult[];
+        _relevance: countMatchingWords(words, r.title as string, r.title_ar as string, r.description as string, r.description_ar as string),
+      }))) as unknown as RecipeResult[];
     })(),
 
     // ── Exhibitions ──
     (async () => {
       if (filters.type !== "all" && filters.type !== "exhibitions") return [];
-      const cols = ["title", "title_ar", "description", "description_ar", "venue", "venue_ar", "city", "country"];
-      const { data } = await supabase
-        .from("exhibitions")
-        .select("id, title, title_ar, description, description_ar, cover_image_url, slug, start_date, end_date, venue, venue_ar, city, country, status")
-        .or(buildFlexibleFilter(words, cols))
-        .order("start_date", { ascending: false })
-        .limit(20);
-      return sortByRelevance((data || []).map((r) => ({
+      const baseCols = "id, title, title_ar, description, description_ar, cover_image_url, slug, start_date, end_date, venue, venue_ar, city, country, status";
+      const ilikeCols = ["title", "title_ar", "description", "description_ar", "venue", "venue_ar", "city", "country"];
+      let data: Record<string, unknown>[] | null = null;
+      if (ftsAvailable("exhibitions")) {
+        const r = await (supabase.from("exhibitions").select(baseCols) as Builder)
+          .textSearch("search_vector", ftsQ, { type: "websearch", config: "simple" })
+          .order("start_date", { ascending: false })
+          .limit(20);
+        if (r.error) markFtsFailed("exhibitions", r.error);
+        else data = r.data;
+      }
+      if (data === null) {
+        const r = await supabase.from("exhibitions").select(baseCols)
+          .or(buildFlexibleFilter(words, ilikeCols))
+          .order("start_date", { ascending: false })
+          .limit(20);
+        data = r.data;
+      }
+      return sortByRelevance((data || []).map((r: Record<string, unknown>) => ({
         ...r,
-        _relevance: countMatchingWords(words, r.title, r.title_ar, r.description, r.description_ar, r.venue, r.city, r.country),
+        _relevance: countMatchingWords(words, r.title as string, r.title_ar as string, r.description as string, r.description_ar as string, r.venue as string, r.city as string, r.country as string),
       }))) as ExhibitionResult[];
     })(),
   ]);
@@ -321,37 +504,127 @@ export async function searchAll(
   const entry = cache.get(key);
   const now = Date.now();
 
-  // Fresh: serve cache, no network
-  if (entry && now - entry.timestamp < FRESH_TTL_MS) {
-    return entry.results;
-  }
+  if (entry && now - entry.timestamp < FRESH_TTL_MS) return entry.results;
 
-  // Stale (60s–5min): serve cache + revalidate in background (SWR)
   if (entry && now - entry.timestamp < STALE_TTL_MS) {
     if (!entry.revalidating) {
       entry.revalidating = true;
-      // Fire-and-forget — cannot use the caller's signal (background)
       scheduleFetch(() => fetchAll(filters))
-        .then((fresh) => setCache(key, fresh))
+        .then((fresh) => {
+          setCache(key, fresh);
+          logSearch(filters.query, totalCount(fresh), filters.type);
+        })
         .catch(() => { /* swallow background errors */ })
         .finally(() => { entry.revalidating = false; });
     }
     return entry.results;
   }
 
-  // Expired or missing: dedupe in-flight, then fresh fetch through rate limiter
   const existing = inflight.get(key);
   if (existing) return existing;
 
   const promise = scheduleFetch(() => fetchAll(filters, signal))
     .then((fresh) => {
-      if (!signal?.aborted) setCache(key, fresh);
+      if (!signal?.aborted) {
+        setCache(key, fresh);
+        logSearch(filters.query, totalCount(fresh), filters.type);
+      }
       return fresh;
     })
     .finally(() => { inflight.delete(key); });
 
   inflight.set(key, promise);
   return promise;
+}
+
+function totalCount(r: SearchResults): number {
+  return r.competitions.length + r.articles.length + r.members.length +
+    r.posts.length + r.entities.length + r.recipes.length + r.exhibitions.length;
+}
+
+// ── Search analytics: log queries (fire-and-forget) ──────
+const recentlyLogged = new Map<string, number>(); // dedupe within 30s
+const LOG_DEDUPE_MS = 30_000;
+
+function logSearch(query: string, resultCount: number, searchType: string) {
+  const q = query.trim();
+  if (q.length < 2) return;
+  const key = `${q.toLowerCase()}|${searchType}`;
+  const now = Date.now();
+  const last = recentlyLogged.get(key);
+  if (last && now - last < LOG_DEDUPE_MS) return;
+  recentlyLogged.set(key, now);
+  // Best-effort cleanup
+  if (recentlyLogged.size > 200) {
+    for (const [k, ts] of recentlyLogged) {
+      if (now - ts > LOG_DEDUPE_MS) recentlyLogged.delete(k);
+    }
+  }
+
+  // Fire and forget — never await, never throw
+  void (async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      await (supabase.from("search_logs" as any) as any).insert({
+        query: q,
+        result_count: resultCount,
+        search_type: searchType || "global",
+        user_id: user?.id ?? null,
+      });
+    } catch {
+      // table may not exist or RLS may reject — ignore silently
+    }
+  })();
+}
+
+// ── Trending tags (last 7 days, hybrid: logs + hardcoded) ─
+const HARDCODED_TRENDING = ["دجاج", "باستا", "حلويات", "شوربة", "سلطات", "مشاوي", "بيتزا"];
+let trendingCache: { tags: string[]; timestamp: number } | null = null;
+const TRENDING_TTL_MS = 10 * 60_000;
+let trendingDisabled = false;
+
+export async function fetchTrendingTags(limit = 7): Promise<string[]> {
+  if (trendingCache && Date.now() - trendingCache.timestamp < TRENDING_TTL_MS) {
+    return trendingCache.tags;
+  }
+  if (trendingDisabled) return HARDCODED_TRENDING.slice(0, limit);
+
+  try {
+    const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { data, error } = await (supabase.from("search_logs" as any) as any)
+      .select("query")
+      .gte("created_at", sevenDaysAgo)
+      .gt("result_count", 0)
+      .limit(500);
+    if (error || !data) {
+      trendingDisabled = true; // table missing or RLS blocks reads → never retry this session
+      return HARDCODED_TRENDING.slice(0, limit);
+    }
+    // Count frequencies
+    const counts = new Map<string, number>();
+    for (const row of data as { query: string }[]) {
+      const q = row.query?.trim().toLowerCase();
+      if (!q || q.length < 2) continue;
+      counts.set(q, (counts.get(q) || 0) + 1);
+    }
+    const sorted = [...counts.entries()]
+      .sort((a, b) => b[1] - a[1])
+      .map(([q]) => q);
+    const dynamic = sorted.slice(0, limit);
+    // Hybrid: pad with hardcoded if not enough real data
+    const merged: string[] = [...dynamic];
+    for (const t of HARDCODED_TRENDING) {
+      if (merged.length >= limit) break;
+      if (!merged.includes(t)) merged.push(t);
+    }
+    trendingCache = { tags: merged, timestamp: Date.now() };
+    return merged;
+  } catch {
+    trendingDisabled = true;
+    return HARDCODED_TRENDING.slice(0, limit);
+  }
 }
 
 // ── Popular preload (focus-fetch, no query) ──────────────
@@ -371,6 +644,7 @@ export async function fetchPopularPreload(signal?: AbortSignal): Promise<SearchR
   const [recipesRes, competitionsRes, membersRes] = await Promise.all([
     (supabase
       .from("recipes")
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .select("id, title, title_ar, description, description_ar, image_url, prep_time, cook_time, average_rating, slug") as any)
       .eq("status", "published")
       .order("average_rating", { ascending: false, nullsFirst: false })
@@ -393,6 +667,7 @@ export async function fetchPopularPreload(signal?: AbortSignal): Promise<SearchR
 
   const results: SearchResults = {
     ...empty,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     recipes: ((recipesRes as any).data || []) as RecipeResult[],
     competitions: (competitionsRes.data || []) as CompetitionResult[],
     members: (membersRes.data || []) as MemberResult[],
