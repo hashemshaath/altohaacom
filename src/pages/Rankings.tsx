@@ -17,6 +17,15 @@ import { cn } from "@/lib/utils";
 import { CACHE } from "@/lib/queryConfig";
 import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
+/**
+ * TYPOGRAPHY POLICY — ALTOHA DESIGN SYSTEM
+ * Minimum font size: 11px (0.6875rem) desktop / 13px (0.8125rem) mobile.
+ * Do NOT use `text-xs` on body text — only on badges & labels.
+ * Scale: display(48) h1(36) h2(28) h3(22) h4(18) body-lg(18) body(16) body-sm(14) caption(13) label(12) overline(11).
+ * IBM Plex Arabic required on all text.
+ * See src/styles/typography.css for the complete policy.
+ */
+
 const medalBg = (rank: number) =>
   rank === 1 ? "from-yellow-500/20 via-yellow-400/10 to-yellow-500/5 ring-yellow-500/30"
   : rank === 2 ? "from-slate-400/20 via-slate-300/10 to-slate-400/5 ring-slate-400/30"

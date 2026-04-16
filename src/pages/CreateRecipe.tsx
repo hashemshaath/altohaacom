@@ -18,6 +18,15 @@ import { Switch } from "@/components/ui/switch";
 import { ArrowLeft, Plus, Trash2, UtensilsCrossed, GripVertical, Upload, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
+/**
+ * TYPOGRAPHY POLICY — ALTOHA DESIGN SYSTEM
+ * Minimum font size: 11px (0.6875rem) desktop / 13px (0.8125rem) mobile.
+ * Do NOT use `text-xs` on body text — only on badges & labels.
+ * Scale: display(48) h1(36) h2(28) h3(22) h4(18) body-lg(18) body(16) body-sm(14) caption(13) label(12) overline(11).
+ * IBM Plex Arabic required on all text.
+ * See src/styles/typography.css for the complete policy.
+ */
+
 const categoryOptions = [
   { value: "appetizer", en: "Appetizer", ar: "مقبلات" },
   { value: "main_course", en: "Main Course", ar: "طبق رئيسي" },
