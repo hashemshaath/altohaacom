@@ -110,7 +110,7 @@ function FallbackHero() {
   return (
     <section
       className="relative overflow-hidden"
-      style={{ background: "#F5F0E8", minHeight: "85vh" }}
+      style={{ background: "linear-gradient(180deg, #F5F0E8 0%, #EDE7DB 100%)", minHeight: "70vh" }}
       dir={isAr ? "rtl" : "ltr"}
     >
       <div className="container h-full flex items-center py-12 lg:py-0" style={{ minHeight: "inherit" }}>
