@@ -16,6 +16,7 @@ interface SearchResult {
   title: string;
   subtitle?: string;
   avatar?: string | null;
+  slug?: string;
 }
 
 type SearchFilter = "all" | "users" | "posts" | "recipes" | "groups";
