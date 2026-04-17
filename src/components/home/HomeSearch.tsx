@@ -25,10 +25,17 @@ export const HomeSearch = forwardRef<HTMLElement>(function HomeSearch(_props, re
   const isAr = useIsAr();
   const navigate = useNavigate();
   const [query, setQuery] = useState("");
+  const [debounced, setDebounced] = useState("");
   const [activeCategory, setActiveCategory] = useState("all");
   const [showSuggestions, setShowSuggestions] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
+
+  // Debounce input (180ms — snappy)
+  useEffect(() => {
+    const t = setTimeout(() => setDebounced(query.trim()), 180);
+    return () => clearTimeout(t);
+  }, [query]);
 
   const { data: trending = [] } = useQuery({
     queryKey: ["home-search-trending"],
@@ -44,26 +51,63 @@ export const HomeSearch = forwardRef<HTMLElement>(function HomeSearch(_props, re
     staleTime: CACHE.realtime.staleTime * 15,
   });
 
-  const debouncedQuery = query.trim();
-  const { data: liveSuggestions = [], isFetching: isSearching } = useQuery({
-    queryKey: ["home-search-suggestions", debouncedQuery, activeCategory],
-    enabled: debouncedQuery.length >= 2,
+  // Multi-source live search — priority: chefs → exhibitions → competitions → articles
+  const { data: results, isFetching: isSearching } = useQuery({
+    queryKey: ["home-search-multi", debounced, activeCategory],
+    enabled: debounced.length >= 2,
     staleTime: 30_000,
     queryFn: async () => {
-      const term = `%${debouncedQuery}%`;
-      const typeFilter = activeCategory === "all" ? null : activeCategory;
-      let q = supabase
-        .from("articles")
-        .select("id, title, title_ar, slug, type")
-        .eq("status", "published")
-        .or(`title.ilike.${term},title_ar.ilike.${term}`)
-        .order("view_count", { ascending: false })
-        .limit(6);
-      if (typeFilter) q = q.eq("type", typeFilter);
-      const { data } = await q;
-      return data || [];
+      const term = `%${debounced.replace(/[%_]/g, "\\$&")}%`;
+      const wantAll = activeCategory === "all";
+
+      const [chefsRes, exhibitionsRes, competitionsRes, articlesRes] = await Promise.all([
+        wantAll || activeCategory === "chefs"
+          ? supabase
+              .from("profiles")
+              .select("user_id, username, full_name, full_name_ar, display_name, display_name_ar, avatar_url, city, specialization, specialization_ar, is_verified")
+              .eq("account_type", "professional")
+              .or(`full_name.ilike.${term},full_name_ar.ilike.${term},display_name.ilike.${term},display_name_ar.ilike.${term},username.ilike.${term}`)
+              .order("is_verified", { ascending: false })
+              .limit(4)
+          : Promise.resolve({ data: [] as any[] }),
+        wantAll || activeCategory === "exhibitions"
+          ? supabase
+              .from("exhibitions")
+              .select("id, title, title_ar, slug, city, country, status")
+              .or(`title.ilike.${term},title_ar.ilike.${term}`)
+              .limit(4)
+          : Promise.resolve({ data: [] as any[] }),
+        wantAll || activeCategory === "competitions"
+          ? supabase
+              .from("competitions")
+              .select("id, title, title_ar, city, country, status")
+              .or(`title.ilike.${term},title_ar.ilike.${term}`)
+              .limit(4)
+          : Promise.resolve({ data: [] as any[] }),
+        wantAll
+          ? supabase
+              .from("articles")
+              .select("id, title, title_ar, slug, type")
+              .eq("status", "published")
+              .or(`title.ilike.${term},title_ar.ilike.${term}`)
+              .order("view_count", { ascending: false })
+              .limit(3)
+          : Promise.resolve({ data: [] as any[] }),
+      ]);
+
+      return {
+        chefs: chefsRes.data || [],
+        exhibitions: exhibitionsRes.data || [],
+        competitions: competitionsRes.data || [],
+        articles: articlesRes.data || [],
+      };
     },
   });
+
+  const totalResults = useMemo(() => {
+    if (!results) return 0;
+    return results.chefs.length + results.exhibitions.length + results.competitions.length + results.articles.length;
+  }, [results]);
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
