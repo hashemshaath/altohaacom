@@ -1,8 +1,8 @@
 import { useIsAr } from "@/hooks/useIsAr";
-import { useState, useRef, useEffect, forwardRef } from "react";
+import { useState, useRef, useEffect, forwardRef, useMemo } from "react";
 import { ROUTES } from "@/config/routes";
 import { useNavigate } from "react-router-dom";
-import { Search, Trophy, Globe, ChefHat, Utensils, BookOpen, Store, TrendingUp, X } from "lucide-react";
+import { Search, Trophy, Globe, ChefHat, Utensils, BookOpen, Store, TrendingUp, X, MapPin, Loader2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -25,10 +25,17 @@ export const HomeSearch = forwardRef<HTMLElement>(function HomeSearch(_props, re
   const isAr = useIsAr();
   const navigate = useNavigate();
   const [query, setQuery] = useState("");
+  const [debounced, setDebounced] = useState("");
   const [activeCategory, setActiveCategory] = useState("all");
   const [showSuggestions, setShowSuggestions] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
+
+  // Debounce input (180ms — snappy)
+  useEffect(() => {
+    const t = setTimeout(() => setDebounced(query.trim()), 180);
+    return () => clearTimeout(t);
+  }, [query]);
 
   const { data: trending = [] } = useQuery({
     queryKey: ["home-search-trending"],
@@ -44,26 +51,63 @@ export const HomeSearch = forwardRef<HTMLElement>(function HomeSearch(_props, re
     staleTime: CACHE.realtime.staleTime * 15,
   });
 
-  const debouncedQuery = query.trim();
-  const { data: liveSuggestions = [], isFetching: isSearching } = useQuery({
-    queryKey: ["home-search-suggestions", debouncedQuery, activeCategory],
-    enabled: debouncedQuery.length >= 2,
+  // Multi-source live search — priority: chefs → exhibitions → competitions → articles
+  const { data: results, isFetching: isSearching } = useQuery({
+    queryKey: ["home-search-multi", debounced, activeCategory],
+    enabled: debounced.length >= 2,
     staleTime: 30_000,
     queryFn: async () => {
-      const term = `%${debouncedQuery}%`;
-      const typeFilter = activeCategory === "all" ? null : activeCategory;
-      let q = supabase
-        .from("articles")
-        .select("id, title, title_ar, slug, type")
-        .eq("status", "published")
-        .or(`title.ilike.${term},title_ar.ilike.${term}`)
-        .order("view_count", { ascending: false })
-        .limit(6);
-      if (typeFilter) q = q.eq("type", typeFilter);
-      const { data } = await q;
-      return data || [];
+      const term = `%${debounced.replace(/[%_]/g, "\\$&")}%`;
+      const wantAll = activeCategory === "all";
+
+      const [chefsRes, exhibitionsRes, competitionsRes, articlesRes] = await Promise.all([
+        wantAll || activeCategory === "chefs"
+          ? supabase
+              .from("profiles")
+              .select("user_id, username, full_name, full_name_ar, display_name, display_name_ar, avatar_url, city, specialization, specialization_ar, is_verified")
+              .eq("account_type", "professional")
+              .or(`full_name.ilike.${term},full_name_ar.ilike.${term},display_name.ilike.${term},display_name_ar.ilike.${term},username.ilike.${term}`)
+              .order("is_verified", { ascending: false })
+              .limit(4)
+          : Promise.resolve({ data: [] as any[] }),
+        wantAll || activeCategory === "exhibitions"
+          ? supabase
+              .from("exhibitions")
+              .select("id, title, title_ar, slug, city, country, status")
+              .or(`title.ilike.${term},title_ar.ilike.${term}`)
+              .limit(4)
+          : Promise.resolve({ data: [] as any[] }),
+        wantAll || activeCategory === "competitions"
+          ? supabase
+              .from("competitions")
+              .select("id, title, title_ar, city, country, status")
+              .or(`title.ilike.${term},title_ar.ilike.${term}`)
+              .limit(4)
+          : Promise.resolve({ data: [] as any[] }),
+        wantAll
+          ? supabase
+              .from("articles")
+              .select("id, title, title_ar, slug, type")
+              .eq("status", "published")
+              .or(`title.ilike.${term},title_ar.ilike.${term}`)
+              .order("view_count", { ascending: false })
+              .limit(3)
+          : Promise.resolve({ data: [] as any[] }),
+      ]);
+
+      return {
+        chefs: chefsRes.data || [],
+        exhibitions: exhibitionsRes.data || [],
+        competitions: competitionsRes.data || [],
+        articles: articlesRes.data || [],
+      };
     },
   });
+
+  const totalResults = useMemo(() => {
+    if (!results) return 0;
+    return results.chefs.length + results.exhibitions.length + results.competitions.length + results.articles.length;
+  }, [results]);
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
@@ -134,37 +178,128 @@ export const HomeSearch = forwardRef<HTMLElement>(function HomeSearch(_props, re
             </Button>
           </form>
 
-          {showSuggestions && query.trim().length >= 2 && (
-            <div className="mt-1.5 rounded-lg border border-border/30 bg-card p-2 shadow-lg animate-in fade-in-0 slide-in-from-top-1 duration-200">
-              {isSearching && liveSuggestions.length === 0 ? (
-                <div className="px-2.5 py-3 text-xs text-muted-foreground">
+          {showSuggestions && debounced.length >= 2 && (
+            <div className="mt-1.5 rounded-lg border border-border/30 bg-card shadow-lg animate-in fade-in-0 slide-in-from-top-1 duration-200 max-h-[420px] overflow-y-auto">
+              {isSearching && totalResults === 0 ? (
+                <div className="px-3 py-6 flex items-center justify-center gap-2 text-xs text-muted-foreground">
+                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
                   {isAr ? "جاري البحث..." : "Searching..."}
                 </div>
-              ) : liveSuggestions.length === 0 ? (
-                <div className="px-2.5 py-3 text-xs text-muted-foreground">
+              ) : totalResults === 0 ? (
+                <div className="px-3 py-6 text-center text-xs text-muted-foreground">
                   {isAr ? "لا توجد نتائج مطابقة" : "No matches found"}
                 </div>
               ) : (
-                <div className="space-y-0.5">
-                  {liveSuggestions.map((item) => (
-                    <button
-                      key={item.id}
-                      type="button"
-                      onClick={() => {
-                        setShowSuggestions(false);
-                        navigate(ROUTES.article(item.slug));
-                      }}
-                      className="w-full flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-start text-sm hover:bg-muted/60 transition-colors"
-                    >
-                      <Search className="h-3 w-3 text-muted-foreground/40 shrink-0" />
-                      <span className="truncate text-foreground">{isAr ? item.title_ar || item.title : item.title}</span>
-                      {item.type && (
-                        <Badge variant="outline" className="ms-auto shrink-0 text-xs">
-                          {item.type}
-                        </Badge>
-                      )}
-                    </button>
-                  ))}
+                <div className="p-1.5 space-y-2">
+                  {results && results.chefs.length > 0 && (
+                    <div>
+                      <div className="px-2 pt-1.5 pb-1 flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-primary">
+                        <ChefHat className="h-3 w-3" />
+                        {isAr ? "الطهاة" : "Chefs"}
+                      </div>
+                      {results.chefs.map((c: any) => {
+                        const name = isAr ? (c.display_name_ar || c.full_name_ar || c.display_name || c.full_name) : (c.display_name || c.full_name || c.display_name_ar || c.full_name_ar);
+                        const spec = isAr ? (c.specialization_ar || c.specialization) : (c.specialization || c.specialization_ar);
+                        return (
+                          <button key={c.user_id} type="button"
+                            onClick={() => { setShowSuggestions(false); navigate(ROUTES.profile(c.username || c.user_id)); }}
+                            className="w-full flex items-center gap-2.5 rounded-md px-2 py-2 text-start hover:bg-muted/60 transition-colors">
+                            {c.avatar_url ? (
+                              <img src={c.avatar_url} alt="" className="h-7 w-7 rounded-full object-cover shrink-0 ring-1 ring-border/40" loading="lazy" />
+                            ) : (
+                              <div className="h-7 w-7 rounded-full bg-muted shrink-0 flex items-center justify-center">
+                                <ChefHat className="h-3.5 w-3.5 text-muted-foreground" />
+                              </div>
+                            )}
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center gap-1 text-sm font-medium truncate">
+                                {name}
+                                {c.is_verified && <span className="text-primary text-[10px]">✓</span>}
+                              </div>
+                              {spec && <div className="text-[11px] text-muted-foreground truncate">{spec}</div>}
+                            </div>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  )}
+
+                  {results && results.exhibitions.length > 0 && (
+                    <div className="border-t border-border/30 pt-1.5">
+                      <div className="px-2 pb-1 flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                        <Globe className="h-3 w-3" />
+                        {isAr ? "المعارض" : "Exhibitions"}
+                      </div>
+                      {results.exhibitions.map((e: any) => (
+                        <button key={e.id} type="button"
+                          onClick={() => { setShowSuggestions(false); navigate(ROUTES.exhibition(e.slug)); }}
+                          className="w-full flex items-center gap-2.5 rounded-md px-2 py-2 text-start hover:bg-muted/60 transition-colors">
+                          <div className="h-7 w-7 rounded-md bg-muted shrink-0 flex items-center justify-center">
+                            <Globe className="h-3.5 w-3.5 text-muted-foreground" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="text-sm font-medium truncate">{isAr ? (e.title_ar || e.title) : e.title}</div>
+                            {(e.city || e.country) && (
+                              <div className="text-[11px] text-muted-foreground truncate flex items-center gap-1">
+                                <MapPin className="h-2.5 w-2.5" />
+                                {[e.city, e.country].filter(Boolean).join(", ")}
+                              </div>
+                            )}
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+
+                  {results && results.competitions.length > 0 && (
+                    <div className="border-t border-border/30 pt-1.5">
+                      <div className="px-2 pb-1 flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                        <Trophy className="h-3 w-3" />
+                        {isAr ? "المسابقات" : "Competitions"}
+                      </div>
+                      {results.competitions.map((cp: any) => (
+                        <button key={cp.id} type="button"
+                          onClick={() => { setShowSuggestions(false); navigate(ROUTES.competition(cp.id)); }}
+                          className="w-full flex items-center gap-2.5 rounded-md px-2 py-2 text-start hover:bg-muted/60 transition-colors">
+                          <div className="h-7 w-7 rounded-md bg-muted shrink-0 flex items-center justify-center">
+                            <Trophy className="h-3.5 w-3.5 text-muted-foreground" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="text-sm font-medium truncate">{isAr ? (cp.title_ar || cp.title) : cp.title}</div>
+                            {(cp.city || cp.country) && (
+                              <div className="text-[11px] text-muted-foreground truncate flex items-center gap-1">
+                                <MapPin className="h-2.5 w-2.5" />
+                                {[cp.city, cp.country].filter(Boolean).join(", ")}
+                              </div>
+                            )}
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+
+                  {results && results.articles.length > 0 && (
+                    <div className="border-t border-border/30 pt-1.5">
+                      <div className="px-2 pb-1 flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                        <BookOpen className="h-3 w-3" />
+                        {isAr ? "مقالات" : "Articles"}
+                      </div>
+                      {results.articles.map((a: any) => (
+                        <button key={a.id} type="button"
+                          onClick={() => { setShowSuggestions(false); navigate(ROUTES.article(a.slug)); }}
+                          className="w-full flex items-center gap-2.5 rounded-md px-2 py-2 text-start hover:bg-muted/60 transition-colors">
+                          <Search className="h-3 w-3 text-muted-foreground/40 shrink-0" />
+                          <span className="truncate text-sm">{isAr ? (a.title_ar || a.title) : a.title}</span>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+
+                  <button type="button"
+                    onClick={(ev) => handleSearch(ev as any)}
+                    className="w-full mt-1 border-t border-border/30 pt-2 pb-1.5 px-2 text-xs font-semibold text-primary hover:bg-primary/5 rounded-md transition-colors">
+                    {isAr ? `عرض كل النتائج لـ "${debounced}" ←` : `→ See all results for "${debounced}"`}
+                  </button>
                 </div>
               )}
             </div>
