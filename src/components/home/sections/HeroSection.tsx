@@ -297,20 +297,22 @@ export function HeroSection() {
           width: 100%;
           height: 100%;
           opacity: 0;
-          transform: translateX(40px);
-          transition: opacity ${TRANSITION_MS}ms ease-in-out, transform ${TRANSITION_MS}ms ease-in-out;
+          visibility: hidden;
+          transition: opacity ${TRANSITION_MS}ms ease-in-out, visibility 0s linear ${TRANSITION_MS}ms;
           pointer-events: none;
-          will-change: opacity, transform;
+          will-change: opacity;
+          z-index: 1;
         }
         .hero-slide.is-active {
           opacity: 1;
-          transform: translateX(0);
+          visibility: visible;
           pointer-events: auto;
           z-index: 2;
+          transition: opacity ${TRANSITION_MS}ms ease-in-out, visibility 0s linear 0s;
         }
         .hero-slide.is-inactive {
           opacity: 0;
-          transform: translateX(-40px);
+          visibility: hidden;
           z-index: 1;
         }
 
