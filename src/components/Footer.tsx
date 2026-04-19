@@ -1,11 +1,9 @@
 import { ROUTES } from "@/config/routes";
 import { useIsAr } from "@/hooks/useIsAr";
 import { forwardRef, useState } from "react";
-import { useAuth } from "@/contexts/AuthContext";
 import { useSiteSettingsContext } from "@/contexts/SiteSettingsContext";
 import { Link } from "react-router-dom";
-import { cn } from "@/lib/utils";
-import { Mail, Send, Shield, Lock, CheckCircle2, ChefHat, ArrowRight, Sparkles, Globe } from "lucide-react";
+import { Mail, Shield, Lock, CheckCircle2, Globe, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { supabase } from "@/integrations/supabase/client";
@@ -127,114 +125,85 @@ export const Footer = forwardRef<HTMLElement>(function Footer(_, ref) {
     <footer
       ref={ref}
       id="site-footer"
-      className="relative overflow-hidden pb-24 sm:pb-0 safe-area-bottom bg-[hsl(222,28%,4%)] text-white"
+      className="relative pb-24 sm:pb-0 safe-area-bottom bg-[hsl(220,30%,5%)] text-white border-t border-white/10"
       role="contentinfo"
     >
-      {/* Decorative grid background */}
-      <div
-        className="absolute inset-0 opacity-[0.04] pointer-events-none"
-        style={{
-          backgroundImage: "linear-gradient(hsl(var(--primary)) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--primary)) 1px, transparent 1px)",
-          backgroundSize: "48px 48px",
-        }}
-        aria-hidden="true"
-      />
-      {/* Gradient orbs */}
-      <div className="pointer-events-none absolute -top-32 left-1/4 h-64 w-64 rounded-full bg-primary/10 blur-3xl" aria-hidden="true" />
-      <div className="pointer-events-none absolute -bottom-32 right-1/4 h-64 w-64 rounded-full bg-primary/5 blur-3xl" aria-hidden="true" />
+      {/* Top hairline accent */}
+      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent" aria-hidden="true" />
 
-      <div className="container relative px-5 sm:px-6">
+      <div className="container relative px-5 sm:px-6 lg:px-8">
 
-        {/* ═══ Featured Newsletter CTA — Hero Panel ═══ */}
-        <div className="relative mt-10 mb-10 overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br from-primary/15 via-white/[0.03] to-white/[0.02] p-6 md:p-8">
-          <div
-            className="absolute inset-0 opacity-30 pointer-events-none"
-            style={{ backgroundImage: "radial-gradient(circle at 20% 50%, hsl(var(--primary) / 0.25), transparent 50%)" }}
-            aria-hidden="true"
-          />
-          <div className="relative flex flex-col md:flex-row md:items-center md:justify-between gap-5">
-            <div className="flex items-start gap-4 max-w-xl">
-              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-lg shadow-primary/30">
-                <Sparkles className="h-5 w-5" />
-              </div>
-              <div>
-                <h3 className="text-lg md:text-xl font-bold text-white tracking-tight leading-tight">
-                  {l("Join 25,000+ culinary professionals", "انضم إلى أكثر من 25,000 محترف طهي")}
-                </h3>
-                <p className="mt-1 text-[13px] text-white/65 leading-relaxed">
-                  {l(
-                    "Get curated insights, event invitations, and exclusive content — every Sunday.",
-                    "احصل على محتوى مختار، دعوات للفعاليات، ومحتوى حصري — كل أحد."
-                  )}
-                </p>
-              </div>
+        {/* ═══ Top: Brand + Newsletter (institutional bar) ═══ */}
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 py-7 border-b border-white/10">
+          <Link to="/" className="inline-flex items-center gap-3">
+            <img src={logoUrl} alt={siteName} width={36} height={36} className="h-9 w-auto" loading="lazy" decoding="async" />
+            <div className="flex flex-col leading-none">
+              <span className="text-[16px] font-bold text-white tracking-tight">{siteName}</span>
+              <span className="mt-1 text-[11px] uppercase tracking-[0.18em] text-white/55">
+                {l("Culinary Excellence Platform", "منصة التميّز الطهوي")}
+              </span>
             </div>
-            <form onSubmit={handleNewsletterSubmit} className="flex gap-2 w-full md:w-auto md:min-w-[360px]">
+          </Link>
+
+          <form onSubmit={handleNewsletterSubmit} className="flex items-center gap-2 w-full lg:w-auto lg:min-w-[420px]">
+            <label htmlFor="footer-nl" className="sr-only">{l("Email", "البريد الإلكتروني")}</label>
+            <div className="relative flex-1">
+              <Mail className="pointer-events-none absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white/50" />
               <Input
+                id="footer-nl"
                 type="email"
                 value={nlEmail}
                 onChange={(e) => setNlEmail(e.target.value)}
-                placeholder={l("your@email.com", "بريدك الإلكتروني")}
+                placeholder={l("Subscribe to our newsletter", "اشترك في نشرتنا الإخبارية")}
                 required
-                className="flex-1 h-11 rounded-lg border border-white/15 bg-white/[0.06] text-white placeholder:text-white/45 text-[14px] focus:border-primary focus:ring-2 focus:ring-primary/30"
+                className="h-10 ps-9 rounded-md border border-white/15 bg-white/[0.04] text-white placeholder:text-white/50 text-[13px] focus:border-primary focus:ring-1 focus:ring-primary/40"
               />
-              <Button
-                type="submit"
-                disabled={nlLoading}
-                className="h-11 px-5 rounded-lg gap-1.5 shrink-0 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold text-[14px] shadow-lg shadow-primary/25"
-              >
-                {nlLoading ? "..." : l("Subscribe", "اشتراك")}
-                <ArrowRight className="h-4 w-4 rtl:rotate-180" />
-              </Button>
-            </form>
-          </div>
+            </div>
+            <Button
+              type="submit"
+              disabled={nlLoading}
+              className="h-10 px-4 rounded-md gap-1.5 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold text-[13px]"
+            >
+              {nlLoading ? "..." : l("Subscribe", "اشتراك")}
+              <ArrowRight className="h-3.5 w-3.5 rtl:rotate-180" />
+            </Button>
+          </form>
         </div>
 
-        {/* ═══ Main Grid: Brand + Nav ═══ */}
-        <div className="grid grid-cols-2 md:grid-cols-12 gap-x-8 gap-y-8 pb-8">
-          {/* Brand block */}
-          <div className="col-span-2 md:col-span-4 md:pe-6 md:border-e rtl:md:border-e-0 rtl:md:border-s md:border-white/8">
-            <Link to="/" className="inline-flex items-center gap-2.5 group">
-              <div className="relative">
-                <div className="absolute inset-0 bg-primary/30 blur-md rounded-full" aria-hidden="true" />
-                <img src={logoUrl} alt={siteName} width={32} height={32} className="relative h-8 w-auto" loading="lazy" decoding="async" />
-              </div>
-              <span className="text-[16px] font-bold text-white tracking-tight">{siteName}</span>
-            </Link>
-            <p className="mt-3 text-[13px] leading-[1.6] text-white/70 max-w-[300px]">
+        {/* ═══ Main Grid: Brand description + Nav columns ═══ */}
+        <div className="grid grid-cols-2 md:grid-cols-12 gap-x-8 gap-y-7 py-9">
+          {/* Brand description */}
+          <div className="col-span-2 md:col-span-4 lg:col-span-3">
+            <p className="text-[13px] leading-[1.65] text-white/75 max-w-[320px]">
               {l(
                 "The premier platform connecting culinary professionals worldwide — chefs, judges, organizers, and brands.",
                 "المنصة الرائدة التي تربط محترفي الطهي حول العالم — طهاة، حكام، منظمين، وعلامات تجارية."
               )}
             </p>
 
-            {/* Contact pill */}
-            <div className="mt-4 flex flex-wrap gap-2">
-              <a
-                href={`mailto:${contactEmail}`}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/[0.06] hover:bg-white/10 text-[12px] text-white/80 hover:text-white transition-all border border-white/8"
-              >
-                <Mail className="h-3.5 w-3.5 text-primary" />
-                {contactEmail}
-              </a>
-              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/[0.06] text-[12px] text-white/80 border border-white/8">
-                <Globe className="h-3.5 w-3.5 text-primary" />
-                {l("Global", "عالمي")}
-              </span>
-            </div>
+            <ul className="mt-4 space-y-2 text-[12.5px] text-white/80">
+              <li className="flex items-center gap-2">
+                <Mail className="h-3.5 w-3.5 text-primary shrink-0" />
+                <a href={`mailto:${contactEmail}`} className="hover:text-white transition-colors">{contactEmail}</a>
+              </li>
+              <li className="flex items-center gap-2">
+                <Globe className="h-3.5 w-3.5 text-primary shrink-0" />
+                <span>{l("Global · Headquartered in Riyadh, KSA", "عالمي · المقر الرئيسي في الرياض، السعودية")}</span>
+              </li>
+            </ul>
 
             {/* Social */}
             {footerCfg.showSocialLinks !== false && socialLinks.length > 0 && (
-              <div className="flex items-center gap-2 mt-5">
+              <div className="mt-5 flex items-center gap-1.5">
                 {socialLinks.map((social) => (
                   <a
                     key={social.label}
                     href={social.href}
                     target="_blank" rel="noopener noreferrer"
                     aria-label={social.label}
-                    className="group relative flex h-9 w-9 items-center justify-center rounded-lg bg-white/[0.06] text-white/75 hover:text-primary-foreground hover:bg-primary border border-white/8 hover:border-primary transition-all duration-200 hover:-translate-y-0.5"
+                    className="flex h-8 w-8 items-center justify-center rounded-md text-white/70 hover:text-white hover:bg-white/10 transition-colors"
                   >
-                    <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
+                    <svg className="h-[15px] w-[15px]" fill="currentColor" viewBox="0 0 24 24">
                       <path d={social.icon} />
                     </svg>
                   </a>
@@ -244,40 +213,37 @@ export const Footer = forwardRef<HTMLElement>(function Footer(_, ref) {
           </div>
 
           {/* Nav columns */}
-          {navColumns.map((col) => (
-            <nav key={col.titleEn} aria-label={col.titleEn} className="md:col-span-2">
-              <h3 className="relative text-[11px] font-bold uppercase tracking-[0.2em] text-white mb-3 pb-2 border-b border-white/8">
-                <span className="absolute bottom-[-1px] start-0 h-px w-8 bg-primary" aria-hidden="true" />
-                {l(col.titleEn, col.titleAr)}
-              </h3>
-              <ul className="space-y-1.5">
-                {col.links.map((link) => (
-                  <li key={link.to}>
-                    <Link
-                      to={link.to}
-                      className="group inline-flex items-center gap-1.5 text-[13px] leading-[1.5] text-white/70 hover:text-white transition-colors duration-200 touch-manipulation"
-                    >
-                      <span className="h-1 w-1 rounded-full bg-primary/0 group-hover:bg-primary transition-colors" aria-hidden="true" />
-                      {l(link.en, link.ar)}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </nav>
-          ))}
+          <div className="col-span-2 md:col-span-8 lg:col-span-9 grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-7">
+            {navColumns.map((col) => (
+              <nav key={col.titleEn} aria-label={col.titleEn}>
+                <h3 className="text-[11px] font-semibold uppercase tracking-[0.16em] text-white mb-3">
+                  {l(col.titleEn, col.titleAr)}
+                </h3>
+                <ul className="space-y-2">
+                  {col.links.map((link) => (
+                    <li key={link.to}>
+                      <Link
+                        to={link.to}
+                        className="text-[13px] leading-[1.4] text-white/70 hover:text-white transition-colors"
+                      >
+                        {l(link.en, link.ar)}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </nav>
+            ))}
+          </div>
         </div>
 
         {/* ═══ Bottom Bar ═══ */}
-        <div className="border-t border-white/10 py-5 flex flex-col-reverse md:flex-row md:items-center md:justify-between gap-4">
-          <p className="text-[12px] text-white/55 font-medium">{copyrightText}</p>
-          <div className="flex flex-wrap items-center gap-2">
+        <div className="border-t border-white/10 py-5 flex flex-col-reverse md:flex-row md:items-center md:justify-between gap-3">
+          <p className="text-[12px] text-white/60">{copyrightText}</p>
+          <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
             {trustBadges.map((badge) => (
-              <div
-                key={badge.labelEn}
-                className="flex items-center gap-1.5 text-[11.5px] text-white/75 px-2.5 py-1.5 rounded-md bg-white/[0.04] border border-white/8"
-              >
+              <div key={badge.labelEn} className="flex items-center gap-1.5 text-[11.5px] text-white/70">
                 <badge.icon className="h-3.5 w-3.5 text-primary" />
-                <span className="font-medium">{l(badge.labelEn, badge.labelAr)}</span>
+                <span>{l(badge.labelEn, badge.labelAr)}</span>
               </div>
             ))}
           </div>
