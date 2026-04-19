@@ -130,86 +130,64 @@ export const Footer = forwardRef<HTMLElement>(function Footer(_, ref) {
       className="relative overflow-hidden border-t border-border/30 pb-24 sm:pb-0 safe-area-bottom bg-[hsl(220,20%,7%)] text-white"
       role="contentinfo"
     >
-      {/* Subtle gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/20 pointer-events-none" aria-hidden="true" />
       <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" aria-hidden="true" />
 
       <div className="container relative px-5 sm:px-6">
 
-        {/* ── Top: Brand + Newsletter ── */}
-        <div className="py-12 sm:py-16 flex flex-col gap-10 lg:flex-row lg:items-start lg:justify-between">
+        {/* ── Main grid: Brand + Nav columns + Newsletter ── */}
+        <div className="grid grid-cols-2 md:grid-cols-12 gap-x-6 gap-y-8 pt-10 pb-6">
           {/* Brand block */}
-          <div className="max-w-md">
-            <Link to="/" className="inline-flex items-center gap-3 group">
-              <div className="relative">
-                <img src={logoUrl} alt={siteName} width={40} height={40} className="h-10 w-auto relative z-10" loading="lazy" decoding="async" />
-                <div className="absolute inset-0 rounded-full bg-primary/20 blur-lg scale-150 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-              </div>
-              <span className={cn("text-xl font-bold text-white tracking-tight")}>
-                {siteName}
-              </span>
+          <div className="col-span-2 md:col-span-4">
+            <Link to="/" className="inline-flex items-center gap-2.5 group">
+              <img src={logoUrl} alt={siteName} width={32} height={32} className="h-8 w-auto" loading="lazy" decoding="async" />
+              <span className="text-base font-bold text-white tracking-tight">{siteName}</span>
             </Link>
-            <p className="mt-4 text-sm leading-relaxed text-white/50 max-w-sm">
+            <p className="mt-3 text-[13px] leading-relaxed text-white/45 max-w-xs">
               {l(
-                "The premier platform connecting culinary professionals worldwide through competitions, education, and community.",
-                "المنصة الرائدة التي تربط المحترفين في عالم الطهي عبر المسابقات والتعليم والمجتمع."
+                "The premier platform connecting culinary professionals worldwide.",
+                "المنصة الرائدة التي تربط محترفي الطهي حول العالم."
               )}
             </p>
             <a
               href={`mailto:${contactEmail}`}
-              className="mt-4 inline-flex items-center gap-2 text-sm text-white/40 hover:text-primary transition-colors duration-300"
+              className="mt-3 inline-flex items-center gap-1.5 text-[13px] text-white/40 hover:text-primary transition-colors"
             >
-              <Mail className="h-4 w-4" />
+              <Mail className="h-3.5 w-3.5" />
               {contactEmail}
             </a>
-          </div>
 
-          {/* Newsletter */}
-          <div className="w-full max-w-md">
-            <div className="rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-sm p-6">
-              <div className="flex items-center gap-2 mb-2">
-                <ChefHat className="h-5 w-5 text-primary" />
-                <h3 className="text-base font-semibold text-white">
-                  {l("Stay in the Loop", "ابقَ على اطلاع")}
-                </h3>
+            {/* Social icons inline with brand */}
+            {footerCfg.showSocialLinks !== false && socialLinks.length > 0 && (
+              <div className="flex items-center gap-1 mt-4">
+                {socialLinks.map((social) => (
+                  <a
+                    key={social.label}
+                    href={social.href}
+                    target="_blank" rel="noopener noreferrer"
+                    aria-label={social.label}
+                    className="flex h-8 w-8 items-center justify-center rounded-full text-white/40 hover:text-white hover:bg-white/10 transition-all duration-200"
+                  >
+                    <svg className="h-3.5 w-3.5" fill="currentColor" viewBox="0 0 24 24">
+                      <path d={social.icon} />
+                    </svg>
+                  </a>
+                ))}
               </div>
-              <p className="text-xs text-white/40 mb-4">
-                {l("Get the latest culinary news, competition updates, and exclusive insights.", "احصل على آخر أخبار الطهي وتحديثات المسابقات والمحتوى الحصري.")}
-              </p>
-              <form onSubmit={handleNewsletterSubmit} className="flex gap-2">
-                <Input
-                  type="email"
-                  value={nlEmail}
-                  onChange={(e) => setNlEmail(e.target.value)}
-                  placeholder={l("your@email.com", "بريدك الإلكتروني")}
-                  required
-                  className="flex-1 h-11 rounded-xl border-white/10 bg-white/5 text-white placeholder:text-white/25 text-sm focus:border-primary/50 focus:ring-primary/20"
-                />
-                <Button type="submit" disabled={nlLoading} size="sm" className="h-11 px-6 rounded-xl gap-2 shrink-0 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold">
-                  <Send className="h-4 w-4" />
-                  {nlLoading ? "..." : l("Subscribe", "اشتراك")}
-                </Button>
-              </form>
-            </div>
+            )}
           </div>
-        </div>
 
-        {/* ── Divider ── */}
-        <div className="h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" aria-hidden="true" />
-
-        {/* ── Nav columns ── */}
-        <div className="grid grid-cols-2 gap-x-8 gap-y-10 py-12 sm:grid-cols-2 md:grid-cols-4">
+          {/* Nav columns — 4 cols compact */}
           {navColumns.map((col) => (
-            <nav key={col.titleEn} aria-label={col.titleEn}>
-              <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-white/70 mb-4">
+            <nav key={col.titleEn} aria-label={col.titleEn} className="md:col-span-2">
+              <h3 className="text-[11px] font-bold uppercase tracking-[0.15em] text-white/70 mb-2.5">
                 {l(col.titleEn, col.titleAr)}
               </h3>
-              <ul className="space-y-2.5">
+              <ul className="space-y-1.5">
                 {col.links.map((link) => (
                   <li key={link.to}>
                     <Link
                       to={link.to}
-                      className="text-sm text-white/40 hover:text-white transition-colors duration-200 inline-block py-0.5 touch-manipulation"
+                      className="text-[13px] text-white/45 hover:text-white transition-colors duration-200 inline-block touch-manipulation"
                     >
                       {l(link.en, link.ar)}
                     </Link>
@@ -220,40 +198,46 @@ export const Footer = forwardRef<HTMLElement>(function Footer(_, ref) {
           ))}
         </div>
 
-        {/* ── Trust badges ── */}
-        <div className="h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" aria-hidden="true" />
-        <div className="py-6 flex flex-wrap items-center justify-center gap-8">
-          {trustBadges.map((badge) => (
-            <div key={badge.labelEn} className="flex items-center gap-2.5 text-xs text-white/30">
-              <badge.icon className="h-4 w-4 text-primary/50" />
-              <span>{l(badge.labelEn, badge.labelAr)}</span>
+        {/* ── Newsletter row — compact horizontal ── */}
+        <div className="border-t border-white/10 py-5 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+          <div className="flex items-center gap-2">
+            <ChefHat className="h-4 w-4 text-primary shrink-0" />
+            <div>
+              <h3 className="text-[13px] font-semibold text-white leading-tight">
+                {l("Stay in the Loop", "ابقَ على اطلاع")}
+              </h3>
+              <p className="text-[11px] text-white/40 leading-tight mt-0.5">
+                {l("Latest culinary news & exclusive insights.", "آخر أخبار الطهي والمحتوى الحصري.")}
+              </p>
             </div>
-          ))}
+          </div>
+          <form onSubmit={handleNewsletterSubmit} className="flex gap-2 w-full md:w-auto md:max-w-sm">
+            <Input
+              type="email"
+              value={nlEmail}
+              onChange={(e) => setNlEmail(e.target.value)}
+              placeholder={l("your@email.com", "بريدك الإلكتروني")}
+              required
+              className="flex-1 h-9 rounded-lg border-white/10 bg-white/5 text-white placeholder:text-white/25 text-[13px] focus:border-primary/50 focus:ring-primary/20"
+            />
+            <Button type="submit" disabled={nlLoading} size="sm" className="h-9 px-4 rounded-lg gap-1.5 shrink-0 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold text-[13px]">
+              <Send className="h-3.5 w-3.5" />
+              {nlLoading ? "..." : l("Subscribe", "اشتراك")}
+            </Button>
+          </form>
         </div>
 
-        {/* ── Bottom bar ── */}
-        <div className="h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" aria-hidden="true" />
-        <div className="py-6 flex flex-col-reverse gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-xs text-white/25">{copyrightText}</p>
-
-          {/* Social icons */}
-          {footerCfg.showSocialLinks !== false && socialLinks.length > 0 && (
-            <div className="flex items-center gap-1.5">
-              {socialLinks.map((social) => (
-                <a
-                  key={social.label}
-                  href={social.href}
-                  target="_blank" rel="noopener noreferrer"
-                  aria-label={social.label}
-                  className="flex h-9 w-9 items-center justify-center rounded-full text-white/30 hover:text-white hover:bg-white/10 transition-all duration-200 touch-manipulation"
-                >
-                  <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
-                    <path d={social.icon} />
-                  </svg>
-                </a>
-              ))}
-            </div>
-          )}
+        {/* ── Bottom bar: copyright + trust badges ── */}
+        <div className="border-t border-white/10 py-4 flex flex-col-reverse sm:flex-row sm:items-center sm:justify-between gap-3">
+          <p className="text-[11px] text-white/30">{copyrightText}</p>
+          <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
+            {trustBadges.map((badge) => (
+              <div key={badge.labelEn} className="flex items-center gap-1.5 text-[11px] text-white/35">
+                <badge.icon className="h-3.5 w-3.5 text-primary/60" />
+                <span>{l(badge.labelEn, badge.labelAr)}</span>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </footer>
