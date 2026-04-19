@@ -5,7 +5,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useSiteSettingsContext } from "@/contexts/SiteSettingsContext";
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
-import { Mail, Send, Shield, Lock, CheckCircle2, ChefHat } from "lucide-react";
+import { Mail, Send, Shield, Lock, CheckCircle2, ChefHat, ArrowRight, Sparkles, Globe } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { supabase } from "@/integrations/supabase/client";
