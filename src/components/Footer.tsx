@@ -127,22 +127,25 @@ export const Footer = forwardRef<HTMLElement>(function Footer(_, ref) {
     <footer
       ref={ref}
       id="site-footer"
-      className="relative overflow-hidden border-t border-border/30 pb-24 sm:pb-0 safe-area-bottom bg-[hsl(220,20%,7%)] text-white"
+      className="relative overflow-hidden border-t border-white/5 pb-24 sm:pb-0 safe-area-bottom bg-[hsl(222,24%,5%)] text-white"
       role="contentinfo"
     >
-      <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" aria-hidden="true" />
+      {/* Top accent line */}
+      <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent" aria-hidden="true" />
+      {/* Subtle radial glow */}
+      <div className="pointer-events-none absolute -top-24 left-1/2 -translate-x-1/2 h-48 w-[60%] rounded-full bg-primary/5 blur-3xl" aria-hidden="true" />
 
       <div className="container relative px-5 sm:px-6">
 
-        {/* ── Main grid: Brand + Nav columns + Newsletter ── */}
-        <div className="grid grid-cols-2 md:grid-cols-12 gap-x-6 gap-y-8 pt-10 pb-6">
+        {/* ── Main grid ── */}
+        <div className="grid grid-cols-2 md:grid-cols-12 gap-x-6 gap-y-7 pt-9 pb-5">
           {/* Brand block */}
           <div className="col-span-2 md:col-span-4">
             <Link to="/" className="inline-flex items-center gap-2.5 group">
-              <img src={logoUrl} alt={siteName} width={32} height={32} className="h-8 w-auto" loading="lazy" decoding="async" />
-              <span className="text-base font-bold text-white tracking-tight">{siteName}</span>
+              <img src={logoUrl} alt={siteName} width={30} height={30} className="h-7 w-auto" loading="lazy" decoding="async" />
+              <span className="text-[15px] font-bold text-white tracking-tight">{siteName}</span>
             </Link>
-            <p className="mt-3 text-[13px] leading-relaxed text-white/45 max-w-xs">
+            <p className="mt-2.5 text-[12.5px] leading-[1.55] text-white/65 max-w-[280px]">
               {l(
                 "The premier platform connecting culinary professionals worldwide.",
                 "المنصة الرائدة التي تربط محترفي الطهي حول العالم."
@@ -150,22 +153,22 @@ export const Footer = forwardRef<HTMLElement>(function Footer(_, ref) {
             </p>
             <a
               href={`mailto:${contactEmail}`}
-              className="mt-3 inline-flex items-center gap-1.5 text-[13px] text-white/40 hover:text-primary transition-colors"
+              className="mt-2.5 inline-flex items-center gap-1.5 text-[12.5px] text-white/70 hover:text-primary transition-colors"
             >
               <Mail className="h-3.5 w-3.5" />
               {contactEmail}
             </a>
 
-            {/* Social icons inline with brand */}
+            {/* Social icons */}
             {footerCfg.showSocialLinks !== false && socialLinks.length > 0 && (
-              <div className="flex items-center gap-1 mt-4">
+              <div className="flex items-center gap-1.5 mt-3.5">
                 {socialLinks.map((social) => (
                   <a
                     key={social.label}
                     href={social.href}
                     target="_blank" rel="noopener noreferrer"
                     aria-label={social.label}
-                    className="flex h-8 w-8 items-center justify-center rounded-full text-white/40 hover:text-white hover:bg-white/10 transition-all duration-200"
+                    className="flex h-8 w-8 items-center justify-center rounded-md text-white/70 bg-white/5 hover:text-white hover:bg-primary/20 hover:scale-105 transition-all duration-200 ring-1 ring-white/5 hover:ring-primary/30"
                   >
                     <svg className="h-3.5 w-3.5" fill="currentColor" viewBox="0 0 24 24">
                       <path d={social.icon} />
@@ -176,18 +179,18 @@ export const Footer = forwardRef<HTMLElement>(function Footer(_, ref) {
             )}
           </div>
 
-          {/* Nav columns — 4 cols compact */}
+          {/* Nav columns */}
           {navColumns.map((col) => (
             <nav key={col.titleEn} aria-label={col.titleEn} className="md:col-span-2">
-              <h3 className="text-[11px] font-bold uppercase tracking-[0.15em] text-white/70 mb-2.5">
+              <h3 className="text-[10.5px] font-bold uppercase tracking-[0.18em] text-primary/90 mb-2.5">
                 {l(col.titleEn, col.titleAr)}
               </h3>
-              <ul className="space-y-1.5">
+              <ul className="space-y-1">
                 {col.links.map((link) => (
                   <li key={link.to}>
                     <Link
                       to={link.to}
-                      className="text-[13px] text-white/45 hover:text-white transition-colors duration-200 inline-block touch-manipulation"
+                      className="text-[12.5px] leading-[1.7] text-white/75 hover:text-white hover:translate-x-0.5 rtl:hover:-translate-x-0.5 transition-all duration-200 inline-block touch-manipulation"
                     >
                       {l(link.en, link.ar)}
                     </Link>
@@ -198,15 +201,17 @@ export const Footer = forwardRef<HTMLElement>(function Footer(_, ref) {
           ))}
         </div>
 
-        {/* ── Newsletter row — compact horizontal ── */}
-        <div className="border-t border-white/10 py-5 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-          <div className="flex items-center gap-2">
-            <ChefHat className="h-4 w-4 text-primary shrink-0" />
+        {/* ── Newsletter row ── */}
+        <div className="border-t border-white/8 py-4 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+          <div className="flex items-center gap-2.5">
+            <div className="flex h-8 w-8 items-center justify-center rounded-md bg-primary/15 ring-1 ring-primary/25">
+              <ChefHat className="h-4 w-4 text-primary" />
+            </div>
             <div>
               <h3 className="text-[13px] font-semibold text-white leading-tight">
                 {l("Stay in the Loop", "ابقَ على اطلاع")}
               </h3>
-              <p className="text-[11px] text-white/40 leading-tight mt-0.5">
+              <p className="text-[11.5px] text-white/55 leading-tight mt-0.5">
                 {l("Latest culinary news & exclusive insights.", "آخر أخبار الطهي والمحتوى الحصري.")}
               </p>
             </div>
@@ -218,22 +223,22 @@ export const Footer = forwardRef<HTMLElement>(function Footer(_, ref) {
               onChange={(e) => setNlEmail(e.target.value)}
               placeholder={l("your@email.com", "بريدك الإلكتروني")}
               required
-              className="flex-1 h-9 rounded-lg border-white/10 bg-white/5 text-white placeholder:text-white/25 text-[13px] focus:border-primary/50 focus:ring-primary/20"
+              className="flex-1 h-9 rounded-md border border-white/15 bg-white/8 text-white placeholder:text-white/45 text-[13px] focus:border-primary focus:ring-1 focus:ring-primary/40"
             />
-            <Button type="submit" disabled={nlLoading} size="sm" className="h-9 px-4 rounded-lg gap-1.5 shrink-0 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold text-[13px]">
+            <Button type="submit" disabled={nlLoading} size="sm" className="h-9 px-4 rounded-md gap-1.5 shrink-0 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold text-[13px] shadow-md shadow-primary/20">
               <Send className="h-3.5 w-3.5" />
               {nlLoading ? "..." : l("Subscribe", "اشتراك")}
             </Button>
           </form>
         </div>
 
-        {/* ── Bottom bar: copyright + trust badges ── */}
-        <div className="border-t border-white/10 py-4 flex flex-col-reverse sm:flex-row sm:items-center sm:justify-between gap-3">
-          <p className="text-[11px] text-white/30">{copyrightText}</p>
-          <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
+        {/* ── Bottom bar ── */}
+        <div className="border-t border-white/8 py-3.5 flex flex-col-reverse sm:flex-row sm:items-center sm:justify-between gap-3">
+          <p className="text-[11.5px] text-white/55">{copyrightText}</p>
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
             {trustBadges.map((badge) => (
-              <div key={badge.labelEn} className="flex items-center gap-1.5 text-[11px] text-white/35">
-                <badge.icon className="h-3.5 w-3.5 text-primary/60" />
+              <div key={badge.labelEn} className="flex items-center gap-1.5 text-[11.5px] text-white/65">
+                <badge.icon className="h-3.5 w-3.5 text-primary" />
                 <span>{l(badge.labelEn, badge.labelAr)}</span>
               </div>
             ))}
